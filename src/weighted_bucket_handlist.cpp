@@ -16,8 +16,4 @@ ecalc::combination WeightedBucketHandlist::get_hand(
     }
   }
 }
-//void WeightedBucketHandlist::get_hands(HandCollection &hands) {
-  //for (unsigned i = 0; i < buckets.size(); ++i)
-    //buckets[i].get_hands(hands);
-//}
 }

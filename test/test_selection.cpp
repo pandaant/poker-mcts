@@ -33,6 +33,8 @@ SUITE(SelectionTests) {
   typedef typename ISelectionStrategy<FContext, FConfig>::sstrategy_t sstrategy_t;
   typedef typename INode<FContext, FConfig>::node_t node_t;
 
+  ecalc::Handranks handranks("../../../bin/data/handranks.dat");
+
   struct ComplexSetup {
     FConfig *config;
     FContextConfig *cconfig;
@@ -53,7 +55,6 @@ SUITE(SelectionTests) {
     double rake_factor;
 
     // fconfig
-    Handranks *tbl;
     ECalc *calc;
     int max_betting_rounds;
     double time_s;
@@ -63,6 +64,7 @@ SUITE(SelectionTests) {
     IBackpropagationStrategy *decision_backprop_strat;
     IBackpropagationStrategy *opponent_backprop_strat;
     ISimulationStrategy<FContext> *sim_strat;
+   RootNode<FContext, FConfig, DecisionNode> *root;
 
     ComplexSetup()
         : players({FSeat(FPlayer("mark", bb(10),
@@ -99,8 +101,7 @@ SUITE(SelectionTests) {
                        index_active, betting_round, phase, players,
                        Action(ActionType::None, bb(0)), cconfig);
 
-      tbl = new Handranks("../../../bin/data/handranks.dat");
-      calc = new ECalc(tbl, 0);
+      calc = new ECalc(&handranks, 0);
       time_s = 1;
       ecalc_nb_samples = 7;
       decision_selection_strat = new MaxValueSelector<FContext, FConfig>();
@@ -113,6 +114,7 @@ SUITE(SelectionTests) {
                            decision_backprop_strat, opponent_backprop_strat,
                            decision_selection_strat, opponent_selection_strat,
                            decision_selection_strat, false);
+      root = new RootNode<FContext, FConfig, DecisionNode>(*context, config);
     }
 
     //TODO
@@ -192,7 +194,7 @@ SUITE(SelectionTests) {
         Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, NULL);
+        new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
     vector<PAction<FContext, FConfig>> actions = select.normalized_probabilities(dn);
@@ -233,7 +235,7 @@ SUITE(SelectionTests) {
         Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, NULL);
+        new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
     vector<PAction<FContext, FConfig>> actions = select.normalized_probabilities(dn);
@@ -274,7 +276,7 @@ SUITE(SelectionTests) {
         Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, NULL);
+        new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
     vector<PAction<FContext, FConfig>> actions = select.normalized_probabilities(dn);
 
@@ -314,7 +316,7 @@ SUITE(SelectionTests) {
         Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, NULL);
+        new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
     vector<PAction<FContext, FConfig>> actions = select.normalized_probabilities(dn);
 
@@ -371,7 +373,7 @@ SUITE(SelectionTests) {
         Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, NULL);
+        new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
     int count_f = 0;
@@ -414,7 +416,7 @@ SUITE(SelectionTests) {
         Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, NULL);
+        new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
     // ratio -> 2
@@ -447,7 +449,7 @@ SUITE(SelectionTests) {
         Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, NULL);
+        new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
     // ratio -> 2
@@ -480,7 +482,7 @@ SUITE(SelectionTests) {
         Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, NULL);
+        new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
     static_cast<OpponentNode*>(dn->children()[1])->backpropagate(1);
@@ -510,7 +512,7 @@ SUITE(SelectionTests) {
         Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, NULL);
+        new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
     static_cast<OpponentNode*>(dn->children()[1])->backpropagate(0.5);
@@ -540,7 +542,7 @@ SUITE(SelectionTests) {
         Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, NULL);
+        new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
     static_cast<OpponentNode*>(dn->children()[1])->backpropagate(0.5);

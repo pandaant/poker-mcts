@@ -18,13 +18,14 @@ SUITE(RangePredictorTests) {
   using namespace Freedom5;
   using namespace poker;
 
+  ecalc::Handranks handranks("../../../bin/data/handranks.dat");
+
   using ecalc::Handranks;
   using ecalc::ECalc;
   using ecalc::SingleHandlist;
   using ecalc::RandomHandlist;
 
   struct Setup {
-    Handranks* tbl;
     ECalc *calc;
     int ecalc_nb_samples;
     Histogramm histogramm_model;
@@ -33,8 +34,7 @@ SUITE(RangePredictorTests) {
     typedef RoundHistogramm RH;
 
     Setup() {
-      tbl = new Handranks("../../../bin/data/handranks.dat");
-      calc = new ECalc(tbl, 0);
+      calc = new ECalc(&handranks, 0);
 
       // preflop
       // first
@@ -161,7 +161,6 @@ SUITE(RangePredictorTests) {
     }
 
     ~Setup() {
-      delete tbl;
       delete calc;
     }
   };
@@ -509,7 +508,7 @@ SUITE(RangePredictorTests) {
   }
 
   TEST_FIXTURE(Setup, TestEquityFirstEHS2) {
-    EHS2RangePredictor pr(calc, 1000);
+    EHS2RangePredictor pr(calc, 1150);
     vector<Handlist *> lists(
         {new SingleHandlist(Hand("AhAs")), new RandomHandlist()});
 
@@ -522,7 +521,7 @@ SUITE(RangePredictorTests) {
   }
 
   TEST_FIXTURE(Setup, TestEquityFirst) {
-    RangePredictor pr(calc, 1000);
+    RangePredictor pr(calc, 1500);
     vector<Handlist *> lists(
         {new SingleHandlist(Hand("AhAs")), new RandomHandlist()});
 
@@ -530,7 +529,7 @@ SUITE(RangePredictorTests) {
     vector<unsigned> deadcards(0);
 
     double eq = pr.equity_first(lists, board, deadcards, calc);
-    CHECK_CLOSE(0.85, eq, 0.01);
+    CHECK_CLOSE(0.85204, eq, 0.01);
   }
 
   TEST_FIXTURE(Setup, TestCalcHandstrength) {

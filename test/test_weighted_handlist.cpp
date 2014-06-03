@@ -65,8 +65,8 @@ SUITE(WeightedBucketHandlistTest) {
     // should be 50:50
     CHECK(((++hands.begin()) != hands.end()));
     double ratio =
-        hands[CREATE_HAND(hand_a.highcard().card(), hand_a.lowcard().card())] /
-        (hands[CREATE_HAND(hand_b.highcard().card(), hand_b.lowcard().card())] + 0.);
+        hands[Handlist::create_hand(hand_a)] /
+        (hands[Handlist::create_hand(hand_b)] + 0.);
     CHECK_CLOSE(2,ratio,0.1);
   }
 }

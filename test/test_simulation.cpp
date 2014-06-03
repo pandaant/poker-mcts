@@ -28,9 +28,10 @@ SUITE(SimulationTests) {
   using ecalc::RandomHandlist;
   using ecalc::SingleHandlist;
 
+  ecalc::Handranks handranks("../../../bin/data/handranks.dat");
+
   struct TestStartup {
       ecalc::ECalc *calc;
-    ecalc::Handranks *tbl;
     std::mt19937 nb_gen;
 
     FContextConfig *cconfig;
@@ -64,8 +65,7 @@ SUITE(SimulationTests) {
                                                  bb(0), bb(0)})),
                          StatusType::Active)}),
           random(new RandomHandlist()) {
-      tbl = new Handranks("../../../bin/data/handranks.dat");
-      calc = new ECalc(tbl, 0);
+      calc = new ECalc(&handranks, 0);
       // seeded with zero, so results are independent of randomness
       nb_gen = std::mt19937(0);
 
@@ -93,9 +93,6 @@ SUITE(SimulationTests) {
     }
 
     ~TestStartup() {
-      if (tbl != NULL)
-        delete tbl;
-      if (calc != NULL)
         delete calc;
 
       delete context;
@@ -283,7 +280,7 @@ SUITE(SimulationTests) {
     con->seats[1].player.make_investment(bb(4.5), PhaseType::Preflop);
 
     mcts::RunningStats stats;
-    for (int i = 0; i < 1000; ++i)
+    for (int i = 0; i < 1500; ++i)
       stats.push(evaluator->simulate(*con));
 
     CHECK_CLOSE(-1.6, stats.mean(), 0.1);
@@ -317,7 +314,7 @@ SUITE(SimulationTests) {
     con->seats[1].player.make_investment(bb(99.5), PhaseType::Preflop);
 
     mcts::RunningStats stats;
-    for (int i = 0; i < 1000; ++i)
+    for (int i = 0; i < 1500; ++i)
       stats.push(evaluator->simulate(*con));
 
     CHECK_CLOSE(7, stats.mean(), 0.1);

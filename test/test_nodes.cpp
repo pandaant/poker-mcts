@@ -27,6 +27,8 @@ SUITE(FreedomNodeTests) {
 
   typedef typename ISelectionStrategy<FContext, FConfig>::sstrategy_t sstrategy_t;
 
+  ecalc::Handranks handranks("../../../bin/data/handranks.dat");
+
   struct ComplexSetup {
     FConfig *config;
     FContextConfig *cconfig;
@@ -47,7 +49,6 @@ SUITE(FreedomNodeTests) {
     double rake_factor;
 
     ECalc *calc;
-    ecalc::Handranks *tbl;
     int max_betting_rounds;
     double time_s;
     int ecalc_nb_samples;
@@ -85,8 +86,7 @@ SUITE(FreedomNodeTests) {
                        index_active, betting_round, phase, players,
                        Action(ActionType::None, bb(0)), cconfig);
 
-      tbl = new ecalc::Handranks("../../../bin/data/handranks.dat");
-      calc = new ECalc(tbl, 0);
+      calc = new ECalc(&handranks, 0);
       time_s = 1;
       ecalc_nb_samples = 7;
       decision_selection_strat = new MaxValueSelector<FContext, FConfig>();
