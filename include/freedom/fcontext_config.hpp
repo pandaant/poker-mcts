@@ -14,7 +14,7 @@
 #include <schema_exception.hpp>
 #include <rapidjson/document.h>
 
-namespace Freedom5 {
+namespace freedom {
 using std::vector;
 using rapidjson::Value;
 using rapidjson::SizeType;

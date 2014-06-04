@@ -11,7 +11,7 @@
 #include <mcts/inner_node.hpp>
 #include "decision_node.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 using mcts::InnerNode;
 

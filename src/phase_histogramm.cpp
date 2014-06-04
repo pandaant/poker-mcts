@@ -1,6 +1,6 @@
 #include "phase_histogramm.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 PhaseHistogramm::PhaseHistogramm(const PhaseHistogramm &oph)
     : round_data(oph.round_data) {}

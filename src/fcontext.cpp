@@ -3,7 +3,7 @@
 #include <iostream>
 #include <ecalc/single_handlist.hpp>
 
-namespace Freedom5 {
+namespace freedom {
 
 FContext::FContext(const Value &data, FContextConfig *_config)
     : config(_config), last_action(Action(ActionType::None, bb(0))) {

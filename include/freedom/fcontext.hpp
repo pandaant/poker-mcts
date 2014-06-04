@@ -22,7 +22,7 @@
 #include <rapidjson/writer.h>
 #include <rapidjson/filestream.h>
 
-namespace Freedom5 {
+namespace freedom {
 
 using rapidjson::Value;
 using rapidjson::Writer;

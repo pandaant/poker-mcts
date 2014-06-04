@@ -6,7 +6,7 @@
 #include "balanced_bucketizer.hpp"
 #include "exponential_bucketizer.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 Freedom::Freedom(Handranks* handranks): handranks(handranks){
   ecalc = new ECalc(handranks);

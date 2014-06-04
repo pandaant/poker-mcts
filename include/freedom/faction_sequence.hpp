@@ -11,7 +11,7 @@
 #include <poker/action_sequence.hpp>
 #include <rapidjson/document.h>
 
-namespace Freedom5 {
+namespace freedom {
 
 using namespace poker;
 using rapidjson::Value;

@@ -9,7 +9,7 @@
 
 SUITE(FreedomContextTests) {
   using namespace poker;
-  using namespace Freedom5;
+  using namespace freedom;
 
   struct Setup {
     Handlist *bot_hl;

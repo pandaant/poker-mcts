@@ -11,7 +11,7 @@
 #include <cmath>
 #include <math.h>
 
-namespace Freedom5 {
+namespace freedom {
 
 //  https://en.wikipedia.org/wiki/Exponential_distribution
 class ExponentialDistribution {

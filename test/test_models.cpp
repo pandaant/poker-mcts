@@ -7,7 +7,7 @@
 
 SUITE(ModelTests) {
 
-  using namespace Freedom5;
+  using namespace freedom;
   using std::get;
   using std::tuple;
 

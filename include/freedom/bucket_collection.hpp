@@ -12,7 +12,7 @@
 #include <poker/hand.hpp>
 #include "bucket_hand.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 using std::vector;
 using poker::Hand;
 

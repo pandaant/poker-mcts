@@ -8,7 +8,7 @@
 #include <ecalc/single_handlist.hpp>
 #include <ecalc/random_handlist.hpp>
 
-namespace Freedom5 {
+namespace freedom {
 
 using std::thread;
 

@@ -1,6 +1,6 @@
 #include "fseat.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 FSeat::FSeat(const Value &data)
     :status(load_status(data)),

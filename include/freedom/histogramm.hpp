@@ -12,7 +12,7 @@
 #include "model.hpp"
 #include "phase_histogramm.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 using std::tr1::get;
 
 class Histogramm : public Model {

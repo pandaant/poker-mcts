@@ -17,7 +17,7 @@
  */
 //#define ASSERT_JSON 1
 
-namespace Freedom5 {
+namespace freedom {
 
 /**
  * Disables assertion aborts if a message is invalid.
@@ -32,7 +32,7 @@ public:
 #ifndef ASSERT_JSON
 #define RAPIDJSON_ASSERT(x)                         \
   if(x);                                            \
-  else throw Freedom5::rapidjson_exception();  
+  else throw freedom::rapidjson_exception();  
 
 #endif	/* SCHEMA_EXCEPTION_H */
 #endif

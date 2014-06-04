@@ -1,5 +1,5 @@
 /*
- * File:   freedom5.h
+ * File:   freedom.h
  * Author: batman
  *
  * Created on August 6, 2013, 12:27 PM
@@ -15,7 +15,7 @@
 #include "range_predictor.hpp"
 #include "decision_node.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 using ecalc::ECalc;
 using ecalc::Handranks;
@@ -38,5 +38,5 @@ public:
 };
 }
 
-#endif /* FREEDOM5_H */
+#endif /* freedom_H */
 

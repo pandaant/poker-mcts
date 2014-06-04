@@ -1,6 +1,6 @@
 #include "ehs2_range_predictor.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 EHS2RangePredictor::EHS2RangePredictor(ECalc *_calc, int _nb_samples,
                                        Threshold _thresholds,
                                        vector<int> _nb_buckets,

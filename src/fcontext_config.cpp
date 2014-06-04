@@ -1,6 +1,6 @@
 #include "fcontext_config.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 FContextConfig::FContextConfig(const Value &data)
     : bot_hand(

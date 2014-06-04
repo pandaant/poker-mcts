@@ -1,6 +1,6 @@
 #include "faction_sequence.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 FActionSequence::FActionSequence(const Value &data) : ActionSequence() {
   for (SizeType i = 0; i < 4; i++) {

@@ -17,7 +17,7 @@
 #include <rapidjson/writer.h>
 #include <rapidjson/filestream.h>
 
-namespace Freedom5 {
+namespace freedom {
 
 using ecalc::Handlist;
 using rapidjson::Value;
@@ -58,7 +58,7 @@ public:
 
   FPlayer(string _name, bb _bankroll, vector<bb> _invested,
           Handlist *_handlist)
-      : invested(4, bb(0)), name(_name), bankroll(_bankroll),
+      : invested(_invested), name(_name), bankroll(_bankroll),
         handlist(_handlist), model("default") {}
 
   FPlayer(string _name, bb _bankroll, vector<bb> _invested,
@@ -75,7 +75,6 @@ public:
 
   bool make_investment(bb amount, PhaseType::Enum phase);
   bb total_investment() const;
-
 
   void serialize(Writer<FileStream> &writer);
 };

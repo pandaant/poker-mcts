@@ -1,11 +1,11 @@
 #include "fplayer.hpp"
 #include <ecalc/random_handlist.hpp>
 
-namespace Freedom5 {
+namespace freedom {
 
 FPlayer::FPlayer(const Value &data) {
   name = data["name"].GetString();
-  this->model = data["model"].GetString();
+  model = data["model"].GetString();
   bankroll = bb(data["bankroll"].GetDouble());
   action_sequence = FActionSequence(data["sequence"]);
 
@@ -13,13 +13,11 @@ FPlayer::FPlayer(const Value &data) {
     bb amount = bb(data["invested"][i].GetDouble());
     invested[i] = amount;
   }
-  //Player::Player(name, bankroll, invested);
 
   handlist = NULL;
 }
 
 FPlayer &FPlayer::operator=(const FPlayer &p) {
-  //Player::operator=(p);
   name = p.name;
   bankroll = p.bankroll;
   invested = p.invested;
@@ -45,19 +43,14 @@ bb FPlayer::total_investment() const {
 }
 
 void FPlayer::serialize(Writer<FileStream> &writer) {
-  // writer.String("name");
   writer.String(name.c_str());
-
-  // writer.String("bankroll");
   writer.Double(bankroll.getAsDouble());
 
-  // writer.String("invested");
   writer.StartArray();
   for (auto &i : invested)
     writer.Double(i.getAsDouble());
   writer.EndArray();
 
-  // writer.String("sequence");
   writer.String(action_sequence.str().c_str());
 }
 };

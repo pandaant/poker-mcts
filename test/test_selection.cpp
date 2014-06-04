@@ -21,7 +21,7 @@
 SUITE(SelectionTests) {
 
   using namespace std;
-  using namespace Freedom5;
+  using namespace freedom;
   typedef PhaseHistogramm PH;
   typedef RoundHistogramm RH;
 
@@ -30,7 +30,8 @@ SUITE(SelectionTests) {
   using ecalc::RandomHandlist;
   using ecalc::SingleHandlist;
 
-  typedef typename ISelectionStrategy<FContext, FConfig>::sstrategy_t sstrategy_t;
+  typedef typename ISelectionStrategy<FContext, FConfig>::sstrategy_t
+  sstrategy_t;
   typedef typename INode<FContext, FConfig>::node_t node_t;
 
   ecalc::Handranks handranks("../../../bin/data/handranks.dat");
@@ -64,19 +65,15 @@ SUITE(SelectionTests) {
     IBackpropagationStrategy *decision_backprop_strat;
     IBackpropagationStrategy *opponent_backprop_strat;
     ISimulationStrategy<FContext> *sim_strat;
-   RootNode<FContext, FConfig, DecisionNode> *root;
+    RootNode<FContext, FConfig, DecisionNode> *root;
 
     ComplexSetup()
         : players({FSeat(FPlayer("mark", bb(10),
-                                 vector<bb>({bb(5), bb(0),
-                                                 bb(0), bb(0)})),
-                        StatusType::Active),
+                                 vector<bb>({bb(5), bb(0), bb(0), bb(0)})),
+                         StatusType::Active),
                    FSeat(FPlayer("simon", bb(10),
-                                 vector<bb>({bb(5), bb(0),
-                                                 bb(0), bb(0)})),
-                        
-                         StatusType::Active) 
-          }),
+                                 vector<bb>({bb(5), bb(0), bb(0), bb(0)})),
+                         StatusType::Active)}),
           random(new RandomHandlist()) {
       pot = bb(10);
       highest_bet = bb(0);
@@ -96,10 +93,9 @@ SUITE(SelectionTests) {
 
       cconfig = new FContextConfig(Hand("AhAs"), 2, board, vector<double>({1}),
                                    vector<double>({3}), rake_factor);
-      context =
-          new FContext(pot, highest_bet, index_bot, index_utg, index_button,
-                       index_active, betting_round, phase, players,
-                       Action(ActionType::None, bb(0)), cconfig);
+      context = new FContext(pot, highest_bet, index_bot, index_utg,
+                             index_button, index_active, betting_round, phase,
+                             players, Action(ActionType::None, bb(0)), cconfig);
 
       calc = new ECalc(&handranks, 0);
       time_s = 1;
@@ -117,7 +113,7 @@ SUITE(SelectionTests) {
       root = new RootNode<FContext, FConfig, DecisionNode>(*context, config);
     }
 
-    //TODO
+    // TODO
     ~ComplexSetup() {
       /*        delete context;
                 delete cconfig;
@@ -164,40 +160,39 @@ SUITE(SelectionTests) {
     ~Setup() {}
   };
 
-  //TEST_FIXTURE(Setup, TestGetNormalizedActionProbabilities) {
-    //ModelSelector select(&test_hist);
+  // TEST_FIXTURE(Setup, TestGetNormalizedActionProbabilities) {
+  // ModelSelector select(&test_hist);
 
-    ////    select.select(n);
+  ////    select.select(n);
   //}
 
   TEST_FIXTURE(Setup, TestGetNormalizedActionProbabilitiesXB) {
     ModelSelector<FContext, FConfig> select;
 
-    setp.players =
-        vector<FSeat>({FSeat(FPlayer("mark", bb(10),
-                                     vector<bb>({bb(1), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active),
-                       FSeat(FPlayer("simon", bb(10),
-                                     vector<bb>({bb(0.5), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active)});
+    setp.players = vector<FSeat>(
+        {FSeat(
+             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
+             StatusType::Active),
+         FSeat(FPlayer("simon", bb(10),
+                       vector<bb>({bb(0.5), bb(0), bb(0), bb(0)})),
+               StatusType::Active)});
 
     setp.players[0].player.model = "default";
     setp.players[1].player.model = "default";
 
     setp.config->models["default"] = &test_hist;
 
-    setp.context = new FContext(
-        bb(1.5), bb(0), setp.index_bot, setp.index_utg,
-        setp.index_button, setp.index_active, 0, PhaseType::Flop, setp.players,
-        Action(ActionType::None, bb(0)), setp.cconfig);
+    setp.context = new FContext(bb(1.5), bb(0), setp.index_bot, setp.index_utg,
+                                setp.index_button, setp.index_active, 0,
+                                PhaseType::Flop, setp.players,
+                                Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
         new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
-    vector<PAction<FContext, FConfig>> actions = select.normalized_probabilities(dn);
+    vector<PAction<FContext, FConfig>> actions =
+        select.normalized_probabilities(dn);
 
     CHECK_EQUAL(ActionType::Check, actions[0].action.action);
     CHECK_CLOSE(0.4, actions[0].prob, 0.01);
@@ -208,37 +203,36 @@ SUITE(SelectionTests) {
     delete dn;
   }
 
-   //This will fail because one case is not handled properly on preflop
-   //look @ RoundHistogramm::get_action_probabilities
-  
+  // This will fail because one case is not handled properly on preflop
+  // look @ RoundHistogramm::get_action_probabilities
+
   TEST_FIXTURE(Setup, TestGetNormalizedActionProbabilitiesXR) {
     ModelSelector<FContext, FConfig> select;
 
-    setp.players =
-        vector<FSeat>({FSeat(FPlayer("mark", bb(10),
-                                     vector<bb>({bb(1), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active),
-                       FSeat(FPlayer("simon", bb(10),
-                                     vector<bb>({bb(0.5), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active)});
+    setp.players = vector<FSeat>(
+        {FSeat(
+             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
+             StatusType::Active),
+         FSeat(FPlayer("simon", bb(10),
+                       vector<bb>({bb(0.5), bb(0), bb(0), bb(0)})),
+               StatusType::Active)});
 
     setp.players[0].player.model = "default";
     setp.players[1].player.model = "default";
 
     setp.config->models["default"] = &test_hist;
 
-    setp.context = new FContext(
-        bb(1.5), bb(1), setp.index_bot, setp.index_utg,
-        setp.index_button, setp.index_active, 1, setp.phase, setp.players,
-        Action(ActionType::None, bb(0)), setp.cconfig);
+    setp.context = new FContext(bb(1.5), bb(1), setp.index_bot, setp.index_utg,
+                                setp.index_button, setp.index_active, 1,
+                                setp.phase, setp.players,
+                                Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
         new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
-    vector<PAction<FContext, FConfig>> actions = select.normalized_probabilities(dn);
+    vector<PAction<FContext, FConfig>> actions =
+        select.normalized_probabilities(dn);
 
     //        for(auto a:actions) std::cout << a.action.to_str() << " " <<
     // a.prob << std::endl;
@@ -257,28 +251,27 @@ SUITE(SelectionTests) {
 
     setp.config->models["default"] = &test_hist;
 
-    setp.players =
-        vector<FSeat>({FSeat(FPlayer("mark", bb(10),
-                                     vector<bb>({bb(1), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active),
-                       FSeat(FPlayer("simon", bb(10),
-                                     vector<bb>({bb(1.5), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active)});
+    setp.players = vector<FSeat>(
+        {FSeat(
+             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
+             StatusType::Active),
+         FSeat(FPlayer("simon", bb(10),
+                       vector<bb>({bb(1.5), bb(0), bb(0), bb(0)})),
+               StatusType::Active)});
 
     setp.players[0].player.model = "default";
     setp.players[1].player.model = "default";
 
-    setp.context = new FContext(
-        bb(2.5), bb(1.5), setp.index_bot, setp.index_utg,
-        setp.index_button, setp.index_active, 1, setp.phase, setp.players,
-        Action(ActionType::None, bb(0)), setp.cconfig);
+    setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
+                                setp.index_utg, setp.index_button,
+                                setp.index_active, 1, setp.phase, setp.players,
+                                Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
         new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
-    vector<PAction<FContext, FConfig>> actions = select.normalized_probabilities(dn);
+    vector<PAction<FContext, FConfig>> actions =
+        select.normalized_probabilities(dn);
 
     CHECK_EQUAL(ActionType::Fold, actions[0].action.action);
     CHECK_CLOSE(0.8, actions[0].prob, 0.01);
@@ -297,28 +290,27 @@ SUITE(SelectionTests) {
 
     setp.config->models["default"] = &test_hist;
 
-    setp.players =
-        vector<FSeat>({FSeat(FPlayer("mark", bb(10),
-                                     vector<bb>({bb(1), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active),
-                       FSeat(FPlayer("simon", bb(10),
-                                     vector<bb>({bb(1.5), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active)});
+    setp.players = vector<FSeat>(
+        {FSeat(
+             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
+             StatusType::Active),
+         FSeat(FPlayer("simon", bb(10),
+                       vector<bb>({bb(1.5), bb(0), bb(0), bb(0)})),
+               StatusType::Active)});
 
     setp.players[0].player.model = "default";
     setp.players[1].player.model = "default";
 
-    setp.context = new FContext(
-        bb(2.5), bb(1.5), setp.index_bot, setp.index_utg,
-        setp.index_button, setp.index_active, 1, setp.phase, setp.players,
-        Action(ActionType::None, bb(0)), setp.cconfig);
+    setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
+                                setp.index_utg, setp.index_button,
+                                setp.index_active, 1, setp.phase, setp.players,
+                                Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
         new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
-    vector<PAction<FContext, FConfig>> actions = select.normalized_probabilities(dn);
+    vector<PAction<FContext, FConfig>> actions =
+        select.normalized_probabilities(dn);
 
     CHECK_EQUAL(ActionType::Fold, actions[0].action.action);
     CHECK_EQUAL(ActionType::Call, actions[1].action.action);
@@ -354,23 +346,21 @@ SUITE(SelectionTests) {
 
     setp.config->models["default"] = &test_hist;
 
-    setp.players =
-        vector<FSeat>({FSeat(FPlayer("mark", bb(10),
-                                     vector<bb>({bb(1), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active),
-                       FSeat(FPlayer("simon", bb(10),
-                                     vector<bb>({bb(1.5), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active)});
+    setp.players = vector<FSeat>(
+        {FSeat(
+             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
+             StatusType::Active),
+         FSeat(FPlayer("simon", bb(10),
+                       vector<bb>({bb(1.5), bb(0), bb(0), bb(0)})),
+               StatusType::Active)});
 
     setp.players[0].player.model = "default";
     setp.players[1].player.model = "default";
 
-    setp.context = new FContext(
-        bb(2.5), bb(1.5), setp.index_bot, setp.index_utg,
-        setp.index_button, setp.index_active, 1, setp.phase, setp.players,
-        Action(ActionType::None, bb(0)), setp.cconfig);
+    setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
+                                setp.index_utg, setp.index_button,
+                                setp.index_active, 1, setp.phase, setp.players,
+                                Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
         new DecisionNode(setp.context->clone(), setp.config, setp.root);
@@ -400,155 +390,143 @@ SUITE(SelectionTests) {
   TEST_FIXTURE(Setup, TestBetAmtRatioSelector) {
     BetamtEVRatioSelector<FContext, FConfig> select(1);
 
-    setp.players =
-        vector<FSeat>({FSeat(FPlayer("mark", bb(10),
-                                     vector<bb>({bb(1), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active),
-                       FSeat(FPlayer("simon", bb(10),
-                                     vector<bb>({bb(1.5), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active)});
+    setp.players = vector<FSeat>(
+        {FSeat(
+             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
+             StatusType::Active),
+         FSeat(FPlayer("simon", bb(10),
+                       vector<bb>({bb(1.5), bb(0), bb(0), bb(0)})),
+               StatusType::Active)});
 
-    setp.context = new FContext(
-        bb(2.5), bb(1.5), setp.index_bot, setp.index_utg,
-        setp.index_button, setp.index_active, 1, setp.phase, setp.players,
-        Action(ActionType::None, bb(0)), setp.cconfig);
+    setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
+                                setp.index_utg, setp.index_button,
+                                setp.index_active, 1, setp.phase, setp.players,
+                                Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
         new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
     // ratio -> 2
-    static_cast<OpponentNode*>(dn->children()[1])->backpropagate(1);
+    static_cast<OpponentNode *>(dn->children()[1])->backpropagate(1);
     // ratio -> 1.1111...
-    static_cast<OpponentNode*>(dn->children()[2])->backpropagate(5);
+    static_cast<OpponentNode *>(dn->children()[2])->backpropagate(5);
 
-    node_t* selected = select.select(dn);
+    node_t *selected = select.select(dn);
 
     CHECK_EQUAL(ActionType::Call, selected->context().last_action.action);
-
   }
 
   TEST_FIXTURE(Setup, TestBetAmtRatioSelectorThreshold) {
     BetamtEVRatioSelector<FContext, FConfig> select(2.5);
 
-    setp.players =
-        vector<FSeat>({FSeat(FPlayer("mark", bb(10),
-                                     vector<bb>({bb(1), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active),
-                       FSeat(FPlayer("simon", bb(10),
-                                     vector<bb>({bb(1.5), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active)});
+    setp.players = vector<FSeat>(
+        {FSeat(
+             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
+             StatusType::Active),
+         FSeat(FPlayer("simon", bb(10),
+                       vector<bb>({bb(1.5), bb(0), bb(0), bb(0)})),
+               StatusType::Active)});
 
-    setp.context = new FContext(
-        bb(2.5), bb(1.5), setp.index_bot, setp.index_utg,
-        setp.index_button, setp.index_active, 1, setp.phase, setp.players,
-        Action(ActionType::None, bb(0)), setp.cconfig);
+    setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
+                                setp.index_utg, setp.index_button,
+                                setp.index_active, 1, setp.phase, setp.players,
+                                Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
         new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
     // ratio -> 2
-    static_cast<OpponentNode*>(dn->children()[1])->backpropagate(1);
+    static_cast<OpponentNode *>(dn->children()[1])->backpropagate(1);
     // ratio -> 1.1111...
-    static_cast<OpponentNode*>(dn->children()[2])->backpropagate(5);
+    static_cast<OpponentNode *>(dn->children()[2])->backpropagate(5);
 
-    node_t* selected = select.select(dn);
+    node_t *selected = select.select(dn);
 
     CHECK_EQUAL(ActionType::Fold, selected->context().last_action.action);
-
   }
 
-  TEST_FIXTURE(Setup, TestFinalMoveSelector){
-    FinalMoveSelector<FContext, FConfig> selector(1,3,2);
+  TEST_FIXTURE(Setup, TestFinalMoveSelector) {
+    FinalMoveSelector<FContext, FConfig> selector(1, 3, 2);
 
-    setp.players =
-        vector<FSeat>({FSeat(FPlayer("mark", bb(10),
-                                     vector<bb>({bb(1), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active),
-                       FSeat(FPlayer("simon", bb(10),
-                                     vector<bb>({bb(1.5), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active)});
+    setp.players = vector<FSeat>(
+        {FSeat(
+             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
+             StatusType::Active),
+         FSeat(FPlayer("simon", bb(10),
+                       vector<bb>({bb(1.5), bb(0), bb(0), bb(0)})),
+               StatusType::Active)});
 
-    setp.context = new FContext(
-        bb(2.5), bb(1.5), setp.index_bot, setp.index_utg,
-        setp.index_button, setp.index_active, 1, setp.phase, setp.players,
-        Action(ActionType::None, bb(0)), setp.cconfig);
+    setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
+                                setp.index_utg, setp.index_button,
+                                setp.index_active, 1, setp.phase, setp.players,
+                                Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
         new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
-    static_cast<OpponentNode*>(dn->children()[1])->backpropagate(1);
-    static_cast<OpponentNode*>(dn->children()[2])->backpropagate(5);
+    dn->children()[1]->backpropagate(1);
+    dn->children()[2]->backpropagate(5);
 
-    node_t* selected = selector.select(dn);
+    node_t *selected = selector.select(dn);
 
     CHECK_EQUAL(ActionType::Raise, selected->context().last_action.action);
   }
 
-  TEST_FIXTURE(Setup, TestFinalMoveSelectorAmtEvRatioToLow){
-    FinalMoveSelector<FContext, FConfig> selector(1.5,3,2);
+  TEST_FIXTURE(Setup, TestFinalMoveSelectorAmtEvRatioToLow) {
+    FinalMoveSelector<FContext, FConfig> selector(1.5, 3, 2);
 
-    setp.players =
-        vector<FSeat>({FSeat(FPlayer("mark", bb(10),
-                                     vector<bb>({bb(1), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active),
-                       FSeat(FPlayer("simon", bb(10),
-                                     vector<bb>({bb(1.5), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active)});
+    setp.players = vector<FSeat>(
+        {FSeat(
+             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
+             StatusType::Active),
+         FSeat(FPlayer("simon", bb(10),
+                       vector<bb>({bb(1.5), bb(0), bb(0), bb(0)})),
+               StatusType::Active)});
 
-    setp.context = new FContext(
-        bb(2.5), bb(1.5), setp.index_bot, setp.index_utg,
-        setp.index_button, setp.index_active, 1, setp.phase, setp.players,
-        Action(ActionType::None, bb(0)), setp.cconfig);
+    setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
+                                setp.index_utg, setp.index_button,
+                                setp.index_active, 1, setp.phase, setp.players,
+                                Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
         new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
-    static_cast<OpponentNode*>(dn->children()[1])->backpropagate(0.5);
-    static_cast<OpponentNode*>(dn->children()[2])->backpropagate(-1);
+    dn->children()[1]->backpropagate(0.5);
+    dn->children()[2]->backpropagate(-1);
 
-    node_t* selected = selector.select(dn);
+    node_t *selected = selector.select(dn);
 
     CHECK_EQUAL(ActionType::Fold, selected->context().last_action.action);
   }
 
-  TEST_FIXTURE(Setup, TestFinalMoveSelectorBigRaise){
-    FinalMoveSelector<FContext, FConfig> selector(1,3,2);
+  TEST_FIXTURE(Setup, TestFinalMoveSelectorBigRaise) {
+    FinalMoveSelector<FContext, FConfig> selector(1, 3, 2);
 
-    setp.players =
-        vector<FSeat>({FSeat(FPlayer("mark", bb(10),
-                                     vector<bb>({bb(1), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active),
-                       FSeat(FPlayer("simon", bb(10),
-                                     vector<bb>({bb(1.5), bb(0),
-                                                     bb(0), bb(0)})),
-                              StatusType::Active)});
+    setp.players = vector<FSeat>(
+        {FSeat(
+             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
+             StatusType::Active),
+         FSeat(FPlayer("simon", bb(10),
+                       vector<bb>({bb(1.5), bb(0), bb(0), bb(0)})),
+               StatusType::Active)});
 
-    setp.context = new FContext(
-        bb(2.5), bb(1.5), setp.index_bot, setp.index_utg,
-        setp.index_button, setp.index_active, 1, setp.phase, setp.players,
-        Action(ActionType::None, bb(0)), setp.cconfig);
+    setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
+                                setp.index_utg, setp.index_button,
+                                setp.index_active, 1, setp.phase, setp.players,
+                                Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
         new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
-    static_cast<OpponentNode*>(dn->children()[1])->backpropagate(0.5);
-    static_cast<OpponentNode*>(dn->children()[2])->backpropagate(15);
+    dn->children()[1]->backpropagate(0.5);
+    dn->children()[2]->backpropagate(15);
 
-    node_t* selected = selector.select(dn);
+    node_t *selected = selector.select(dn);
 
     CHECK_EQUAL(ActionType::Raise, selected->context().last_action.action);
     CHECK_EQUAL(bb(9), selected->context().last_action.amount);

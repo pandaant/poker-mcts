@@ -21,7 +21,7 @@
 #include <final_move_selector.hpp>
 #include <model_selector.hpp>
 
-namespace Freedom5 {
+namespace freedom {
 namespace StrategyMap {
 
 using std::unordered_map;

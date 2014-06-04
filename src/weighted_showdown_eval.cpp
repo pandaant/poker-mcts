@@ -1,6 +1,6 @@
 #include "weighted_showdown_eval.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 using namespace poker;
 
@@ -113,4 +113,4 @@ void WeightedShowdownEval::apply_gauss(vector<double> &vec, double mean,
   for (unsigned i = 0; i < vec.size(); ++i)
     vec[i] += gauss_dist(i);
 }
-};
+}

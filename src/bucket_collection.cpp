@@ -1,7 +1,7 @@
 #include <algorithm>
 #include "bucket_collection.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 BucketCollection::BucketCollection(int _nb_buckets)
     : nb_buckets(_nb_buckets), buckets(nb_buckets) {}

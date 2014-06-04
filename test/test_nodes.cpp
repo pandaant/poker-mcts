@@ -21,7 +21,7 @@
 #include <ecalc/handranks.hpp>
 
 SUITE(FreedomNodeTests) {
-  using namespace Freedom5;
+  using namespace freedom;
   using namespace mcts;
   using namespace poker;
 

@@ -1,10 +1,3 @@
-/*
- * File:   model.h
- * Author: batman
- *
- * Created on August 14, 2013, 3:21 PM
- */
-
 #ifndef MODEL_H
 #define MODEL_H
 
@@ -12,7 +5,7 @@
 #include <tr1/tuple>
 #include "fcontext.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 using std::string;
 using std::tuple;
@@ -37,5 +30,4 @@ public:
 };
 };
 
-#endif /* MODEL_H */
-
+#endif

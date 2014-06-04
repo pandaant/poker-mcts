@@ -12,7 +12,7 @@
 #include <sstream>
 #include <poker/hand.hpp>
 
-namespace Freedom5 {
+namespace freedom {
 
 class BucketHand : public poker::Hand {
 public:

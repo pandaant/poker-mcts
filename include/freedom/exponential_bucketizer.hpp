@@ -10,7 +10,7 @@
 
 #include "bucketizer.hpp"
 
-namespace Freedom5{
+namespace freedom{
 class ExponentialBucketizer {
 public:
   virtual BucketCollection map_hands(int nb_buckets,

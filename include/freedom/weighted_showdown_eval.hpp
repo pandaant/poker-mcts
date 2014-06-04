@@ -14,7 +14,7 @@
 #include "exponential_distribution.hpp"
 #include "weighted_bucket_handlist.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 class WeightedShowdownEval : public ShowdownEval {
     std::map<string, WeightedBucketHandlist* > cache;
 public:

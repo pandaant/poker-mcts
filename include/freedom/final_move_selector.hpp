@@ -11,7 +11,7 @@
 #include <mcts/iselection_strategy.hpp>
 #include <mcts/max_value_selector.hpp>
 
-namespace Freedom5 {
+namespace freedom {
     template<typename Context, typename Config>
 class FinalMoveSelector : public ISelectionStrategy<Context, Config> {
 private:

@@ -11,7 +11,7 @@
 #include <cmath>
 #include <math.h>
 
-namespace Freedom5 {
+namespace freedom {
 
 class GaussianDistribution {
   const double Euler = std::exp(1.0);

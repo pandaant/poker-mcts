@@ -12,7 +12,7 @@
 #include "fconfig.hpp"
 #include "fcontext.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 using mcts::INode;
 using mcts::InnerNode;

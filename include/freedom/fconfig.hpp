@@ -19,7 +19,7 @@
 #include <unordered_map>
 #include "model.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 using rapidjson::Value;
 using ecalc::ECalc;

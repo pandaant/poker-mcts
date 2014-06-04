@@ -12,7 +12,7 @@
 #include <mcts/isimulation_strategy.hpp>
 #include <mcts/running_stats.hpp>
 
-namespace Freedom5 {
+namespace freedom {
 
 using mcts::LeafNode;
 using mcts::RunningStats;

@@ -13,7 +13,7 @@
 #include <ecalc/ecalc.hpp>
 #include "fcontext.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 using ecalc::ECalc;
 
 class ShowdownEval : public mcts::ISimulationStrategy<FContext> {

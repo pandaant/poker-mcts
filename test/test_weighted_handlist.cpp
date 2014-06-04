@@ -4,7 +4,7 @@
 #include <weighted_bucket_handlist.hpp>
 
 SUITE(WeightedBucketHandlistTest) {
-  using namespace Freedom5;
+  using namespace freedom;
   using namespace ecalc;
 
   struct Setup {

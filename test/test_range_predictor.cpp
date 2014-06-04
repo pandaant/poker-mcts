@@ -15,7 +15,7 @@
 #include <poker/action_sequence.hpp>
 
 SUITE(RangePredictorTests) {
-  using namespace Freedom5;
+  using namespace freedom;
   using namespace poker;
 
   ecalc::Handranks handranks("../../../bin/data/handranks.dat");

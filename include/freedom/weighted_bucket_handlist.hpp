@@ -14,7 +14,7 @@
 #include <ecalc/array_handlist.hpp>
 #include "bucket_collection.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 using poker::ActionSequence;
 

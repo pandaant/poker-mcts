@@ -1,18 +1,18 @@
 #include <algorithm>
+#include <iostream>
 #include "showdown_eval.hpp"
 #include <ecalc/ecalc.hpp>
 #include <ecalc/single_handlist.hpp>
 #include <ecalc/array_handlist.hpp>
 #include <ecalc/random_handlist.hpp>
 
-namespace Freedom5 {
+namespace freedom {
 
 using namespace poker;
 
 ShowdownEval::ShowdownEval(ECalc *_ecalc, int _samples)
     : ecalc(_ecalc), samples(_samples) {}
 
-// BAD, errors happenb when someone uses this 
 ShowdownEval::~ShowdownEval() {}
 
 double ShowdownEval::simulate(const FContext &context) {
@@ -41,6 +41,7 @@ double ShowdownEval::simulate(const FContext &context) {
   bb fixedreturn = get_fixed_win(context);
   bb notwinnable = get_not_winnable_pot(context);
   bb winnable_pot = context.pot - fixedreturn - notwinnable; 
+
 
   double ev = bot_result.pwin_tie() * winnable_pot.getAsDouble();
   //double tie_ev = ptie * (winnable_pot.getAsDouble() / res.size());
@@ -93,6 +94,7 @@ bb ShowdownEval::get_not_winnable_pot(const FContext &context) const {
     not_winnable += (deficit > bb(0)) ? deficit : bb(0);
   }
 
+  //std::cout << bot_investment << "\n";
   return not_winnable;
 }
 

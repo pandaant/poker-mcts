@@ -4,7 +4,7 @@
 #include "weighted_showdown_eval.hpp"
 #include "histogramm.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
     FConfig::FConfig(const Value &data, ECalc *_ecalc, bool seed){
         ecalc = _ecalc;

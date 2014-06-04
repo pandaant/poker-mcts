@@ -21,7 +21,7 @@
 SUITE(SimulationTests) {
 
   using namespace poker;
-  using namespace Freedom5;
+  using namespace freedom;
 
   using ecalc::Handlist;
   using ecalc::Handranks;
@@ -163,7 +163,7 @@ SUITE(SimulationTests) {
   }
 
   TEST_FIXTURE(TestStartup, TestSimulateContext) {
-    ShowdownEval *evaluator = new ShowdownEval(calc, 7);
+    ShowdownEval *evaluator = new ShowdownEval(calc, 17);
 
     context->pot = bb(120);
     context->seats[0].player.bankroll = bb(100);
@@ -545,7 +545,7 @@ SUITE(SimulationTests) {
       evaluator->simulate(*con);
       CHECK(true);
     }
-    catch(...){
+    catch(std::exception &e){
       CHECK(false);
     }
 

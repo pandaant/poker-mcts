@@ -2,7 +2,7 @@
 #include <cmath>
 #include <algorithm>
 
-namespace Freedom5{
+namespace freedom{
 BucketCollection
 ExponentialBucketizer::map_hands(int nb_buckets,
                               vector<BucketHand> &_hands) const {

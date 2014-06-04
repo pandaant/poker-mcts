@@ -18,7 +18,7 @@
  die klasse wieder rausnehmen, die bring nur unnötige indirektionen rein
  * kann alles in die fplayer klasse TODO
  */
-namespace Freedom5 {
+namespace freedom {
 
 using rapidjson::Value;
 using rapidjson::Writer;

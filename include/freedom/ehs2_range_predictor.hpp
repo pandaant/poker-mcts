@@ -10,7 +10,7 @@
 
 #include "range_predictor.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 using std::vector;
 using ecalc::ECalc;
 using ecalc::Handlist;

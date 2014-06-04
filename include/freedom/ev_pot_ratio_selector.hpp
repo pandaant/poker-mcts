@@ -12,7 +12,7 @@
 #include <mcts/max_function_selector.hpp>
 #include "fcontext.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 using namespace mcts;
 
 template<typename Context, typename Config>

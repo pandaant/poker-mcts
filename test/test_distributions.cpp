@@ -3,7 +3,7 @@
 #include <exponential_distribution.hpp>
 
 SUITE(TestUtilDistributions) {
-  using namespace Freedom5;
+  using namespace freedom;
 
   TEST(TestGauss){
    GaussianDistribution dist(0,1); 

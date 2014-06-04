@@ -3,7 +3,7 @@
 #include "opponent_node.hpp"
 #include "showdown_node.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 void DecisionNode::expand() {
   vector<FContext> transitions = this->context().transition();

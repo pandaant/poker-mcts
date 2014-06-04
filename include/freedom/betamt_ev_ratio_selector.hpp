@@ -12,7 +12,7 @@
 #include <mcts/iselection_strategy.hpp>
 #include "fcontext.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 using namespace mcts;
 
 template<typename Context, typename Config>

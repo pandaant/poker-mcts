@@ -1,7 +1,7 @@
 #include "histogramm.hpp"
 #include <iostream>
 
-namespace Freedom5 {
+namespace freedom {
 
     Histogramm::Histogramm() {}
 

@@ -1,6 +1,6 @@
 #include "round_histogramm.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 RoundHistogramm::RoundHistogramm(double _nb_fold, double _nb_check,
                                  double _nb_call, double _nb_bet,

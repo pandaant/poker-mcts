@@ -11,7 +11,7 @@
 #include <mcts/iselection_strategy.hpp>
 #include "model.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 using namespace mcts;
 
 // wraps a action and a probability value

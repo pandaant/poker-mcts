@@ -1,23 +1,15 @@
-/*
- * File:   balanced_bucketizer.h
- * Author: batman
- *
- * Created on August 14, 2013, 3:43 PM
- */
-
 #ifndef BALANCED_BUCKETIZER_H
 #define BALANCED_BUCKETIZER_H
 
-#include "bucketizer.hpp"
+#include "ibucketizer.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
-class BalancedBucketizer : public Bucketizer {
+class BalancedBucketizer : public IBucketizer {
 public:
-  virtual BucketCollection map_hands(int nb_buckets,
-                                     vector<BucketHand> &_hands) const;
+  virtual BucketCollection map_hands(unsigned nb_buckets,
+                                     vector<BucketHand> &hands_) const;
 };
-};
+}
 
-#endif /* BALANCED_BUCKETIZER_H */
-
+#endif

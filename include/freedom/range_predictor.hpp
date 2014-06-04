@@ -19,7 +19,7 @@
 #include "bucket_collection.hpp"
 #include "weighted_bucket_handlist.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 using std::vector;
 using ecalc::ECalc;
 using ecalc::Handlist;

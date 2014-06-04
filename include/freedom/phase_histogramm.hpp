@@ -10,7 +10,7 @@
 
 #include "round_histogramm.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 class PhaseHistogramm {
 public:

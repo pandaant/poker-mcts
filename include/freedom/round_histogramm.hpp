@@ -12,7 +12,7 @@
 #include <rapidjson/document.h>
 #include "fcontext.hpp"
 
-namespace Freedom5 {
+namespace freedom {
 
 using rapidjson::Value;
 using std::get;
