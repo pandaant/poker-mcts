@@ -14,7 +14,7 @@
 #include <poker/action.hpp>
 #include <poker/action_sequence.hpp>
 #include <unordered_map>
-#include "model.hpp"
+#include "imodel.hpp"
 #include "bucket_hand.hpp"
 #include "bucket_collection.hpp"
 #include "weighted_bucket_handlist.hpp"
@@ -71,7 +71,7 @@ public:
    * @param thresholds   weak actions amounts for preflop/postflop
    * @param nb_buckets   vector with 4 elements. each one is the number of
    * @param thres. nb h. smallest number of hands range can have
-   * @param zerop_rc     if zero percent for a model action use this when call
+   * @param zerop_rc     if zero percent for a IModel action use this when call
    * or raise percentage
    * buckets to use in that round (0=preflop, 3=river)
    */
@@ -83,18 +83,18 @@ public:
                  bool _use_cache = true);
 
   /**
-   * Generates a range for a given action/model combination
+   * Generates a range for a given action/IModel combination
    * @param actions
-   * @param model
+   * @param IModel
    * @param board
    * @param dead
    * @return
    */
   template <class Bucketizer>
-  vector<Hand> predict_range(ActionSequence actions, Model *model,
+  vector<Hand> predict_range(ActionSequence actions, IModel *IModel,
                              vector<unsigned> board, vector<unsigned> dead) {
 
-    vector<BucketHand> collection = _predict_range<Bucketizer>(actions,model,board,dead);
+    vector<BucketHand> collection = _predict_range<Bucketizer>(actions,IModel,board,dead);
     // ugly conversion
     vector<Hand> range;
     for (auto bhand : collection)
@@ -103,7 +103,7 @@ public:
   }
 
   template <class Bucketizer>
-  vector<BucketHand> _predict_range(ActionSequence actions, Model *model,
+  vector<BucketHand> _predict_range(ActionSequence actions, IModel *IModel,
                              vector<unsigned> board, vector<unsigned> dead) { // TODO use ecalcdefs here?
     vector<Hand> current_range;
 
@@ -148,9 +148,9 @@ public:
         BucketCollection buckets =
             buckbuck.map_hands(nb_buckets[i], collection);
         // calc bounds
-        upper = calculate_upper_bound(action.action, curr_phase, action.betting_round,  model, buckets);
+        upper = calculate_upper_bound(action.action, curr_phase, action.betting_round,  IModel, buckets);
         lower =
-            calculate_lower_bound(action.action, curr_phase, action.betting_round, model, buckets, upper);
+            calculate_lower_bound(action.action, curr_phase, action.betting_round, IModel, buckets, upper);
 
         // new range
         temp_collection = buckets.hand_bucket_range(lower, upper);
@@ -261,9 +261,9 @@ public:
    * ascending order. because of this the upper_bound is always >= lower_bound.
    * contrary to intuition.
    */
-  int calculate_upper_bound(Action action, PhaseType::Enum phase, int betting_round, Model *model,
+  int calculate_upper_bound(Action action, PhaseType::Enum phase, int betting_round, IModel *IModel,
                             BucketCollection &collection);
-  int calculate_lower_bound(Action action, PhaseType::Enum phase, int betting_round, Model *model,
+  int calculate_lower_bound(Action action, PhaseType::Enum phase, int betting_round, IModel *IModel,
                             BucketCollection &collection, int upper_bound);
 
   bool is_weak_call_or_raise(Action action, bool is_postflop);

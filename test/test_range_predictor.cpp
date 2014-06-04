@@ -28,8 +28,8 @@ SUITE(RangePredictorTests) {
   struct Setup {
     ECalc *calc;
     int ecalc_nb_samples;
-    Histogramm histogramm_model;
-    Histogramm histogramm_model_complete;
+    Histogramm *histogramm_model;
+    Histogramm *histogramm_model_complete;
     typedef PhaseHistogramm PH;
     typedef RoundHistogramm RH;
 
@@ -60,7 +60,7 @@ SUITE(RangePredictorTests) {
 
       PH preflop(pfrounds);
       vector<PH> phases({pfrounds, frounds});
-      histogramm_model = Histogramm("test", phases);
+      histogramm_model = new Histogramm(phases);
     }
 
     void setup_model2() {
@@ -157,11 +157,13 @@ SUITE(RangePredictorTests) {
                           RH(100, 0, 900, 0, 0)});
 
       vector<PH> phases({pfrounds, frounds, trounds, rrounds});
-      histogramm_model_complete = Histogramm("default", phases);
+      histogramm_model_complete = new Histogramm(phases);
     }
 
     ~Setup() {
       delete calc;
+      delete histogramm_model;
+      delete histogramm_model_complete;
     }
   };
 
@@ -183,7 +185,7 @@ SUITE(RangePredictorTests) {
     vector<unsigned> board;
     vector<unsigned> dead;
     vector<Hand> range = pr.predict_range<BalancedBucketizer>(
-        actions, &histogramm_model, board, dead);
+        actions, histogramm_model, board, dead);
 
     CHECK_EQUAL(532, range.size());
   }
@@ -205,7 +207,7 @@ SUITE(RangePredictorTests) {
         {Card("2h").card(), Card("4s").card(), Card("5d").card()});
     vector<unsigned> dead;
     vector<Hand> range = pr.predict_range<BalancedBucketizer>(
-        actions, &histogramm_model, board, dead);
+        actions, histogramm_model, board, dead);
 
     CHECK_EQUAL(288, range.size());
   }
@@ -224,7 +226,7 @@ SUITE(RangePredictorTests) {
         {Card("Ah").card(), Card("7d").card(), Card("2d").card()});
     vector<unsigned> dead;
     vector<Hand> range = pr.predict_range<BalancedBucketizer>(
-        actions, &histogramm_model, board, dead);
+        actions, histogramm_model, board, dead);
 
     CHECK_EQUAL(354, range.size());
   }
@@ -243,11 +245,10 @@ SUITE(RangePredictorTests) {
         {Card("Ah").card(), Card("7d").card(), Card("2d").card()});
     vector<unsigned> dead({51, 49});
     vector<Hand> range = pr.predict_range<BalancedBucketizer>(
-        actions, &histogramm_model, board, dead);
+        actions, histogramm_model, board, dead);
 
     for (int i = 0; i < range.size(); ++i) {
-      CHECK(range[i].lowcard().card() != 0 &&
-            range[i].highcard().card() != 0);
+      CHECK(range[i].lowcard().card() != 0 && range[i].highcard().card() != 0);
     }
     CHECK_EQUAL(1128, range.size());
   }
@@ -268,17 +269,17 @@ SUITE(RangePredictorTests) {
     ActionSequence actions;
     actions.append(Action(ActionType::Call, bb(4)), PhaseType::Preflop, 1);
     actions.append(Action(ActionType::Check, bb(0)), PhaseType::Flop, 0);
-    actions.append(Action(ActionType::Raise, bb(6)), PhaseType::Turn,1);
-    actions.append(Action(ActionType::Call, bb(10)), PhaseType::Turn,3);
-    actions.append(Action(ActionType::Raise, bb(12)), PhaseType::River,0);
-    actions.append(Action(ActionType::Raise, bb(12)), PhaseType::River,2);
+    actions.append(Action(ActionType::Raise, bb(6)), PhaseType::Turn, 1);
+    actions.append(Action(ActionType::Call, bb(10)), PhaseType::Turn, 3);
+    actions.append(Action(ActionType::Raise, bb(12)), PhaseType::River, 0);
+    actions.append(Action(ActionType::Raise, bb(12)), PhaseType::River, 2);
 
     // a board and deadcards
     vector<unsigned> board({22, 1, 31, 19, 49});
     vector<unsigned> dead({51, 44});
 
     vector<Hand> range = pr.predict_range<BalancedBucketizer>(
-        actions, &histogramm_model_complete, board, dead);
+        actions, histogramm_model_complete, board, dead);
     CHECK(0 != range.size());
   }
 
@@ -290,9 +291,9 @@ SUITE(RangePredictorTests) {
                       50);
 
     ActionSequence actions;
-    actions.append(Action(ActionType::Call, bb(10, 0)), PhaseType::Preflop,0);
-    actions.append(Action(ActionType::Call, bb(10, 0)), PhaseType::Preflop,0);
-    actions.append(Action(ActionType::Call, bb(10, 0)), PhaseType::Preflop,0);
+    actions.append(Action(ActionType::Call, bb(10, 0)), PhaseType::Preflop, 0);
+    actions.append(Action(ActionType::Call, bb(10, 0)), PhaseType::Preflop, 0);
+    actions.append(Action(ActionType::Call, bb(10, 0)), PhaseType::Preflop, 0);
     // each call reduces the range with factor 0.3.
     // so after 3 calls the range should be 36
 
@@ -300,7 +301,7 @@ SUITE(RangePredictorTests) {
     vector<unsigned> board;
     vector<unsigned> dead;
     vector<Hand> range = pr.predict_range<BalancedBucketizer>(
-        actions, &histogramm_model, board, dead);
+        actions, histogramm_model, board, dead);
     CHECK(range.size() >= 50);
   }
 
@@ -336,7 +337,7 @@ SUITE(RangePredictorTests) {
         {Card("Ah").card(), Card("7d").card(), Card("2d").card()});
     vector<unsigned> dead;
     vector<Hand> range = pr.predict_range<BalancedBucketizer>(
-        actions, &histogramm_model, board, dead);
+        actions, histogramm_model, board, dead);
     /**
      * i calculated 132 hands per bucket ( 1326/10 ) but it seems
      * the bucketizer ceils the float to 133. from that follows that
@@ -358,16 +359,14 @@ SUITE(RangePredictorTests) {
 
     vector<unsigned> board(
         {Card("Ah").card(), Card("7d").card(), Card("2d").card()});
+    CHECK_EQUAL(3, pr.dead_by_phase(board, vector<unsigned>(),
+                                    PhaseType::Preflop).size());
     CHECK_EQUAL(
-        3, pr.dead_by_phase(board, vector<unsigned>(), PhaseType::Preflop).size());
-    CHECK_EQUAL(0,
-                pr.dead_by_phase(board, vector<unsigned>(), PhaseType::Flop).size());
-    CHECK_EQUAL(
-        Card("Ah").card(),
-        pr.dead_by_phase(board, vector<unsigned>(), PhaseType::Preflop).at(0));
-    CHECK_EQUAL(
-        Card("2d").card(),
-        pr.dead_by_phase(board, vector<unsigned>(), PhaseType::Preflop).at(2));
+        0, pr.dead_by_phase(board, vector<unsigned>(), PhaseType::Flop).size());
+    CHECK_EQUAL(Card("Ah").card(), pr.dead_by_phase(board, vector<unsigned>(),
+                                                    PhaseType::Preflop).at(0));
+    CHECK_EQUAL(Card("2d").card(), pr.dead_by_phase(board, vector<unsigned>(),
+                                                    PhaseType::Preflop).at(2));
   }
 
   TEST_FIXTURE(Setup, TestUpdateEquities) {
@@ -411,14 +410,13 @@ SUITE(RangePredictorTests) {
     // there should be 2 hands in every bucket.
 
     int upper_bound =
-        pr.calculate_upper_bound(action, phase, 0, &histogramm_model, buckets);
+        pr.calculate_upper_bound(action, phase, 0, histogramm_model, buckets);
 
     CHECK_EQUAL(0, upper_bound);
 
     // test with action call in bettinground 1
-    upper_bound =
-        pr.calculate_upper_bound(Action(ActionType::Call, bb(10)), phase, 1,
-                                 &histogramm_model, buckets);
+    upper_bound = pr.calculate_upper_bound(Action(ActionType::Call, bb(10)),
+                                           phase, 1, histogramm_model, buckets);
 
     CHECK_EQUAL(99, upper_bound);
   }
@@ -436,10 +434,10 @@ SUITE(RangePredictorTests) {
     // there should be 2 hands in every bucket.
 
     int upper_bound =
-        pr.calculate_upper_bound(action, phase, 0, &histogramm_model, buckets);
+        pr.calculate_upper_bound(action, phase, 0, histogramm_model, buckets);
 
-    int lower_bound = pr.calculate_lower_bound(action, phase, 0, &histogramm_model,
-                                               buckets, upper_bound);
+    int lower_bound = pr.calculate_lower_bound(
+        action, phase, 0, histogramm_model, buckets, upper_bound);
 
     // 265 because 531 hands and 2 per bucket and - 1 because its the index
     CHECK_EQUAL(265, lower_bound);
@@ -447,9 +445,9 @@ SUITE(RangePredictorTests) {
     // call action
     action = Action(ActionType::Call, bb(3));
     upper_bound =
-        pr.calculate_upper_bound(action, phase, 1, &histogramm_model, buckets);
+        pr.calculate_upper_bound(action, phase, 1, histogramm_model, buckets);
 
-    lower_bound = pr.calculate_lower_bound(action, phase, 1, &histogramm_model,
+    lower_bound = pr.calculate_lower_bound(action, phase, 1, histogramm_model,
                                            buckets, upper_bound);
 
     CHECK_EQUAL(99, upper_bound);
@@ -470,10 +468,10 @@ SUITE(RangePredictorTests) {
     // there should be 2 hands in every bucket.
 
     int upper_bound =
-        pr.calculate_upper_bound(action, phase, 0, &histogramm_model, buckets);
+        pr.calculate_upper_bound(action, phase, 0, histogramm_model, buckets);
 
-    int lower_bound = pr.calculate_lower_bound(action, phase, 0, &histogramm_model,
-                                               buckets, upper_bound);
+    int lower_bound = pr.calculate_lower_bound(
+        action, phase, 0, histogramm_model, buckets, upper_bound);
 
     CHECK_EQUAL(0, upper_bound);
     CHECK_EQUAL(662, lower_bound);
@@ -481,9 +479,9 @@ SUITE(RangePredictorTests) {
     // weak call action flop
     action = Action(ActionType::Call, bb(2));
     upper_bound =
-        pr.calculate_upper_bound(action, phase, 1, &histogramm_model, buckets);
+        pr.calculate_upper_bound(action, phase, 1, histogramm_model, buckets);
 
-    lower_bound = pr.calculate_lower_bound(action, phase, 1, &histogramm_model,
+    lower_bound = pr.calculate_lower_bound(action, phase, 1, histogramm_model,
                                            buckets, upper_bound);
 
     CHECK_EQUAL(0, upper_bound);
@@ -614,17 +612,17 @@ SUITE(RangePredictorTests) {
     BalancedBucketizer buckbuck;
     BucketCollection buckets = buckbuck.map_hands(663, hands);
 
-     //balanced bucketizer should fill all buckets equally if we use 663
-    //buckets,
-     //each bucket should contain 2 hands
-    
+    // balanced bucketizer should fill all buckets equally if we use 663
+    // buckets,
+    // each bucket should contain 2 hands
+
     for (auto b : buckets.buckets)
       CHECK_EQUAL(2, b.size());
 
-     //Bug which caused the balanced bucketizer to create a hand to much which
-    //was wrong and
-     //invalid.
-    
+    // Bug which caused the balanced bucketizer to create a hand to much which
+    // was wrong and
+    // invalid.
+
     BalancedBucketizer buckbuck2;
     BucketCollection buckets2 = buckbuck2.map_hands(20, hands);
 
@@ -767,10 +765,10 @@ SUITE(RangePredictorTests) {
     BalancedBucketizer buckbuck;
     BucketCollection buckets = buckbuck.map_hands(663, hands);
 
-     //balanced bucketizer should fill all buckets equally if we use 663
-    //buckets,
-     //each bucket should contain 2 hands
-    
+    // balanced bucketizer should fill all buckets equally if we use 663
+    // buckets,
+    // each bucket should contain 2 hands
+
     for (auto b : buckets.buckets)
       CHECK_EQUAL(2, b.size());
   }
@@ -804,8 +802,8 @@ SUITE(RangePredictorTests) {
     vector<unsigned> deadcards({Card("Ac").card(), Card("Kc").card()});
 
     vector<unsigned> board({Card("Tc").card(), Card("6c").card(),
-                       Card("2d").card(), Card("4d").card(),
-                       Card("7d").card()});
+                            Card("2d").card(), Card("4d").card(),
+                            Card("7d").card()});
 
     CHECK_EQUAL(0, pr.cache.size());
     pr.build_cache(board, deadcards);
@@ -856,10 +854,6 @@ SUITE(RangePredictorTests) {
     int sum = 0;
     for (int i = 0; i < buckets.nb_buckets; ++i) {
       sum += buckets[i].size();
-      // std::cout << "\n" << "hands in bucket " << i << ":\n";
-      // for( int a = 0; a < buckets[i].size(); ++a ){
-      // std::cout << buckets[i][a].to_str() << ((a+2)%10==0 ? "\n" : " ");
-      //}
     }
 
     CHECK_EQUAL(1326, sum);
@@ -873,7 +867,7 @@ SUITE(RangePredictorTests) {
     vector<unsigned> deadcards({Card("Ac").card(), Card("Kd").card()});
 
     vector<unsigned> board({Card("8d").card(), Card("3s").card(),
-                       Card("2s").card(), Card("Jh").card()});
+                            Card("2s").card(), Card("Jh").card()});
 
     // first hand ist strongest
     string strong = pr->get_best_hand(board, deadcards).str169();
@@ -885,16 +879,10 @@ SUITE(RangePredictorTests) {
   TEST_FIXTURE(Setup, TestNutPercentage) {
     EHS2RangePredictor *pr = new EHS2RangePredictor(calc, 1200);
 
-    CHECK_EQUAL(0,pr->calculate_best_hand_percentage(0.1));
-    CHECK_CLOSE(0.21333,pr->calculate_best_hand_percentage(0.6), 0.001);
-    CHECK_CLOSE(0.01333,pr->calculate_best_hand_percentage(0.4), 0.001);
-    CHECK_CLOSE(0.36666,pr->calculate_best_hand_percentage(0.7), 0.001);
-
-    //for(double i = 0.01; i < 1.0; i+= 0.01){
-      //std::cout << "p( " << i
-                //<< " ) = " << pr->calculate_best_hand_percentage(i)
-                //<< std::endl;
-    //}
+    CHECK_EQUAL(0, pr->calculate_best_hand_percentage(0.1));
+    CHECK_CLOSE(0.21333, pr->calculate_best_hand_percentage(0.6), 0.001);
+    CHECK_CLOSE(0.01333, pr->calculate_best_hand_percentage(0.4), 0.001);
+    CHECK_CLOSE(0.36666, pr->calculate_best_hand_percentage(0.7), 0.001);
 
     delete pr;
   }

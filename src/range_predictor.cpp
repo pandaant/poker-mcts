@@ -158,7 +158,7 @@ bool RangePredictor::is_raise_or_bet_or_allin(const Action &action) const {
 }
 
 int RangePredictor::calculate_upper_bound(Action action, PhaseType::Enum phase,
-                                          int betting_round, Model *model,
+                                          int betting_round, IModel *model,
                                           BucketCollection &collection) {
   // top bucket for raises and alike aswell as weak actions
   if (is_raise_or_bet_or_allin(action) ||
@@ -178,7 +178,7 @@ int RangePredictor::calculate_upper_bound(Action action, PhaseType::Enum phase,
 }
 
 int RangePredictor::calculate_lower_bound(Action action, PhaseType::Enum phase,
-                                          int betting_round, Model *model,
+                                          int betting_round, IModel *model,
                                           BucketCollection &collection,
                                           int upper_bound) {
   if (is_weak_call_or_raise(action, !(phase == PhaseType::Preflop)))

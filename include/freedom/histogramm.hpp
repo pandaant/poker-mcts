@@ -1,42 +1,41 @@
-/*
- * File:   histogramm.h
- * Author: batman
- *
- * Created on August 23, 2013, 6:58 PM
- */
-
 #ifndef HISTOGRAMM_H
 #define HISTOGRAMM_H
 
-#include <tr1/tuple>
-#include "model.hpp"
+#include <tuple>
+#include "imodel.hpp"
 #include "phase_histogramm.hpp"
 
 namespace freedom {
-using std::tr1::get;
+using std::get;
 
-class Histogramm : public Model {
+// ----------------------------------------------------------------------
+/// @brief   represents a model that uses underlying history data to
+///          calculate action probabilities
+// ----------------------------------------------------------------------
+class Histogramm : public IModel {
 public:
+  /// stores the underlying data
   vector<PhaseHistogramm> histogramm;
 
-  Histogramm();
-  Histogramm(string _name, vector<PhaseHistogramm> _histogramm);
+  explicit Histogramm(vector<PhaseHistogramm> _histogramm);
   Histogramm(const Histogramm &oh);
   Histogramm(const Value &data);
+  virtual ~Histogramm();
 
   virtual tuple<double, double, double>
-  getFoldCallRaiseProbabilities(const FContext &gs, int index_seat) const;
-  virtual tuple<double, double> getCheckBetProbabilities(const FContext &gs,
-                                                         int index_seat) const;
-  virtual tuple<double, double> getFoldCallProbabilities(const FContext &gs,
-                                                         int index_seat) const;
-  virtual double get_action_probability(Action action,
-                                        PhaseType::Enum phase, int betting_round) const;
-  virtual Model* clone(){
-    return new Histogramm(*this);
-  }
-};
-};
+  getFoldCallRaiseProbabilities(const FContext &gs) const;
+  virtual tuple<double, double>
+  getCheckBetProbabilities(const FContext &gs) const;
 
-#endif /* HISTOGRAMM_H */
+  virtual tuple<double, double>
+  getFoldCallProbabilities(const FContext &gs) const;
 
+  virtual double get_action_probability(const Action &action,
+                                        const PhaseType::Enum &phase,
+                                        const unsigned &betting_round) const;
+
+  virtual IModel *clone() const;
+};
+}
+
+#endif

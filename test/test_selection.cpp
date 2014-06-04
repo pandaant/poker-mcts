@@ -128,7 +128,7 @@ SUITE(SelectionTests) {
   };
 
   struct Setup {
-    Histogramm test_hist;
+    Histogramm* test_hist;
     ComplexSetup setp;
 
     Setup() {
@@ -154,16 +154,12 @@ SUITE(SelectionTests) {
 
       PH preflop(pfrounds);
       vector<PH> phases({pfrounds, frounds});
-      test_hist = Histogramm("default", phases);
+      test_hist = new Histogramm(phases);
     }
-    ~Setup() {}
+    ~Setup() {
+        delete test_hist;
+    }
   };
-
-  // TEST_FIXTURE(Setup, TestGetNormalizedActionProbabilities) {
-  // ModelSelector select(&test_hist);
-
-  ////    select.select(n);
-  //}
 
   TEST_FIXTURE(Setup, TestGetNormalizedActionProbabilitiesXB) {
     ModelSelector<FContext, FConfig> select;
@@ -177,7 +173,7 @@ SUITE(SelectionTests) {
     setp.players[0].model = "default";
     setp.players[1].model = "default";
 
-    setp.config->models["default"] = &test_hist;
+    setp.config->models["default"] = test_hist;
 
     setp.context = new FContext(bb(1.5), bb(0), setp.index_bot, setp.index_utg,
                                 setp.index_button, setp.index_active, 0,
@@ -215,7 +211,7 @@ SUITE(SelectionTests) {
     setp.players[0].model = "default";
     setp.players[1].model = "default";
 
-    setp.config->models["default"] = &test_hist;
+    setp.config->models["default"] = test_hist;
 
     setp.context = new FContext(bb(1.5), bb(1), setp.index_bot, setp.index_utg,
                                 setp.index_button, setp.index_active, 1,
@@ -244,7 +240,7 @@ SUITE(SelectionTests) {
   TEST_FIXTURE(Setup, TestGetNormalizedActionProbabilitiesFCR) {
     ModelSelector<FContext, FConfig> select;
 
-    setp.config->models["default"] = &test_hist;
+    setp.config->models["default"] = test_hist;
 
     setp.players = vector<FPlayer>(
         {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
@@ -281,7 +277,7 @@ SUITE(SelectionTests) {
   TEST_FIXTURE(Setup, TestModelSelectorGetDiscreteIndex) {
     ModelSelector<FContext, FConfig> select;
 
-    setp.config->models["default"] = &test_hist;
+    setp.config->models["default"] = test_hist;
 
     setp.players = vector<FPlayer>(
         {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
@@ -335,7 +331,7 @@ SUITE(SelectionTests) {
   TEST_FIXTURE(Setup, TestModelSelectorSelect) {
     ModelSelector<FContext, FConfig> select;
 
-    setp.config->models["default"] = &test_hist;
+    setp.config->models["default"] = test_hist;
 
     setp.players = vector<FPlayer>(
         {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),

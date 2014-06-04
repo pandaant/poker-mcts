@@ -43,7 +43,7 @@ namespace freedom {
             models[data[i]["name"].GetString()] = new Histogramm(data[i]);
     }
     
-    Model* FConfig::model(string name){
+    IModel* FConfig::model(string name){
         return models[name];
     }
 };

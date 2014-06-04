@@ -46,7 +46,7 @@ SUITE(ModelTests) {
 
     PH preflop(pfrounds);
     vector<PH> phases({ pfrounds, frounds });
-    Histogramm test("test", phases);
+    Histogramm test(phases);
 
     Action action(ActionType::Bet, bb(10));
     double action_prob =
@@ -81,23 +81,23 @@ SUITE(ModelTests) {
 
     PH preflop(pfrounds);
     vector<PH> phases(1, preflop);
-    Histogramm test("test", phases);
+    Histogramm test(phases);
 
     FContext context = FContext(0, 0, 0, 0, vector<FPlayer>(), NULL);
     tuple<double, double, double> result =
-        test.getFoldCallRaiseProbabilities(context, 0);
+        test.getFoldCallRaiseProbabilities(context);
 
     CHECK_CLOSE(0.6, get<0>(result), 0.1);
     CHECK_CLOSE(0.3, get<1>(result), 0.1);
     CHECK_CLOSE(0.1, get<2>(result), 0.1);
 
-    tuple<double, double> result1 = test.getCheckBetProbabilities(context, 0);
+    tuple<double, double> result1 = test.getCheckBetProbabilities(context);
 
     CHECK_CLOSE(0.6, get<0>(result1), 0.1);
     CHECK_CLOSE(0.4, get<1>(result1), 0.1);
 
     context.betting_round = 1;
-    result = test.getFoldCallRaiseProbabilities(context, 0);
+    result = test.getFoldCallRaiseProbabilities(context);
 
     CHECK_CLOSE(0.8, get<0>(result), 0.1);
     CHECK_CLOSE(0.15, get<1>(result), 0.1);
@@ -117,7 +117,7 @@ SUITE(ModelTests) {
 
     // so betting round 2 should everything be 0
     vector<PH> phases({ pfrounds });
-    Histogramm test("test", phases);
+    Histogramm test(phases);
 
     Action action(ActionType::Call, bb(10));
     double action_prob =

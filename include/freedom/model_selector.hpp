@@ -1,15 +1,8 @@
-/*
- * File:   model_selector.h
- * Author: batman
- *
- * Created on November 19, 2013, 12:20 AM
- */
-
 #ifndef MODEL_SELECTOR_H
 #define MODEL_SELECTOR_H
 
 #include <mcts/iselection_strategy.hpp>
-#include "model.hpp"
+#include "imodel.hpp"
 
 namespace freedom {
 using namespace mcts;
@@ -55,7 +48,7 @@ public:
     Config* config = node->config();
     Context context = node->context();
     string model_name = context.active_seat().model;
-    Model *model = config->model(model_name);
+    IModel *model = config->model(model_name);
 
     // stores node probabilities
     vector<PAction<Context,Config>> actions;
@@ -84,5 +77,4 @@ public:
 };
 }
 
-#endif /* MODEL_SELECTOR_H */
-
+#endif

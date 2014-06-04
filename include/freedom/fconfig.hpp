@@ -1,10 +1,3 @@
-/*
- * File:   fconfig.h
- * Author: batman
- *
- * Created on August 6, 2013, 12:37 PM
- */
-
 #ifndef FCONFIG_H
 #define FCONFIG_H
 
@@ -17,7 +10,7 @@
 #include <rapidjson/document.h>
 #include <strategy_map.hpp>
 #include <unordered_map>
-#include "model.hpp"
+#include "imodel.hpp"
 
 namespace freedom {
 
@@ -30,7 +23,7 @@ using namespace poker;
 
 class FConfig {
   typedef std::mt19937 generator_t;
-  typedef std::unordered_map<std::string, Model *> model_map;
+  typedef std::unordered_map<std::string, IModel *> model_map;
   typedef typename ISelectionStrategy<FContext, FConfig>::sstrategy_t
   sstrategy_t;
   typedef typename ISimulationStrategy<FContext>::simstrategy_t simstrategy_t;
@@ -79,7 +72,7 @@ public:
 
   ~FConfig();
 
-  Model *model(string name);
+  IModel *model(string name);
   void readModels(const Value &data);
 
   generator_t *nb_gen() { return nb_gen_; }
@@ -87,5 +80,4 @@ public:
 };
 };
 
-#endif /* CONFIG_H */
-
+#endif
