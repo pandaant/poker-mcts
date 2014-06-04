@@ -7,7 +7,6 @@
 #include <model_selector.hpp>
 #include <fcontext.hpp>
 #include <fplayer.hpp>
-#include <fseat.hpp>
 #include <fcontext_config.hpp>
 #include <ecalc/single_handlist.hpp>
 #include <ecalc/random_handlist.hpp>
@@ -39,7 +38,7 @@ SUITE(SelectionTests) {
   struct ComplexSetup {
     FConfig *config;
     FContextConfig *cconfig;
-    vector<FSeat> players;
+    vector<FPlayer> players;
     FContext *context;
     vector<Action> actions, expected;
     bb pot;
@@ -68,12 +67,12 @@ SUITE(SelectionTests) {
     RootNode<FContext, FConfig, DecisionNode> *root;
 
     ComplexSetup()
-        : players({FSeat(FPlayer("mark", bb(10),
-                                 vector<bb>({bb(5), bb(0), bb(0), bb(0)})),
-                         StatusType::Active),
-                   FSeat(FPlayer("simon", bb(10),
-                                 vector<bb>({bb(5), bb(0), bb(0), bb(0)})),
-                         StatusType::Active)}),
+        : players(
+              {FPlayer("mark", bb(10), vector<bb>({bb(5), bb(0), bb(0), bb(0)}),
+                       StatusType::Active),
+               FPlayer("simon", bb(10),
+                       vector<bb>({bb(5), bb(0), bb(0), bb(0)}),
+                       StatusType::Active)}),
           random(new RandomHandlist()) {
       pot = bb(10);
       highest_bet = bb(0);
@@ -87,9 +86,9 @@ SUITE(SelectionTests) {
       phase = PhaseType::Preflop;
       bot_hl = new SingleHandlist(Hand("AhAs"));
 
-      players[0].player.handlist = bot_hl;
-      players[1].player.handlist = random;
-      // players[2].player.handlist = random;
+      players[0].handlist = bot_hl;
+      players[1].handlist = random;
+      // players[2].handlist = random;
 
       cconfig = new FContextConfig(Hand("AhAs"), 2, board, vector<double>({1}),
                                    vector<double>({3}), rake_factor);
@@ -169,16 +168,14 @@ SUITE(SelectionTests) {
   TEST_FIXTURE(Setup, TestGetNormalizedActionProbabilitiesXB) {
     ModelSelector<FContext, FConfig> select;
 
-    setp.players = vector<FSeat>(
-        {FSeat(
-             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
-             StatusType::Active),
-         FSeat(FPlayer("simon", bb(10),
-                       vector<bb>({bb(0.5), bb(0), bb(0), bb(0)})),
-               StatusType::Active)});
+    setp.players = vector<FPlayer>(
+        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
+                 StatusType::Active),
+         FPlayer("simon", bb(10), vector<bb>({bb(0.5), bb(0), bb(0), bb(0)}),
+                 StatusType::Active)});
 
-    setp.players[0].player.model = "default";
-    setp.players[1].player.model = "default";
+    setp.players[0].model = "default";
+    setp.players[1].model = "default";
 
     setp.config->models["default"] = &test_hist;
 
@@ -209,16 +206,14 @@ SUITE(SelectionTests) {
   TEST_FIXTURE(Setup, TestGetNormalizedActionProbabilitiesXR) {
     ModelSelector<FContext, FConfig> select;
 
-    setp.players = vector<FSeat>(
-        {FSeat(
-             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
-             StatusType::Active),
-         FSeat(FPlayer("simon", bb(10),
-                       vector<bb>({bb(0.5), bb(0), bb(0), bb(0)})),
-               StatusType::Active)});
+    setp.players = vector<FPlayer>(
+        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
+                 StatusType::Active),
+         FPlayer("simon", bb(10), vector<bb>({bb(0.5), bb(0), bb(0), bb(0)}),
+                 StatusType::Active)});
 
-    setp.players[0].player.model = "default";
-    setp.players[1].player.model = "default";
+    setp.players[0].model = "default";
+    setp.players[1].model = "default";
 
     setp.config->models["default"] = &test_hist;
 
@@ -251,16 +246,14 @@ SUITE(SelectionTests) {
 
     setp.config->models["default"] = &test_hist;
 
-    setp.players = vector<FSeat>(
-        {FSeat(
-             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
-             StatusType::Active),
-         FSeat(FPlayer("simon", bb(10),
-                       vector<bb>({bb(1.5), bb(0), bb(0), bb(0)})),
-               StatusType::Active)});
+    setp.players = vector<FPlayer>(
+        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
+                 StatusType::Active),
+         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
+                 StatusType::Active)});
 
-    setp.players[0].player.model = "default";
-    setp.players[1].player.model = "default";
+    setp.players[0].model = "default";
+    setp.players[1].model = "default";
 
     setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
                                 setp.index_utg, setp.index_button,
@@ -290,16 +283,14 @@ SUITE(SelectionTests) {
 
     setp.config->models["default"] = &test_hist;
 
-    setp.players = vector<FSeat>(
-        {FSeat(
-             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
-             StatusType::Active),
-         FSeat(FPlayer("simon", bb(10),
-                       vector<bb>({bb(1.5), bb(0), bb(0), bb(0)})),
-               StatusType::Active)});
+    setp.players = vector<FPlayer>(
+        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
+                 StatusType::Active),
+         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
+                 StatusType::Active)});
 
-    setp.players[0].player.model = "default";
-    setp.players[1].player.model = "default";
+    setp.players[0].model = "default";
+    setp.players[1].model = "default";
 
     setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
                                 setp.index_utg, setp.index_button,
@@ -346,16 +337,14 @@ SUITE(SelectionTests) {
 
     setp.config->models["default"] = &test_hist;
 
-    setp.players = vector<FSeat>(
-        {FSeat(
-             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
-             StatusType::Active),
-         FSeat(FPlayer("simon", bb(10),
-                       vector<bb>({bb(1.5), bb(0), bb(0), bb(0)})),
-               StatusType::Active)});
+    setp.players = vector<FPlayer>(
+        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
+                 StatusType::Active),
+         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
+                 StatusType::Active)});
 
-    setp.players[0].player.model = "default";
-    setp.players[1].player.model = "default";
+    setp.players[0].model = "default";
+    setp.players[1].model = "default";
 
     setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
                                 setp.index_utg, setp.index_button,
@@ -390,13 +379,11 @@ SUITE(SelectionTests) {
   TEST_FIXTURE(Setup, TestBetAmtRatioSelector) {
     BetamtEVRatioSelector<FContext, FConfig> select(1);
 
-    setp.players = vector<FSeat>(
-        {FSeat(
-             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
-             StatusType::Active),
-         FSeat(FPlayer("simon", bb(10),
-                       vector<bb>({bb(1.5), bb(0), bb(0), bb(0)})),
-               StatusType::Active)});
+    setp.players = vector<FPlayer>(
+        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
+                 StatusType::Active),
+         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
+                 StatusType::Active)});
 
     setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
                                 setp.index_utg, setp.index_button,
@@ -420,13 +407,11 @@ SUITE(SelectionTests) {
   TEST_FIXTURE(Setup, TestBetAmtRatioSelectorThreshold) {
     BetamtEVRatioSelector<FContext, FConfig> select(2.5);
 
-    setp.players = vector<FSeat>(
-        {FSeat(
-             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
-             StatusType::Active),
-         FSeat(FPlayer("simon", bb(10),
-                       vector<bb>({bb(1.5), bb(0), bb(0), bb(0)})),
-               StatusType::Active)});
+    setp.players = vector<FPlayer>(
+        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
+                 StatusType::Active),
+         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
+                 StatusType::Active)});
 
     setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
                                 setp.index_utg, setp.index_button,
@@ -450,13 +435,11 @@ SUITE(SelectionTests) {
   TEST_FIXTURE(Setup, TestFinalMoveSelector) {
     FinalMoveSelector<FContext, FConfig> selector(1, 3, 2);
 
-    setp.players = vector<FSeat>(
-        {FSeat(
-             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
-             StatusType::Active),
-         FSeat(FPlayer("simon", bb(10),
-                       vector<bb>({bb(1.5), bb(0), bb(0), bb(0)})),
-               StatusType::Active)});
+    setp.players = vector<FPlayer>(
+        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
+                 StatusType::Active),
+         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
+                 StatusType::Active)});
 
     setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
                                 setp.index_utg, setp.index_button,
@@ -478,13 +461,11 @@ SUITE(SelectionTests) {
   TEST_FIXTURE(Setup, TestFinalMoveSelectorAmtEvRatioToLow) {
     FinalMoveSelector<FContext, FConfig> selector(1.5, 3, 2);
 
-    setp.players = vector<FSeat>(
-        {FSeat(
-             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
-             StatusType::Active),
-         FSeat(FPlayer("simon", bb(10),
-                       vector<bb>({bb(1.5), bb(0), bb(0), bb(0)})),
-               StatusType::Active)});
+    setp.players = vector<FPlayer>(
+        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
+                 StatusType::Active),
+         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
+                 StatusType::Active)});
 
     setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
                                 setp.index_utg, setp.index_button,
@@ -506,13 +487,11 @@ SUITE(SelectionTests) {
   TEST_FIXTURE(Setup, TestFinalMoveSelectorBigRaise) {
     FinalMoveSelector<FContext, FConfig> selector(1, 3, 2);
 
-    setp.players = vector<FSeat>(
-        {FSeat(
-             FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)})),
-             StatusType::Active),
-         FSeat(FPlayer("simon", bb(10),
-                       vector<bb>({bb(1.5), bb(0), bb(0), bb(0)})),
-               StatusType::Active)});
+    setp.players = vector<FPlayer>(
+        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
+                 StatusType::Active),
+         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
+                 StatusType::Active)});
 
     setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
                                 setp.index_utg, setp.index_button,

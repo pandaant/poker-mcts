@@ -1,16 +1,10 @@
-/*
- * File:   fplayer.h
- * Author: batman
- *
- * Created on August 8, 2013, 2:31 PM
- */
-
 #ifndef FPLAYER_H
 #define FPLAYER_H
 
 #include <string>
 #include <vector>
 #include <decimal.h>
+#include <poker/status_type.hpp>
 #include <ecalc/handlist.hpp>
 #include "faction_sequence.hpp"
 #include <rapidjson/document.h>
@@ -36,6 +30,7 @@ public:
   string model;
   ActionSequence action_sequence;
   Handlist *handlist;
+  StatusType::Enum status;
 
   FPlayer(const Value &data);
 
@@ -61,24 +56,52 @@ public:
       : invested(_invested), name(_name), bankroll(_bankroll),
         handlist(_handlist), model("default") {}
 
-  FPlayer(string _name, bb _bankroll, vector<bb> _invested,
+  FPlayer(string _name, bb _bankroll, vector<bb> invested_,
           Handlist *_handlist, string _model)
-      : invested(4, bb(0)), name(_name), bankroll(_bankroll),
+      : invested(invested_), name(_name), bankroll(_bankroll),
         handlist(_handlist), model(_model) {}
+
+  FPlayer(string _name, bb _bankroll, vector<bb> invested_,
+          StatusType::Enum status_)
+      : invested(invested_), name(_name), bankroll(_bankroll),
+        handlist(NULL), model("default"), status(status_) {}
+
+  FPlayer(string _name, bb _bankroll, StatusType::Enum status_)
+      : invested(4,bb(0)), name(_name), bankroll(_bankroll),
+        handlist(NULL), model("default"), status(status_) {}
+
+  FPlayer(string _name, bb _bankroll, vector<bb> invested_,
+          Handlist *_handlist, StatusType::Enum status_)
+      : invested(invested_), name(_name), bankroll(_bankroll),
+        handlist(_handlist), model("default"), status(status_) {}
+
+  FPlayer(string _name, bb _bankroll, vector<bb> invested_,
+          Handlist *_handlist, string _model, StatusType::Enum status_)
+      : invested(invested_), name(_name), bankroll(_bankroll),
+        handlist(_handlist), model(_model), status(status_) {}
 
   FPlayer(const FPlayer &p)
       : bankroll(p.bankroll), name(p.name), invested(p.invested),
         action_sequence(p.action_sequence), handlist(p.handlist),
-        model(p.model) {}
+        model(p.model), status(p.status) {}
 
   FPlayer &operator=(const FPlayer &p);
 
   bool make_investment(bb amount, PhaseType::Enum phase);
   bb total_investment() const;
 
+  bool is_active() const;
+  bool is_inactive() const;
+  bool is_allin() const;
+
+  void set_inactive();
+  void set_active();
+  void set_allin();
+
+  StatusType::Enum load_status(const Value &data);
   void serialize(Writer<FileStream> &writer);
+  static void serialize_fields(Writer<FileStream> &writer);
 };
-};
+}
 
-#endif /* FPLAYER_H */
-
+#endif

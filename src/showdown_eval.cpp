@@ -21,9 +21,9 @@ double ShowdownEval::simulate(const FContext &context) {
   int bot_result_index = -1;
 
   // get active players handlists
-  for (unsigned i = 0; i < context.seats.size(); ++i) {
-    if (!context.seats[i].is_inactive()) {
-      lists.push_back(context.seats[i].player.handlist);
+  for (unsigned i = 0; i < context.player.size(); ++i) {
+    if (!context.player[i].is_inactive()) {
+      lists.push_back(context.player[i].handlist);
       // save relative bot index for retrival
       if (index_bot == (int)i)
         bot_result_index = lists.size() - 1;
@@ -49,7 +49,7 @@ double ShowdownEval::simulate(const FContext &context) {
 
   // subtract our investment to the pot
   bb our_investment =
-      context.bot_seat().player.total_investment() - fixedreturn;
+      context.bot_seat().total_investment() - fixedreturn;
   ev -= our_investment.getAsDouble();
 
   return (1 - context.config->rake_factor) * ev;
@@ -59,11 +59,11 @@ bb ShowdownEval::get_fixed_win(const FContext &context) const {
   bb bot_investment;
   vector<bb> investments;
 
-  for (unsigned i = 0; i < context.seats.size(); ++i) {
+  for (unsigned i = 0; i < context.player.size(); ++i) {
     if ((int)i == context.index_bot)
-      bot_investment = context.seats[i].player.total_investment();
+      bot_investment = context.player[i].total_investment();
     else
-      investments.push_back(context.seats[i].player.total_investment());
+      investments.push_back(context.player[i].total_investment());
   }
 
   // get biggest opponent investment
@@ -80,11 +80,11 @@ bb ShowdownEval::get_not_winnable_pot(const FContext &context) const {
   bb bot_investment;
   vector<bb> investments;
 
-  for (unsigned i = 0; i < context.seats.size(); ++i) {
+  for (unsigned i = 0; i < context.player.size(); ++i) {
     if ((int)i == context.index_bot)
-      bot_investment = context.seats[i].player.total_investment();
+      bot_investment = context.player[i].total_investment();
     else
-      investments.push_back(context.seats[i].player.total_investment());
+      investments.push_back(context.player[i].total_investment());
   }
 
   bb deficit(0);

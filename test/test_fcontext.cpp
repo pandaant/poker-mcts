@@ -1,7 +1,6 @@
 #include <UnitTest++.h>
 #include <fcontext.hpp>
 #include <fplayer.hpp>
-#include <fseat.hpp>
 #include <fcontext_config.hpp>
 #include <ecalc/single_handlist.hpp>
 #include <ecalc/random_handlist.hpp>
@@ -13,24 +12,25 @@ SUITE(FreedomContextTests) {
 
   struct Setup {
     Handlist *bot_hl;
-    vector<FSeat> players;
+    vector<FPlayer> players;
     FContextConfig *cconfig;
     FContext *context;
     vector<Action> actions, expected;
 
     Setup()
-        : players({FSeat(FPlayer("mark", bb(10)), StatusType::Active),
-                   FSeat(FPlayer("simon", bb(10)), StatusType::Active), }),
+        : players({FPlayer("mark", bb(10), StatusType::Active),
+                   FPlayer("simon", bb(10), StatusType::Active)}),
           cconfig(new FContextConfig(Hand("AhAs"), 5, vector<unsigned>(),
                                      vector<double>({0.5, 1}),
                                      vector<double>({2, 3}))),
           context(new FContext(bb(2), bb(0), 0, 0, 0, 0, 0, PhaseType::Preflop,
-                           players, Action(ActionType::None, bb(0)), cconfig)) {
+                               players, Action(ActionType::None, bb(0)),
+                               cconfig)) {
       bot_hl = new ecalc::SingleHandlist(Hand("AhKh"));
     }
 
     ~Setup() {
-        delete context;
+      delete context;
       delete cconfig;
       delete bot_hl;
     }
@@ -38,7 +38,7 @@ SUITE(FreedomContextTests) {
 
   struct ComplexSetup {
     FContextConfig *cconfig;
-    vector<FSeat> players;
+    vector<FPlayer> players;
     FContext *context;
     vector<Action> actions, expected;
     bb pot;
@@ -53,39 +53,36 @@ SUITE(FreedomContextTests) {
     Handlist *bot_hl;
     Handlist *random;
 
-    ComplexSetup(){
-         pot = bb(1.5);
-         highest_bet = bb(1);
-         index_bot = 0;
-         index_utg = 0;
-          index_button = 0;
-          index_active = 0;
-          betting_round = 0;
-          board = vector<unsigned>();
-          phase = PhaseType::Preflop;
-          bot_hl = new ecalc::SingleHandlist(Hand("AhKh"));
-          players = {FSeat(FPlayer("mark", bb(10), vector<bb>(4, bb(0))),
-                         StatusType::Active),
-                   FSeat(FPlayer("simon", bb(10),
-                                 vector<bb>{bb(0.5), bb(0), bb(0), bb(0)}),
-                         StatusType::Active),
-                   FSeat(FPlayer("fish", bb(10),
-                                 vector<bb>{bb(1), bb(0), bb(0), bb(0)}),
-                         StatusType::Active)};
-          random = new ecalc::RandomHandlist();
-          cconfig = new FContextConfig(Hand("AhKh"), 2, board,
-                                     vector<double>({1}), vector<double>({3}));
-          context = new FContext(pot, highest_bet, index_bot, index_utg,
-                               index_button, index_active, betting_round, phase,
-                               players, Action(ActionType::None, bb(0)),
-                               cconfig);
-      players[0].player.handlist = bot_hl;
-      players[1].player.handlist = random;
-      players[2].player.handlist = random;
+    ComplexSetup() {
+      pot = bb(1.5);
+      highest_bet = bb(1);
+      index_bot = 0;
+      index_utg = 0;
+      index_button = 0;
+      index_active = 0;
+      betting_round = 0;
+      board = vector<unsigned>();
+      phase = PhaseType::Preflop;
+      bot_hl = new ecalc::SingleHandlist(Hand("AhKh"));
+      players = {
+          FPlayer("mark", bb(10), vector<bb>(4, bb(0)), StatusType::Active),
+          FPlayer("simon", bb(10), vector<bb>{bb(0.5), bb(0), bb(0), bb(0)},
+                  StatusType::Active),
+          FPlayer("fish", bb(10), vector<bb>{bb(1), bb(0), bb(0), bb(0)},
+                  StatusType::Active)};
+      random = new ecalc::RandomHandlist();
+      cconfig = new FContextConfig(Hand("AhKh"), 2, board, vector<double>({1}),
+                                   vector<double>({3}));
+      context = new FContext(pot, highest_bet, index_bot, index_utg,
+                             index_button, index_active, betting_round, phase,
+                             players, Action(ActionType::None, bb(0)), cconfig);
+      players[0].handlist = bot_hl;
+      players[1].handlist = random;
+      players[2].handlist = random;
     }
 
     ~ComplexSetup() {
-        delete context;
+      delete context;
       delete cconfig;
       delete bot_hl;
       delete random;
@@ -97,12 +94,12 @@ SUITE(FreedomContextTests) {
     CHECK_EQUAL(0, context->nb_player_inactive());
     CHECK_EQUAL(0, context->nb_player_allin());
 
-    context->seats[0].set_inactive();
+    context->player[0].set_inactive();
 
     CHECK_EQUAL(1, context->nb_player_active());
     CHECK_EQUAL(1, context->nb_player_inactive());
 
-    context->seats[1].set_allin();
+    context->player[1].set_allin();
 
     CHECK_EQUAL(0, context->nb_player_active());
     CHECK_EQUAL(1, context->nb_player_inactive());
@@ -121,13 +118,13 @@ SUITE(FreedomContextTests) {
     CHECK_EQUAL(true, context->is_terminal());
     context->phase = PhaseType::Preflop;
 
-    context->seats[0].set_allin();
+    context->player[0].set_allin();
     context->index_active = -1;
     CHECK_EQUAL(true, context->is_terminal());
-    context->seats[0].set_active();
+    context->player[0].set_active();
     context->index_active = 0;
 
-    context->seats[0].set_inactive();
+    context->player[0].set_inactive();
     CHECK_EQUAL(true, context->is_terminal());
   }
 
@@ -158,7 +155,7 @@ SUITE(FreedomContextTests) {
   }
 
   TEST_FIXTURE(Setup, TestAvailableActionsXRR) {
-    CHECK_EQUAL(bb(10), context->seats[0].player.bankroll);
+    CHECK_EQUAL(bb(10), context->player[0].bankroll);
     actions = context->available_actions();
     CHECK_EQUAL(3, actions.size());
     expected = vector<Action>({Action(ActionType::Check, bb(0)),
@@ -185,10 +182,9 @@ SUITE(FreedomContextTests) {
     actions = context->available_actions();
     CHECK_EQUAL(4, actions.size());
 
-    expected = vector<Action>({Action(ActionType::Fold, bb(0)),
-                               Action(ActionType::Call, bb(1)),
-                               Action(ActionType::Raise, bb(2)),
-                               Action(ActionType::Raise, bb(3))});
+    expected = vector<Action>(
+        {Action(ActionType::Fold, bb(0)), Action(ActionType::Call, bb(1)),
+         Action(ActionType::Raise, bb(2)), Action(ActionType::Raise, bb(3))});
 
     for (unsigned i = 0; i < expected.size(); ++i) {
       CHECK(expected[i] == actions[i]);
@@ -211,8 +207,8 @@ SUITE(FreedomContextTests) {
     actions = context->available_actions();
     CHECK_EQUAL(2, actions.size());
 
-    expected = vector<Action>({Action(ActionType::Fold, bb(0)),
-                               Action(ActionType::Call, bb(10)), });
+    expected = vector<Action>(
+        {Action(ActionType::Fold, bb(0)), Action(ActionType::Call, bb(10)), });
 
     for (unsigned i = 0; i < actions.size(); ++i) {
       CHECK(expected[i] == actions[i]);
@@ -221,7 +217,7 @@ SUITE(FreedomContextTests) {
 
   TEST_FIXTURE(Setup, TestEnumAvailableActionsFCR2) {
     context->highest_bet = bb(100);
-    context->seats[0].player.bankroll = bb(110);
+    context->player[0].bankroll = bb(110);
     vector<ActionType::Enum> ex(
         {ActionType::Fold, ActionType::Call, ActionType::Raise});
 
@@ -232,7 +228,7 @@ SUITE(FreedomContextTests) {
 
   TEST_FIXTURE(Setup, TestAvailableActionsFCA) {
     context->highest_bet = bb(100);
-    context->seats[0].player.bankroll = bb(110);
+    context->player[0].bankroll = bb(110);
     actions = context->available_actions();
     CHECK_EQUAL(3, actions.size());
 
@@ -251,8 +247,8 @@ SUITE(FreedomContextTests) {
     actions = context->available_actions();
     CHECK_EQUAL(2, actions.size());
 
-    expected = vector<Action>({Action(ActionType::Fold, bb(0)),
-                               Action(ActionType::Call, bb(10)), });
+    expected = vector<Action>(
+        {Action(ActionType::Fold, bb(0)), Action(ActionType::Call, bb(10)), });
 
     for (unsigned i = 0; i < expected.size(); ++i) {
       CHECK(expected[i] == actions[i]);
@@ -277,7 +273,7 @@ SUITE(FreedomContextTests) {
   TEST_FIXTURE(Setup, TestAvailableActionsOpponentFCA) {
     context->highest_bet = bb(100);
     context->index_active = 1;
-    context->seats[1].player.bankroll = bb(110);
+    context->player[1].bankroll = bb(110);
     actions = context->available_actions();
     CHECK_EQUAL(3, actions.size());
 
@@ -303,7 +299,7 @@ SUITE(FreedomContextTests) {
   }
 
   TEST_FIXTURE(Setup, TestTransitionPhaseNbPlayer) {
-    context->seats[0].set_inactive();
+    context->player[0].set_inactive();
     context->transition_phase();
     CHECK_EQUAL(PhaseType::Showdown, context->phase);
   }
@@ -318,8 +314,8 @@ SUITE(FreedomContextTests) {
   // to check if we handle floatingpoint operations correctly
   TEST_FIXTURE(ComplexSetup, TestFloatingPointOperationsEnumAvailableActions) {
     context->highest_bet = bb(96.0);
-    context->seats[0].player.bankroll = bb(33.000000000000007);
-    context->seats[0].player.invested[0] = bb(63.0);
+    context->player[0].bankroll = bb(33.000000000000007);
+    context->player[0].invested[0] = bb(63.0);
     vector<poker::ActionType::Enum> actions = context->enum_available_actions();
     CHECK_EQUAL(2, actions.size());
     CHECK_EQUAL(poker::ActionType::Fold, actions[0]);
@@ -338,12 +334,12 @@ SUITE(FreedomContextTests) {
 
     CHECK_EQUAL(bb(3), traise_small.pot);
     CHECK_EQUAL(bb(1), traise_small.highest_bet);
-    CHECK_EQUAL(bb(9), traise_small.seats[0].player.bankroll);
+    CHECK_EQUAL(bb(9), traise_small.player[0].bankroll);
     CHECK_EQUAL(1, traise_small.betting_round);
 
     CHECK_EQUAL(bb(4), traise_big.pot);
     CHECK_EQUAL(bb(2), traise_big.highest_bet);
-    CHECK_EQUAL(bb(8), traise_big.seats[0].player.bankroll);
+    CHECK_EQUAL(bb(8), traise_big.player[0].bankroll);
     CHECK_EQUAL(1, traise_big.betting_round);
 
     actions = traise_small.available_actions();
@@ -352,7 +348,7 @@ SUITE(FreedomContextTests) {
     FContext ttraise = traise_small.transition(actions[2]);
 
     // when opponent folds we win
-    CHECK_EQUAL(true, ttfold.seats[1].is_inactive());
+    CHECK_EQUAL(true, ttfold.player[1].is_inactive());
     CHECK_EQUAL(true, ttfold.is_terminal());
     CHECK_EQUAL(PhaseType::Showdown, ttfold.phase);
 
@@ -360,22 +356,20 @@ SUITE(FreedomContextTests) {
     CHECK_EQUAL(bb(0), ttcall.highest_bet);
     CHECK_EQUAL(0, ttcall.betting_round);
     CHECK_EQUAL(PhaseType::Flop, ttcall.phase);
-    CHECK_EQUAL(bb(9), ttcall.seats[1].player.bankroll);
+    CHECK_EQUAL(bb(9), ttcall.player[1].bankroll);
 
     // we raise, and stay in preflop
     CHECK_EQUAL(bb(5), ttraise.pot);
     CHECK_EQUAL(bb(2), ttraise.highest_bet);
     CHECK_EQUAL(2, ttraise.betting_round);
     CHECK_EQUAL(PhaseType::Preflop, ttraise.phase);
-    CHECK_EQUAL(bb(8), ttraise.seats[1].player.bankroll);
+    CHECK_EQUAL(bb(8), ttraise.player[1].bankroll);
   }
 
   TEST_FIXTURE(ComplexSetup, TestTransitionMaxBettingRounds) {
-    FContext bt1 =
-        context->transition(Action(ActionType::Raise, bb(2)));
+    FContext bt1 = context->transition(Action(ActionType::Raise, bb(2)));
     CHECK_EQUAL(1, bt1.betting_round);
-    FContext bt2 =
-        bt1.transition(Action(ActionType::Raise, bb(4)));
+    FContext bt2 = bt1.transition(Action(ActionType::Raise, bb(4)));
     CHECK_EQUAL(2, bt2.betting_round);
 
     CHECK_EQUAL(2, bt2.index_active);
@@ -387,14 +381,11 @@ SUITE(FreedomContextTests) {
 
   TEST_FIXTURE(ComplexSetup, TestComplexSetup) {
     // transition bot - call , simon call, fish check
-    FContext b1 =
-        context->transition(Action(ActionType::Call, bb(1)));
+    FContext b1 = context->transition(Action(ActionType::Call, bb(1)));
     CHECK_EQUAL(1, b1.index_active);
-    FContext b2 =
-        b1.transition(Action(ActionType::Call, bb(0.5)));
+    FContext b2 = b1.transition(Action(ActionType::Call, bb(0.5)));
     CHECK_EQUAL(2, b2.index_active);
-    FContext b3 =
-        b2.transition(Action(ActionType::Check, bb(0)));
+    FContext b3 = b2.transition(Action(ActionType::Check, bb(0)));
 
     CHECK_EQUAL(PhaseType::Flop, b3.phase);
     CHECK_EQUAL(bb(3), b3.pot);
@@ -402,14 +393,11 @@ SUITE(FreedomContextTests) {
     CHECK_EQUAL(1, b3.index_active);
     CHECK_EQUAL(1, b3.index_utg);
 
-    FContext b4 =
-        b3.transition(Action(ActionType::Raise, bb(1.5)));
+    FContext b4 = b3.transition(Action(ActionType::Raise, bb(1.5)));
     CHECK_EQUAL(2, b4.index_active);
-    FContext b5 =
-        b4.transition(Action(ActionType::Fold, bb(0)));
+    FContext b5 = b4.transition(Action(ActionType::Fold, bb(0)));
     CHECK_EQUAL(0, b5.index_active);
-    FContext b6 =
-        b5.transition(Action(ActionType::Call, bb(1.5)));
+    FContext b6 = b5.transition(Action(ActionType::Call, bb(1.5)));
 
     CHECK_EQUAL(PhaseType::Turn, b6.phase);
     CHECK_EQUAL(bb(6), b6.pot);
@@ -420,47 +408,39 @@ SUITE(FreedomContextTests) {
 
   TEST_FIXTURE(ComplexSetup, TestTransitionRaiseBiggerBankroll) {
 
-    FContext b1 =
-        context->transition(Action(ActionType::Raise, bb(20)));
+    FContext b1 = context->transition(Action(ActionType::Raise, bb(20)));
     CHECK_EQUAL(1, b1.index_active);
-    CHECK_EQUAL(bb(0), b1.seats[0].player.bankroll);
-    CHECK_EQUAL(bb(10), b1.seats[0].player.invested[phase]);
+    CHECK_EQUAL(bb(0), b1.player[0].bankroll);
+    CHECK_EQUAL(bb(10), b1.player[0].invested[phase]);
     CHECK_EQUAL(bb(11.5), b1.pot);
     CHECK_EQUAL(bb(10), b1.highest_bet);
-    CHECK_EQUAL(poker::StatusType::Allin, b1.seats[0].status);
+    CHECK_EQUAL(poker::StatusType::Allin, b1.player[0].status);
   }
 
   TEST_FIXTURE(ComplexSetup, TestTransitionCallBiggerBankroll) {
-    context->seats[1].player.bankroll = bb(5);
-    FContext b1 =
-        context->transition(Action(ActionType::Raise, bb(20)));
+    context->player[1].bankroll = bb(5);
+    FContext b1 = context->transition(Action(ActionType::Raise, bb(20)));
     CHECK_EQUAL(1, b1.index_active);
-    FContext b2 =
-        b1.transition(Action(ActionType::Call, bb(10)));
+    FContext b2 = b1.transition(Action(ActionType::Call, bb(10)));
     CHECK_EQUAL(2, b2.index_active);
 
-    CHECK_EQUAL(bb(0), b2.seats[1].player.bankroll);
-    CHECK_EQUAL(bb(5.5), b2.seats[1].player.invested[phase]);
+    CHECK_EQUAL(bb(0), b2.player[1].bankroll);
+    CHECK_EQUAL(bb(5.5), b2.player[1].invested[phase]);
     CHECK_EQUAL(bb(16.5), b2.pot);
     CHECK_EQUAL(bb(10), b2.highest_bet);
-    CHECK_EQUAL(poker::StatusType::Allin, b2.seats[1].status);
+    CHECK_EQUAL(poker::StatusType::Allin, b2.player[1].status);
   }
 
   TEST_FIXTURE(ComplexSetup, TestTransitionFCR1) {
-    players =
-        vector<FSeat>({FSeat(FPlayer("mark", bb(10),
-                                     vector<bb>({bb(1), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active),
-                       FSeat(FPlayer("simon", bb(10),
-                                     vector<bb>({bb(1.5), bb(0),
-                                                     bb(0), bb(0)})),
-                             StatusType::Active)});
+    players = vector<FPlayer>(
+        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
+                 StatusType::Active),
+         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
+                 StatusType::Active)});
 
-    context =
-        new FContext(bb(2.5), bb(1.5), index_bot, index_utg,
-                     index_button, index_active, betting_round, phase, players,
-                     Action(ActionType::None, bb(0)), cconfig);
+    context = new FContext(bb(2.5), bb(1.5), index_bot, index_utg, index_button,
+                           index_active, betting_round, phase, players,
+                           Action(ActionType::None, bb(0)), cconfig);
 
     vector<Action> actions = context->available_actions();
     CHECK_EQUAL(ActionType::Fold, actions[0].action);
@@ -492,38 +472,35 @@ SUITE(FreedomContextTests) {
 
   TEST_FIXTURE(ComplexSetup, TestNextUtgActiveIndexGoesAllin2) {
     players =
-        vector<FSeat>({FSeat(FPlayer("mark", bb(10),
+        vector<FPlayer>({FPlayer("mark", bb(10),
                                      vector<bb>({bb(0), bb(0),
-                                                     bb(0), bb(0)})),
+                                                     bb(0), bb(0)}),
                              StatusType::Active),
-                       FSeat(FPlayer("simon", bb(0),
+                       FPlayer("simon", bb(0),
                                      vector<bb>({bb(10), bb(0),
-                                                     bb(0), bb(0)})),
+                                                     bb(0), bb(0)}),
                              StatusType::Allin)});
 
     context = new FContext(bb(11), bb(10), index_bot, 1, index_button,
                            index_active, betting_round, phase, players,
                            Action(ActionType::None, bb(0)), cconfig);
 
-    FContext c1 =
-        context->transition(poker::Action(ActionType::Call, bb(10)));
+    FContext c1 = context->transition(poker::Action(ActionType::Call, bb(10)));
     CHECK_EQUAL(-1, c1.index_active);
     CHECK_EQUAL(-1, c1.index_utg);
   }
 
-   //BugTest
-   //when a player goes allin the player after him is the new utg.
-   //but when this player then folds, the utg does not get updated,
-   //which results in an endless loop.
+  // BugTest
+  // when a player goes allin the player after him is the new utg.
+  // but when this player then folds, the utg does not get updated,
+  // which results in an endless loop.
   TEST_FIXTURE(ComplexSetup, TestNewUtgWhenUtgPlayerFolds) {
-    FContext c1 =
-        context->transition(poker::Action(ActionType::AllIn, bb(10)));
+    FContext c1 = context->transition(poker::Action(ActionType::AllIn, bb(10)));
 
     CHECK_EQUAL(1, c1.index_utg);
     CHECK_EQUAL(1, c1.index_active);
 
-    FContext c2 =
-        c1.transition(poker::Action(ActionType::Fold, bb(0)));
+    FContext c2 = c1.transition(poker::Action(ActionType::Fold, bb(0)));
 
     CHECK_EQUAL(2, c2.index_utg);
     CHECK_EQUAL(2, c2.index_active);
@@ -534,34 +511,30 @@ SUITE(FreedomContextTests) {
     context->index_utg = 1;
     context->index_active = 1;
 
-    FContext c1 =
-        context->transition(poker::Action(ActionType::AllIn, bb(10)));
+    FContext c1 = context->transition(poker::Action(ActionType::AllIn, bb(10)));
 
     CHECK_EQUAL(2, c1.index_utg);
     CHECK_EQUAL(2, c1.index_active);
 
-    FContext c2 =
-        c1.transition(poker::Action(ActionType::Fold, bb(0)));
+    FContext c2 = c1.transition(poker::Action(ActionType::Fold, bb(0)));
 
     CHECK_EQUAL(0, c2.index_utg);
     CHECK_EQUAL(0, c2.index_active);
     CHECK_EQUAL(false, c2.is_terminal());
   }
 
-   //BugTest
-   //when a player goes allin by calling and is the index_utg
-   //the next_utg remains unchanged which causes bad bad inifinite
-   //calculations in the mcts
+  // BugTest
+  // when a player goes allin by calling and is the index_utg
+  // the next_utg remains unchanged which causes bad bad inifinite
+  // calculations in the mcts
   TEST_FIXTURE(ComplexSetup, TestNewUtgWhenUtgPlayerCallsAllin) {
-    context->seats[1].player.bankroll = bb(9.5);
-    FContext c1 = 
-        context->transition(poker::Action(ActionType::AllIn, bb(10)));
+    context->player[1].bankroll = bb(9.5);
+    FContext c1 = context->transition(poker::Action(ActionType::AllIn, bb(10)));
 
     CHECK_EQUAL(1, c1.index_utg);
     CHECK_EQUAL(1, c1.index_active);
 
-    FContext c2 =
-        c1.transition(poker::Action(ActionType::Call, bb(9.5)));
+    FContext c2 = c1.transition(poker::Action(ActionType::Call, bb(9.5)));
 
     CHECK_EQUAL(2, c2.index_utg);
     CHECK_EQUAL(2, c2.index_active);

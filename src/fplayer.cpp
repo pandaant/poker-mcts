@@ -3,7 +3,7 @@
 
 namespace freedom {
 
-FPlayer::FPlayer(const Value &data) {
+FPlayer::FPlayer(const Value &data):status(load_status(data)) {
   name = data["name"].GetString();
   model = data["model"].GetString();
   bankroll = bb(data["bankroll"].GetDouble());
@@ -24,6 +24,7 @@ FPlayer &FPlayer::operator=(const FPlayer &p) {
   action_sequence = p.action_sequence;
   handlist = p.handlist;
   model = p.model;
+  status = p.status;
   return *this;
 }
 
@@ -42,7 +43,40 @@ bb FPlayer::total_investment() const {
   return sum;
 }
 
+bool FPlayer::is_active() const { return status == StatusType::Active; }
+
+bool FPlayer::is_inactive() const { return status == StatusType::Inactive; }
+
+bool FPlayer::is_allin() const { return status == StatusType::Allin; }
+
+void FPlayer::set_inactive() { status = StatusType::Inactive; }
+
+void FPlayer::set_active() { status = StatusType::Active; }
+
+void FPlayer::set_allin() { status = StatusType::Allin; }
+
+StatusType::Enum FPlayer::load_status(const Value &data) {
+  string stat = data["status"].GetString();
+  if (stat == "active")
+    return StatusType::Active;
+  if (stat == "inactive")
+    return StatusType::Inactive;
+  if (stat == "allin")
+    return StatusType::Allin;
+}
+
+void FPlayer::serialize_fields(Writer<FileStream> &writer) {
+  writer.StartArray();
+  writer.String("status");
+  writer.String("name");
+  writer.String("bankroll");
+  writer.String("invested");
+  writer.String("sequence");
+  writer.EndArray();
+}
+
 void FPlayer::serialize(Writer<FileStream> &writer) {
+  writer.String(StatusType::ToStrShort[status]);
   writer.String(name.c_str());
   writer.Double(bankroll.getAsDouble());
 

@@ -3,7 +3,6 @@
 #include <fcontext_config.hpp>
 #include <fconfig.hpp>
 #include <fplayer.hpp>
-#include <fseat.hpp>
 #include <fcontext_config.hpp>
 #include <ecalc/single_handlist.hpp>
 #include <ecalc/random_handlist.hpp>
@@ -32,7 +31,7 @@ SUITE(FreedomNodeTests) {
   struct ComplexSetup {
     FConfig *config;
     FContextConfig *cconfig;
-    vector<FSeat> players;
+    vector<FPlayer> players;
     FContext *context;
     vector<Action> actions, expected;
     bb pot;
@@ -59,9 +58,9 @@ SUITE(FreedomNodeTests) {
     ISimulationStrategy<FContext> *sim_strat;
 
     ComplexSetup()
-        : players({FSeat(FPlayer("mark", bb(10), vector<bb>({ bb(5), bb(0), bb(0), bb(0) })),
+        : players({FPlayer("mark", bb(10), vector<bb>({ bb(5), bb(0), bb(0), bb(0) }),
                           StatusType::Active),
-                    FSeat(FPlayer("simon", bb(10), vector<bb>({ bb(5), bb(0), bb(0), bb(0) })),StatusType::Active) }),
+                    FPlayer("simon", bb(10), vector<bb>({ bb(5), bb(0), bb(0), bb(0) }),StatusType::Active) }),
           random(new ecalc::RandomHandlist()) {
       pot = bb(10);
       highest_bet = bb(0);
@@ -75,9 +74,9 @@ SUITE(FreedomNodeTests) {
       phase = PhaseType::Preflop;
       bot_hl = new ecalc::SingleHandlist(Hand("AhAs"));
 
-      players[0].player.handlist = bot_hl;
-      players[1].player.handlist = random;
-      // players[2].player.handlist = random;
+      players[0].handlist = bot_hl;
+      players[1].handlist = random;
+      // players[2].handlist = random;
 
       cconfig = new FContextConfig(Hand("AhAs"), 2, board, vector<double>({1}),
                                    vector<double>({3}), rake_factor);
@@ -116,12 +115,12 @@ SUITE(FreedomNodeTests) {
   };
 
    TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandXR) {
-   players = vector<FSeat>(
-  { FSeat(FPlayer("mark", bb(10), vector<bb>({ bb(1), bb(0),
-  bb(0), bb(0) })),
+   players = vector<FPlayer>(
+  { FPlayer("mark", bb(10), vector<bb>({ bb(1), bb(0),
+  bb(0), bb(0) }),
    StatusType::Active),
-   FSeat(FPlayer("simon", bb(10), vector<bb>({ bb(0.5), bb(0),
-   bb(0), bb(0) })),
+   FPlayer("simon", bb(10), vector<bb>({ bb(0.5), bb(0),
+   bb(0), bb(0) }),
    StatusType::Active) });
 
    context = new FContext(bb(1.5), bb(1), index_bot, index_utg,
@@ -150,12 +149,12 @@ SUITE(FreedomNodeTests) {
    //test multiple raise sizes
  
    TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandXRRR) {
-   players = vector<FSeat>(
-  { FSeat(FPlayer("mark", bb(10), vector<bb>({ bb(1), bb(0),
-  bb(0), bb(0) })),
+   players = vector<FPlayer>(
+  { FPlayer("mark", bb(10), vector<bb>({ bb(1), bb(0),
+  bb(0), bb(0) }),
    StatusType::Active),
-   FSeat(FPlayer("simon", bb(10), vector<bb>({ bb(0.5), bb(0),
-   bb(0), bb(0) })),
+   FPlayer("simon", bb(10), vector<bb>({ bb(0.5), bb(0),
+   bb(0), bb(0) }),
    StatusType::Active) });
 
    cconfig = new FContextConfig(Hand("AhAs"), 2, board, vector<double>({ 1 }),
@@ -184,12 +183,12 @@ SUITE(FreedomNodeTests) {
 
    TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandFCR) {
 
-   players = vector<FSeat>(
-  { FSeat(FPlayer("mark", bb(10), vector<bb>({ bb(1), bb(0),
-  bb(0), bb(0) })),
+   players = vector<FPlayer>(
+  { FPlayer("mark", bb(10), vector<bb>({ bb(1), bb(0),
+  bb(0), bb(0) }),
    StatusType::Active),
-   FSeat(FPlayer("simon", bb(10), vector<bb>({ bb(1.5), bb(0),
-   bb(0), bb(0) })),
+   FPlayer("simon", bb(10), vector<bb>({ bb(1.5), bb(0),
+   bb(0), bb(0) }),
    StatusType::Active) });
 
    context = new FContext(bb(2.5), bb(1.5), index_bot, index_utg,
@@ -217,12 +216,12 @@ SUITE(FreedomNodeTests) {
 
    TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandAllIn) {
 
-   players = vector<FSeat>(
-  { FSeat(FPlayer("mark", bb(9), vector<bb>({ bb(1), bb(0),
-  bb(0), bb(0) })),
+   players = vector<FPlayer>(
+  { FPlayer("mark", bb(9), vector<bb>({ bb(1), bb(0),
+  bb(0), bb(0) }),
    StatusType::Active),
-   FSeat(FPlayer("simon", bb(2), vector<bb>({ bb(8), bb(0),
-   bb(0), bb(0) })),
+   FPlayer("simon", bb(2), vector<bb>({ bb(8), bb(0),
+   bb(0), bb(0) }),
    StatusType::Active) });
 
    context = new FContext(bb(9), bb(8), index_bot, index_utg,
@@ -250,12 +249,12 @@ SUITE(FreedomNodeTests) {
 
    TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandToShowdown) {
 
-   players = vector<FSeat>(
-  { FSeat(FPlayer("mark", bb(5), vector<bb>({ bb(5), bb(0),
-  bb(0), bb(0) }), random),
+   players = vector<FPlayer>(
+  { FPlayer("mark", bb(5), vector<bb>({ bb(5), bb(0),
+  bb(0), bb(0) }), random,
    StatusType::Active),
-   FSeat(FPlayer("simon", bb(2), vector<bb>({ bb(5), bb(0),
-   bb(0), bb(3) }), random),
+   FPlayer("simon", bb(2), vector<bb>({ bb(5), bb(0),
+   bb(0), bb(3) }), random,
    StatusType::Active) });
 
    phase = PhaseType::River;
@@ -300,20 +299,20 @@ SUITE(FreedomNodeTests) {
 
    TEST_FIXTURE(ComplexSetup, TestOpponentNodeExpandToShowdown) {
 
-   players = vector<FSeat>(
-  { FSeat(FPlayer("mark", bb(2), vector<bb>({ bb(5), bb(0),
-  bb(0), bb(3) }), random),
+   players = vector<FPlayer>(
+  { FPlayer("mark", bb(2), vector<bb>({ bb(5), bb(0),
+  bb(0), bb(3) }), random,
    StatusType::Active),
-   FSeat(FPlayer("simon", bb(5), vector<bb>({ bb(5), bb(0),
-   bb(0), bb(0) }), random),
+   FPlayer("simon", bb(5), vector<bb>({ bb(5), bb(0),
+   bb(0), bb(0) }), random,
    StatusType::Active) });
 
    phase = PhaseType::River;
    index_utg = 0;
    index_active = 1;
    betting_round = 1;
-   players[0].player.handlist = random;
-   players[1].player.handlist = random;
+   players[0].handlist = random;
+   players[1].handlist = random;
    context = new FContext(bb(13), bb(3), index_bot, index_utg,
    index_button,
    index_active, betting_round, phase, players,
@@ -357,12 +356,12 @@ SUITE(FreedomNodeTests) {
 
    TEST_FIXTURE(ComplexSetup, TestOpponentNodeExpandFCR) {
 
-   players = vector<FSeat>(
-  { FSeat(FPlayer("mark", bb(10), vector<bb>({ bb(1.5), bb(0),
-  bb(0), bb(0) })),
+   players = vector<FPlayer>(
+  { FPlayer("mark", bb(10), vector<bb>({ bb(1.5), bb(0),
+  bb(0), bb(0) }),
    StatusType::Active),
-   FSeat(FPlayer("simon", bb(10), vector<bb>({ bb(1), bb(0),
-   bb(0), bb(0) })),
+   FPlayer("simon", bb(10), vector<bb>({ bb(1), bb(0),
+   bb(0), bb(0) }),
    StatusType::Active) });
 
    index_utg = 1;
@@ -372,11 +371,11 @@ SUITE(FreedomNodeTests) {
    index_active, betting_round, phase, players,
    Action(ActionType::None, bb(0)), cconfig);
 
-   CHECK_EQUAL(bb(1.5), players[0].player.total_investment());
-   CHECK_EQUAL(bb(1.5), players[0].player.invested[PhaseType::Preflop]);
-   CHECK_EQUAL(bb(1.5), context->seats[0].player.total_investment());
+   CHECK_EQUAL(bb(1.5), players[0].total_investment());
+   CHECK_EQUAL(bb(1.5), players[0].invested[PhaseType::Preflop]);
+   CHECK_EQUAL(bb(1.5), context->player[0].total_investment());
    CHECK_EQUAL(bb(1.5),
-   context->seats[0].player.invested[PhaseType::Preflop]);
+   context->player[0].invested[PhaseType::Preflop]);
 
    OpponentNode *dn = new OpponentNode(context->clone(), config, NULL);
    dn->expand();
@@ -393,12 +392,12 @@ SUITE(FreedomNodeTests) {
    CHECK_EQUAL(0, c1.index_active);
    CHECK_EQUAL(1, c1.nb_player_active());
    CHECK_EQUAL(PhaseType::Preflop, c1.phase);
-   CHECK_EQUAL("mark", c1.get_last_active_seat().player.name);
-   CHECK_EQUAL(bb(10), c1.get_last_active_seat().player.bankroll);
+   CHECK_EQUAL("mark", c1.get_last_active_seat().name);
+   CHECK_EQUAL(bb(10), c1.get_last_active_seat().bankroll);
    CHECK_EQUAL(bb(1.5),
-   c1.get_last_active_seat().player.total_investment());
+   c1.get_last_active_seat().total_investment());
    CHECK_EQUAL(bb(1.5),
-   c1.get_last_active_seat().player.invested[PhaseType::Preflop]);
+   c1.get_last_active_seat().invested[PhaseType::Preflop]);
    CHECK_EQUAL(ActionType::Fold, c1.last_action.action);
    CHECK_EQUAL(true, c1.is_terminal());
    CHECK_CLOSE(1, dn->children()[0]->ev(), 0.1);

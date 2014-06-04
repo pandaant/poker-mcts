@@ -4,8 +4,8 @@
 namespace freedom {
 
 BucketCollection
-BalancedBucketizer::map_hands(unsigned nb_buckets,
-                              vector<BucketHand> &hands_) const {
+BalancedBucketizer::map_hands(const unsigned &nb_buckets,
+                              const vector<BucketHand> &hands_) const {
   BucketCollection bcollection(nb_buckets);
 
   double div = hands_.size() < nb_buckets ? hands_.size() : nb_buckets;

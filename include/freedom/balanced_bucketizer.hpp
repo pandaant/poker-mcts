@@ -1,14 +1,26 @@
 #ifndef BALANCED_BUCKETIZER_H
 #define BALANCED_BUCKETIZER_H
 
-#include "ibucketizer.hpp"
+#include "bucket_collection.hpp"
 
 namespace freedom {
 
-class BalancedBucketizer : public IBucketizer {
+class BalancedBucketizer{
 public:
-  virtual BucketCollection map_hands(unsigned nb_buckets,
-                                     vector<BucketHand> &hands_) const;
+  // ----------------------------------------------------------------------
+  /// @brief   maps a number of hands to a number of buckets according
+  ///          to an exponential distribution.
+  ///          Strong hands are in low index buckets, bad hand in big index
+  /// buckets.
+  ///          example: AA is in bucket 0, 72o is in bucket n
+  ///
+  /// @param nb_buckets number of buckets to create
+  /// @param hands_ hands to map
+  ///
+  /// @return mapped hands in a bucketcollection
+  // ----------------------------------------------------------------------
+  BucketCollection map_hands(const unsigned &nb_buckets,
+                                     const vector<BucketHand> &hands_) const;
 };
 }
 

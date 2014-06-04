@@ -16,22 +16,22 @@ double WeightedShowdownEval::simulate(const FContext &context) {
   int bot_result_index = -1;
 
   // get active players handlists
-  for (unsigned i = 0; i < context.seats.size(); ++i) {
-    if (!context.seats[i].is_inactive()) {
+  for (unsigned i = 0; i < context.player.size(); ++i) {
+    if (!context.player[i].is_inactive()) {
       // modify ranges according to actions
       if (index_bot == (int)i) {
-        lists.push_back(context.seats[i].player.handlist);
+        lists.push_back(context.player[i].handlist);
         // save relative bot index for retrival
         bot_result_index = lists.size() - 1;
       } else {
-          string name = context.seats[i].player.name;
-          string sequence = context.seats[i].player.action_sequence.str();
+          string name = context.player[i].name;
+          string sequence = context.player[i].action_sequence.str();
           string key = name + sequence;
           if (!is_cached(key)){
             WeightedBucketHandlist *hl = static_cast<WeightedBucketHandlist *>(
-                context.seats[i].player.handlist);
+                context.player[i].handlist);
             ActionSequence seq =
-                context.seats[i].player.action_sequence.subtract(
+                context.player[i].action_sequence.subtract(
                     hl->range_sequence);
             vector<double> weights = modify_range(hl->weights, seq);
             cache[key] = new WeightedBucketHandlist(*hl, weights);
@@ -59,7 +59,7 @@ double WeightedShowdownEval::simulate(const FContext &context) {
   double ev = bot_result.pwin_tie() * winnable_pot.getAsDouble();
 
   // subtract our investment to the pot
-  bb player_investment = context.bot_seat().player.total_investment();
+  bb player_investment = context.bot_seat().total_investment();
   bb our_investment = player_investment - fixedreturn;
   ev -= our_investment.getAsDouble();
 

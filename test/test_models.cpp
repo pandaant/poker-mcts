@@ -83,7 +83,7 @@ SUITE(ModelTests) {
     vector<PH> phases(1, preflop);
     Histogramm test("test", phases);
 
-    FContext context = FContext(0, 0, 0, 0, vector<FSeat>(), NULL);
+    FContext context = FContext(0, 0, 0, 0, vector<FPlayer>(), NULL);
     tuple<double, double, double> result =
         test.getFoldCallRaiseProbabilities(context, 0);
 

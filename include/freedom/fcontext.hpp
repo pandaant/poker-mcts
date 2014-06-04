@@ -1,10 +1,3 @@
-/*
- * File:   fcontext.h
- * Author: batman
- *
- * Created on August 7, 2013, 11:52 PM
- */
-
 #ifndef FCONTEXT_H
 #define FCONTEXT_H
 
@@ -17,10 +10,10 @@
 #include <poker/action_type.hpp>
 #include "fcontext_config.hpp"
 #include "double_operations.hpp"
-#include "fseat.hpp"
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/filestream.h>
+#include "fplayer.hpp"
 
 namespace freedom {
 
@@ -43,7 +36,7 @@ public:
   int betting_round;
 
   PhaseType::Enum phase;
-  vector<FSeat> seats;
+  vector<FPlayer> player;
 
   Action last_action;
   FContextConfig *config;
@@ -51,10 +44,10 @@ public:
   FContext(const Value &data, FContextConfig *_config);
 
   FContext(int _index_bot, int _index_utg, int _index_button, int _index_active,
-           vector<FSeat> _seats, FContextConfig *_config);
+           vector<FPlayer> _player, FContextConfig *_config);
   FContext(bb _pot, bb _highest_bet, int _index_bot, int _index_utg,
            int _index_button, int _index_active, int _betting_round,
-           PhaseType::Enum _phase, vector<FSeat> _seats, Action _last_action,
+           PhaseType::Enum _phase, vector<FPlayer> _player, Action _last_action,
            FContextConfig *_config);
   FContext(const FContext &fc);
   FContext& operator=(const FContext &fc);
@@ -126,10 +119,10 @@ public:
    */
   bb get_bet_raise_amount(double factor) const;
 
-  FSeat &bot_seat();
-  const FSeat &bot_seat() const;
-  FSeat &active_seat();
-  const FSeat &active_seat() const;
+  FPlayer &bot_seat();
+  const FPlayer &bot_seat() const;
+  FPlayer &active_seat();
+  const FPlayer &active_seat() const;
 
   /**
    * returns the first seat that is still active.
@@ -139,7 +132,7 @@ public:
    * IMPORTANT: this function returns a copy of
    * the seat. be careful when using this. 
    */
-  FSeat get_last_active_seat() const;
+  FPlayer get_last_active_seat() const;
 
   virtual FContext clone() const { return FContext(*this); }
 

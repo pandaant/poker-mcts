@@ -24,10 +24,10 @@ Freedom::~Freedom() {
 
 void Freedom::generate_handranges(FContext &context, FConfig *config) {
   BalancedBucketizer bucketizer;
-  for (int i = 0; i < context.seats.size(); ++i) {
-    FPlayer *player = &context.seats[i].player;
+  for (int i = 0; i < context.player.size(); ++i) {
+    FPlayer *player = &context.player[i];
     vector<unsigned> bothand{ context.config->bot_hand.highcard().card(), context.config->bot_hand.lowcard().card() };
-    if (context.index_bot != i && !context.seats[i].is_inactive()) {
+    if (context.index_bot != i && !context.player[i].is_inactive()) {
       // get hands to map them into buckets for the simulation
       vector<BucketHand> range = pr->_predict_range<ExponentialBucketizer>(
           player->action_sequence, config->models[player->model],

@@ -16,7 +16,7 @@ namespace freedom {
                 // bot last remaining player
                 if (!c.bot_seat().is_inactive() && c.nb_player_not_inactive() == 1) {
                     bb ev = sim_strat->winnable_pot(c);
-                    bb our_investment = c.bot_seat().player.total_investment() -
+                    bb our_investment = c.bot_seat().total_investment() -
                     sim_strat->get_fixed_win(c);
                     ev -= our_investment;
                     // subtract rake

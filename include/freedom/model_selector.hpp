@@ -54,7 +54,7 @@ public:
     vector<node_t *> children = node->children();
     Config* config = node->config();
     Context context = node->context();
-    string model_name = context.active_seat().player.model;
+    string model_name = context.active_seat().model;
     Model *model = config->model(model_name);
 
     // stores node probabilities
