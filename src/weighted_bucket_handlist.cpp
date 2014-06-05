@@ -31,6 +31,7 @@ combination WeightedBucketHandlist::get_hand(ecalc::XOrShiftGenerator &nb_gen,
       --counter;
     }
   }
+  throw std::runtime_error("No Hand assignable");
 }
 
 vector<ecalc::ArrayHandlist> WeightedBucketHandlist::convert_buckets(

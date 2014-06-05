@@ -1,4 +1,4 @@
-#include <vector>
+
 #include <iostream>
 #include <UnitTest++.h>
 #include <histogramm.hpp>
@@ -67,12 +67,10 @@ SUITE(SelectionTests) {
     RootNode<FContext, FConfig, DecisionNode> *root;
 
     ComplexSetup()
-        : players(
-              {FPlayer("mark", bb(10), vector<bb>({bb(5), bb(0), bb(0), bb(0)}),
-                       StatusType::Active),
-               FPlayer("simon", bb(10),
-                       vector<bb>({bb(5), bb(0), bb(0), bb(0)}),
-                       StatusType::Active)}),
+        : players({ FPlayer(bb(10), vector<bb>({ bb(5), bb(0), bb(0), bb(0) }),
+                            StatusType::Active),
+                    FPlayer(bb(10), vector<bb>({ bb(5), bb(0), bb(0), bb(0) }),
+                            StatusType::Active) }),
           random(new RandomHandlist()) {
       pot = bb(10);
       highest_bet = bb(0);
@@ -90,8 +88,9 @@ SUITE(SelectionTests) {
       players[1].handlist = random;
       // players[2].handlist = random;
 
-      cconfig = new FContextConfig(Hand("AhAs"), 2, board, vector<double>({1}),
-                                   vector<double>({3}), rake_factor);
+      cconfig =
+          new FContextConfig(Hand("AhAs"), 2, board, vector<double>({ 1 }),
+                             vector<double>({ 3 }), rake_factor);
       context = new FContext(pot, highest_bet, index_bot, index_utg,
                              index_button, index_active, betting_round, phase,
                              players, Action(ActionType::None, bb(0)), cconfig);
@@ -128,7 +127,7 @@ SUITE(SelectionTests) {
   };
 
   struct Setup {
-    Histogramm* test_hist;
+    Histogramm *test_hist;
     ComplexSetup setp;
 
     Setup() {
@@ -140,7 +139,8 @@ SUITE(SelectionTests) {
 
       // second
       // fold/call/raise 80% / 15% / 5%
-      vector<RH> pfrounds({RH(600, 600, 300, 0, 100), RH(800, 0, 150, 0, 50)});
+      vector<RH> pfrounds(
+          { RH(600, 600, 300, 0, 100), RH(800, 0, 150, 0, 50) });
 
       // flop
       // first
@@ -150,25 +150,23 @@ SUITE(SelectionTests) {
       // second
       // fold/call/raise 60% / 25% / 15%
       vector<RH> frounds(
-          {RH(500, 400, 350, 600, 150), RH(600, 0, 250, 0, 150)});
+          { RH(500, 400, 350, 600, 150), RH(600, 0, 250, 0, 150) });
 
       PH preflop(pfrounds);
-      vector<PH> phases({pfrounds, frounds});
+      vector<PH> phases({ pfrounds, frounds });
       test_hist = new Histogramm(phases);
     }
-    ~Setup() {
-        delete test_hist;
-    }
+    ~Setup() { delete test_hist; }
   };
 
   TEST_FIXTURE(Setup, TestGetNormalizedActionProbabilitiesXB) {
     ModelSelector<FContext, FConfig> select;
 
     setp.players = vector<FPlayer>(
-        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                 StatusType::Active),
-         FPlayer("simon", bb(10), vector<bb>({bb(0.5), bb(0), bb(0), bb(0)}),
-                 StatusType::Active)});
+        { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
+                  StatusType::Active),
+          FPlayer(bb(10), vector<bb>({ bb(0.5), bb(0), bb(0), bb(0) }),
+                  StatusType::Active) });
 
     setp.players[0].model = "default";
     setp.players[1].model = "default";
@@ -184,7 +182,7 @@ SUITE(SelectionTests) {
         new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
-    vector<PAction<FContext, FConfig>> actions =
+    vector<PAction<FContext, FConfig> > actions =
         select.normalized_probabilities(dn);
 
     CHECK_EQUAL(ActionType::Check, actions[0].action.action);
@@ -203,10 +201,10 @@ SUITE(SelectionTests) {
     ModelSelector<FContext, FConfig> select;
 
     setp.players = vector<FPlayer>(
-        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                 StatusType::Active),
-         FPlayer("simon", bb(10), vector<bb>({bb(0.5), bb(0), bb(0), bb(0)}),
-                 StatusType::Active)});
+        { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
+                  StatusType::Active),
+          FPlayer(bb(10), vector<bb>({ bb(0.5), bb(0), bb(0), bb(0) }),
+                  StatusType::Active) });
 
     setp.players[0].model = "default";
     setp.players[1].model = "default";
@@ -222,7 +220,7 @@ SUITE(SelectionTests) {
         new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
 
-    vector<PAction<FContext, FConfig>> actions =
+    vector<PAction<FContext, FConfig> > actions =
         select.normalized_probabilities(dn);
 
     //        for(auto a:actions) std::cout << a.action.to_str() << " " <<
@@ -243,10 +241,10 @@ SUITE(SelectionTests) {
     setp.config->models["default"] = test_hist;
 
     setp.players = vector<FPlayer>(
-        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                 StatusType::Active),
-         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
-                 StatusType::Active)});
+        { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
+                  StatusType::Active),
+          FPlayer(bb(10), vector<bb>({ bb(1.5), bb(0), bb(0), bb(0) }),
+                  StatusType::Active) });
 
     setp.players[0].model = "default";
     setp.players[1].model = "default";
@@ -259,7 +257,7 @@ SUITE(SelectionTests) {
     DecisionNode *dn =
         new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
-    vector<PAction<FContext, FConfig>> actions =
+    vector<PAction<FContext, FConfig> > actions =
         select.normalized_probabilities(dn);
 
     CHECK_EQUAL(ActionType::Fold, actions[0].action.action);
@@ -280,10 +278,10 @@ SUITE(SelectionTests) {
     setp.config->models["default"] = test_hist;
 
     setp.players = vector<FPlayer>(
-        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                 StatusType::Active),
-         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
-                 StatusType::Active)});
+        { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
+                  StatusType::Active),
+          FPlayer(bb(10), vector<bb>({ bb(1.5), bb(0), bb(0), bb(0) }),
+                  StatusType::Active) });
 
     setp.players[0].model = "default";
     setp.players[1].model = "default";
@@ -296,7 +294,7 @@ SUITE(SelectionTests) {
     DecisionNode *dn =
         new DecisionNode(setp.context->clone(), setp.config, setp.root);
     dn->expand();
-    vector<PAction<FContext, FConfig>> actions =
+    vector<PAction<FContext, FConfig> > actions =
         select.normalized_probabilities(dn);
 
     CHECK_EQUAL(ActionType::Fold, actions[0].action.action);
@@ -334,10 +332,10 @@ SUITE(SelectionTests) {
     setp.config->models["default"] = test_hist;
 
     setp.players = vector<FPlayer>(
-        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                 StatusType::Active),
-         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
-                 StatusType::Active)});
+        { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
+                  StatusType::Active),
+          FPlayer(bb(10), vector<bb>({ bb(1.5), bb(0), bb(0), bb(0) }),
+                  StatusType::Active) });
 
     setp.players[0].model = "default";
     setp.players[1].model = "default";
@@ -376,10 +374,10 @@ SUITE(SelectionTests) {
     BetamtEVRatioSelector<FContext, FConfig> select(1);
 
     setp.players = vector<FPlayer>(
-        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                 StatusType::Active),
-         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
-                 StatusType::Active)});
+        { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
+                  StatusType::Active),
+          FPlayer(bb(10), vector<bb>({ bb(1.5), bb(0), bb(0), bb(0) }),
+                  StatusType::Active) });
 
     setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
                                 setp.index_utg, setp.index_button,
@@ -404,10 +402,10 @@ SUITE(SelectionTests) {
     BetamtEVRatioSelector<FContext, FConfig> select(2.5);
 
     setp.players = vector<FPlayer>(
-        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                 StatusType::Active),
-         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
-                 StatusType::Active)});
+        { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
+                  StatusType::Active),
+          FPlayer(bb(10), vector<bb>({ bb(1.5), bb(0), bb(0), bb(0) }),
+                  StatusType::Active) });
 
     setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
                                 setp.index_utg, setp.index_button,
@@ -432,10 +430,10 @@ SUITE(SelectionTests) {
     FinalMoveSelector<FContext, FConfig> selector(1, 3, 2);
 
     setp.players = vector<FPlayer>(
-        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                 StatusType::Active),
-         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
-                 StatusType::Active)});
+        { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
+                  StatusType::Active),
+          FPlayer(bb(10), vector<bb>({ bb(1.5), bb(0), bb(0), bb(0) }),
+                  StatusType::Active) });
 
     setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
                                 setp.index_utg, setp.index_button,
@@ -458,10 +456,10 @@ SUITE(SelectionTests) {
     FinalMoveSelector<FContext, FConfig> selector(1.5, 3, 2);
 
     setp.players = vector<FPlayer>(
-        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                 StatusType::Active),
-         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
-                 StatusType::Active)});
+        { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
+                  StatusType::Active),
+          FPlayer(bb(10), vector<bb>({ bb(1.5), bb(0), bb(0), bb(0) }),
+                  StatusType::Active) });
 
     setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
                                 setp.index_utg, setp.index_button,
@@ -484,10 +482,10 @@ SUITE(SelectionTests) {
     FinalMoveSelector<FContext, FConfig> selector(1, 3, 2);
 
     setp.players = vector<FPlayer>(
-        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                 StatusType::Active),
-         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
-                 StatusType::Active)});
+        { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
+                  StatusType::Active),
+          FPlayer(bb(10), vector<bb>({ bb(1.5), bb(0), bb(0), bb(0) }),
+                  StatusType::Active) });
 
     setp.context = new FContext(bb(2.5), bb(1.5), setp.index_bot,
                                 setp.index_utg, setp.index_button,

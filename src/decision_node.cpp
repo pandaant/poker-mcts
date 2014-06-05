@@ -39,4 +39,4 @@ INode<FContext, FConfig>::node_t *DecisionNode::select_child() {
 }
 
 DecisionNode::~DecisionNode() {}
-};
+}

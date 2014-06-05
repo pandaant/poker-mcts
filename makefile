@@ -23,7 +23,7 @@ ifeq ($(target),debug)
     CXXFLAGS +=-O0 -Weverything -Wno-c++98-compat #-Werror
 else
     target = release
-	CXXFLAGS +=-O3 -Wall
+	CXXFLAGS +=-O3 -Wall -Wno-unused-function 
 endif
 
 # name ob linked lib

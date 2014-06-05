@@ -16,7 +16,7 @@ RangePredictor::RangePredictor(ECalc *_calc, int _nb_samples,
                                Threshold _thresholds, vector<int> _nb_buckets,
                                int _threshold_min_hands, double _zerop_rc,
                                bool _use_cache)
-    : nb_samples(_nb_samples), ecalc(_calc), ecalc2(_calc),
+    : ecalc(_calc), ecalc2(_calc), nb_samples(_nb_samples),
       threshold(_thresholds), nb_buckets(_nb_buckets),
       threshold_min_hands(_threshold_min_hands), zerop_rc(_zerop_rc),
       use_cache(_use_cache) {}
@@ -119,9 +119,9 @@ void RangePredictor::calculate_subset(vector<BucketHand> &hands,
     return;
 
   // initialize single handlist with first hand, for init reasons
-  vector<Handlist *> lists({new ecalc::SingleHandlist(hands[0]),
-                            // all samples against random
-                            new ecalc::RandomHandlist()});
+  vector<Handlist *> lists({ new ecalc::SingleHandlist(hands[0]),
+                             // all samples against random
+                             new ecalc::RandomHandlist() });
 
   for (unsigned i = 0; i < hands.size(); ++i) {
     static_cast<ecalc::SingleHandlist *>(lists[0])->set_hand(hands[i]);
@@ -219,6 +219,9 @@ vector<unsigned> RangePredictor::board_by_phase(vector<unsigned> complete_board,
                                                 PhaseType::Enum phase) {
   vector<unsigned> board;
   switch (phase) {
+  case PhaseType::Preflop:
+  case PhaseType::Showdown:
+    break;
   case PhaseType::Flop:
     if (complete_board.size() < 3)
       throw std::logic_error("Not enough cards for requested Phase");
@@ -255,6 +258,9 @@ vector<unsigned> RangePredictor::dead_by_phase(vector<unsigned> complete_board,
     break;
   case PhaseType::Turn:
     dead.insert(dead.end(), complete_board.begin() + 4, complete_board.end());
+    break;
+  case PhaseType::River:
+  case PhaseType::Showdown:
     break;
   }
   return dead;

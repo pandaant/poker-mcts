@@ -26,7 +26,6 @@ public:
 
 private:
   ECalc *ecalc;
-  Handranks *handranks;
   RangePredictor *range_predictor;
 };
 }

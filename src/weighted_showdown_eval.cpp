@@ -24,9 +24,8 @@ double WeightedShowdownEval::simulate(const FContext &context) {
         // save relative bot index for retrival
         bot_result_index = lists.size() - 1;
       } else {
-          string name = context.player[i].name;
           string sequence = context.player[i].action_sequence.str();
-          string key = name + sequence;
+          string key = std::to_string(i) + sequence;
           if (!is_cached(key)){
             WeightedBucketHandlist *hl = static_cast<WeightedBucketHandlist *>(
                 context.player[i].handlist);
@@ -44,13 +43,6 @@ double WeightedShowdownEval::simulate(const FContext &context) {
   ecalc::result_collection res;
   res = ecalc->evaluate(lists, context.config->board, vector<unsigned>(), samples);
   ecalc::Result bot_result = res[bot_result_index];
-
-  //for(auto r : res){
-        //std::cout << r.pwin() << std::endl;
-  //}
-  double pwin = bot_result.pwin();
-  double ptie = bot_result.ptie();
-  //std::cout << pwin + ptie << std::endl;
 
   bb fixedreturn = get_fixed_win(context);
   bb notwinnable = get_not_winnable_pot(context);

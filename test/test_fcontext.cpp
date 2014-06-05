@@ -18,11 +18,11 @@ SUITE(FreedomContextTests) {
     vector<Action> actions, expected;
 
     Setup()
-        : players({FPlayer("mark", bb(10), StatusType::Active),
-                   FPlayer("simon", bb(10), StatusType::Active)}),
+        : players({ FPlayer(bb(10), StatusType::Active),
+                    FPlayer(bb(10), StatusType::Active) }),
           cconfig(new FContextConfig(Hand("AhAs"), 5, vector<unsigned>(),
-                                     vector<double>({0.5, 1}),
-                                     vector<double>({2, 3}))),
+                                     vector<double>({ 0.5, 1 }),
+                                     vector<double>({ 2, 3 }))),
           context(new FContext(bb(2), bb(0), 0, 0, 0, 0, 0, PhaseType::Preflop,
                                players, Action(ActionType::None, bb(0)),
                                cconfig)) {
@@ -64,15 +64,14 @@ SUITE(FreedomContextTests) {
       board = vector<unsigned>();
       phase = PhaseType::Preflop;
       bot_hl = new ecalc::SingleHandlist(Hand("AhKh"));
-      players = {
-          FPlayer("mark", bb(10), vector<bb>(4, bb(0)), StatusType::Active),
-          FPlayer("simon", bb(10), vector<bb>{bb(0.5), bb(0), bb(0), bb(0)},
-                  StatusType::Active),
-          FPlayer("fish", bb(10), vector<bb>{bb(1), bb(0), bb(0), bb(0)},
-                  StatusType::Active)};
+      players = { FPlayer(bb(10), vector<bb>(4, bb(0)), StatusType::Active),
+                  FPlayer(bb(10), vector<bb>{ bb(0.5), bb(0), bb(0), bb(0) },
+                          StatusType::Active),
+                  FPlayer(bb(10), vector<bb>{ bb(1), bb(0), bb(0), bb(0) },
+                          StatusType::Active) };
       random = new ecalc::RandomHandlist();
-      cconfig = new FContextConfig(Hand("AhKh"), 2, board, vector<double>({1}),
-                                   vector<double>({3}));
+      cconfig = new FContextConfig(
+          Hand("AhKh"), 2, board, vector<double>({ 1 }), vector<double>({ 3 }));
       context = new FContext(pot, highest_bet, index_bot, index_utg,
                              index_button, index_active, betting_round, phase,
                              players, Action(ActionType::None, bb(0)), cconfig);
@@ -147,7 +146,7 @@ SUITE(FreedomContextTests) {
   }
 
   TEST_FIXTURE(Setup, TestEnumAvailableActionsXR) {
-    vector<ActionType::Enum> ex({ActionType::Check, ActionType::Raise});
+    vector<ActionType::Enum> ex({ ActionType::Check, ActionType::Raise });
 
     vector<ActionType::Enum> res = context->enum_available_actions();
     for (unsigned i = 0; i < ex.size(); ++i)
@@ -158,9 +157,9 @@ SUITE(FreedomContextTests) {
     CHECK_EQUAL(bb(10), context->player[0].bankroll);
     actions = context->available_actions();
     CHECK_EQUAL(3, actions.size());
-    expected = vector<Action>({Action(ActionType::Check, bb(0)),
-                               Action(ActionType::Raise, bb(1)),
-                               Action(ActionType::Raise, bb(2))});
+    expected = vector<Action>({ Action(ActionType::Check, bb(0)),
+                                Action(ActionType::Raise, bb(1)),
+                                Action(ActionType::Raise, bb(2)) });
 
     for (unsigned i = 0; i < expected.size(); ++i) {
       CHECK(expected[i] == actions[i]);
@@ -170,7 +169,7 @@ SUITE(FreedomContextTests) {
   TEST_FIXTURE(Setup, TestEnumAvailableActionsFCR) {
     context->highest_bet = 1;
     vector<ActionType::Enum> ex(
-        {ActionType::Fold, ActionType::Call, ActionType::Raise});
+        { ActionType::Fold, ActionType::Call, ActionType::Raise });
 
     vector<ActionType::Enum> res = context->enum_available_actions();
     for (unsigned i = 0; i < ex.size(); ++i)
@@ -183,8 +182,8 @@ SUITE(FreedomContextTests) {
     CHECK_EQUAL(4, actions.size());
 
     expected = vector<Action>(
-        {Action(ActionType::Fold, bb(0)), Action(ActionType::Call, bb(1)),
-         Action(ActionType::Raise, bb(2)), Action(ActionType::Raise, bb(3))});
+        { Action(ActionType::Fold, bb(0)), Action(ActionType::Call, bb(1)),
+          Action(ActionType::Raise, bb(2)), Action(ActionType::Raise, bb(3)) });
 
     for (unsigned i = 0; i < expected.size(); ++i) {
       CHECK(expected[i] == actions[i]);
@@ -195,7 +194,7 @@ SUITE(FreedomContextTests) {
 
   TEST_FIXTURE(Setup, TestEnumAvailableActionsFC) {
     context->highest_bet = bb(100);
-    vector<ActionType::Enum> ex({ActionType::Fold, ActionType::Call});
+    vector<ActionType::Enum> ex({ ActionType::Fold, ActionType::Call });
 
     vector<ActionType::Enum> res = context->enum_available_actions();
     for (unsigned i = 0; i < ex.size(); ++i)
@@ -208,7 +207,7 @@ SUITE(FreedomContextTests) {
     CHECK_EQUAL(2, actions.size());
 
     expected = vector<Action>(
-        {Action(ActionType::Fold, bb(0)), Action(ActionType::Call, bb(10)), });
+        { Action(ActionType::Fold, bb(0)), Action(ActionType::Call, bb(10)), });
 
     for (unsigned i = 0; i < actions.size(); ++i) {
       CHECK(expected[i] == actions[i]);
@@ -219,7 +218,7 @@ SUITE(FreedomContextTests) {
     context->highest_bet = bb(100);
     context->player[0].bankroll = bb(110);
     vector<ActionType::Enum> ex(
-        {ActionType::Fold, ActionType::Call, ActionType::Raise});
+        { ActionType::Fold, ActionType::Call, ActionType::Raise });
 
     vector<ActionType::Enum> res = context->enum_available_actions();
     for (unsigned i = 0; i < ex.size(); ++i)
@@ -232,9 +231,9 @@ SUITE(FreedomContextTests) {
     actions = context->available_actions();
     CHECK_EQUAL(3, actions.size());
 
-    expected = vector<Action>({Action(ActionType::Fold, bb(0)),
-                               Action(ActionType::Call, bb(100)),
-                               Action(ActionType::Raise, bb(110))});
+    expected = vector<Action>({ Action(ActionType::Fold, bb(0)),
+                                Action(ActionType::Call, bb(100)),
+                                Action(ActionType::Raise, bb(110)) });
 
     for (unsigned i = 0; i < expected.size(); ++i) {
       CHECK(expected[i] == actions[i]);
@@ -248,7 +247,7 @@ SUITE(FreedomContextTests) {
     CHECK_EQUAL(2, actions.size());
 
     expected = vector<Action>(
-        {Action(ActionType::Fold, bb(0)), Action(ActionType::Call, bb(10)), });
+        { Action(ActionType::Fold, bb(0)), Action(ActionType::Call, bb(10)), });
 
     for (unsigned i = 0; i < expected.size(); ++i) {
       CHECK(expected[i] == actions[i]);
@@ -261,9 +260,9 @@ SUITE(FreedomContextTests) {
     actions = context->available_actions();
     CHECK_EQUAL(3, actions.size());
 
-    expected = vector<Action>({Action(ActionType::Fold, bb(0)),
-                               Action(ActionType::Call, bb(2)),
-                               Action(ActionType::Raise, bb(4))});
+    expected = vector<Action>({ Action(ActionType::Fold, bb(0)),
+                                Action(ActionType::Call, bb(2)),
+                                Action(ActionType::Raise, bb(4)) });
 
     for (unsigned i = 0; i < expected.size(); ++i) {
       CHECK(expected[i] == actions[i]);
@@ -277,9 +276,9 @@ SUITE(FreedomContextTests) {
     actions = context->available_actions();
     CHECK_EQUAL(3, actions.size());
 
-    expected = vector<Action>({Action(ActionType::Fold, bb(0)),
-                               Action(ActionType::Call, bb(100)),
-                               Action(ActionType::Raise, bb(110))});
+    expected = vector<Action>({ Action(ActionType::Fold, bb(0)),
+                                Action(ActionType::Call, bb(100)),
+                                Action(ActionType::Raise, bb(110)) });
 
     for (unsigned i = 0; i < expected.size(); ++i) {
       CHECK(expected[i] == actions[i]);
@@ -433,10 +432,10 @@ SUITE(FreedomContextTests) {
 
   TEST_FIXTURE(ComplexSetup, TestTransitionFCR1) {
     players = vector<FPlayer>(
-        {FPlayer("mark", bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                 StatusType::Active),
-         FPlayer("simon", bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
-                 StatusType::Active)});
+        { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
+                  StatusType::Active),
+          FPlayer(bb(10), vector<bb>({ bb(1.5), bb(0), bb(0), bb(0) }),
+                  StatusType::Active) });
 
     context = new FContext(bb(2.5), bb(1.5), index_bot, index_utg, index_button,
                            index_active, betting_round, phase, players,
@@ -471,15 +470,11 @@ SUITE(FreedomContextTests) {
   }
 
   TEST_FIXTURE(ComplexSetup, TestNextUtgActiveIndexGoesAllin2) {
-    players =
-        vector<FPlayer>({FPlayer("mark", bb(10),
-                                     vector<bb>({bb(0), bb(0),
-                                                     bb(0), bb(0)}),
-                             StatusType::Active),
-                       FPlayer("simon", bb(0),
-                                     vector<bb>({bb(10), bb(0),
-                                                     bb(0), bb(0)}),
-                             StatusType::Allin)});
+    players = vector<FPlayer>(
+        { FPlayer(bb(10), vector<bb>({ bb(0), bb(0), bb(0), bb(0) }),
+                  StatusType::Active),
+          FPlayer(bb(0), vector<bb>({ bb(10), bb(0), bb(0), bb(0) }),
+                  StatusType::Allin) });
 
     context = new FContext(bb(11), bb(10), index_bot, 1, index_button,
                            index_active, betting_round, phase, players,

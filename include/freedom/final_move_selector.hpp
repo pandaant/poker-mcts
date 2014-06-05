@@ -40,11 +40,7 @@ public:
     vector<node_t *> children = node->children();
     FContext context = node->context();
     MaxValueSelector<Context, Config> max_selector;
-    node_t *max_node = max_selector.select(node);
-
-    //for(auto c : children)
-        //std::cout << c->get_ev() << std::endl;
-    //std::cout << std::endl;
+    //node_t *max_node = max_selector.select(node);
 
     // split in actions with amount > zero and eq zero
     vector<node_t *> wamt, noamt;

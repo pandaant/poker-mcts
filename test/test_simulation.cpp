@@ -52,14 +52,12 @@ SUITE(SimulationTests) {
 
     TestStartup()
         : players(
-              {FPlayer("mark", bb(100),
-                       vector<bb>({bb(0), bb(0), bb(0), bb(0)}),
-                       StatusType::Active),
-               FPlayer("simon", bb(9.5),
-                       vector<bb>({bb(0.5), bb(0), bb(0), bb(0)}),
-                       StatusType::Active),
-               FPlayer("fish", bb(9), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                       StatusType::Active)}),
+              { FPlayer(bb(100), vector<bb>({ bb(0), bb(0), bb(0), bb(0) }),
+                        StatusType::Active),
+                FPlayer(bb(9.5), vector<bb>({ bb(0.5), bb(0), bb(0), bb(0) }),
+                        StatusType::Active),
+                FPlayer(bb(9), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
+                        StatusType::Active) }),
           random(new RandomHandlist()) {
       calc = new ECalc(&handranks, 0);
       // seeded with zero, so results are independent of randomness
@@ -80,8 +78,8 @@ SUITE(SimulationTests) {
       players[1].handlist = random;
       players[2].handlist = random;
 
-      cconfig = new FContextConfig(Hand("AhAs"), 2, board, vector<double>({1}),
-                                   vector<double>({3}));
+      cconfig = new FContextConfig(
+          Hand("AhAs"), 2, board, vector<double>({ 1 }), vector<double>({ 3 }));
       context = new FContext(pot, highest_bet, index_bot, index_utg,
                              index_button, index_active, betting_round, phase,
                              players, Action(ActionType::None, bb(0)), cconfig);
@@ -192,12 +190,12 @@ SUITE(SimulationTests) {
   TEST_FIXTURE(TestStartup, TestSimulateContextAhAs) {
     ShowdownEval *evaluator = new ShowdownEval(calc, 7);
 
-    FPlayer mark("mark", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}),
-                 bot_hl, "default", StatusType::Active);
+    FPlayer mark(bb(10), vector<bb>({ bb(0), bb(0), bb(0), bb(0) }), bot_hl,
+                 "default", StatusType::Active);
 
-    vector<FPlayer> seats({mark, players[1]});
+    vector<FPlayer> seats({ mark, players[1] });
     FContextConfig *ccon = new FContextConfig(
-        Hand("AhAs"), 2, board, vector<double>({1}), vector<double>({3}));
+        Hand("AhAs"), 2, board, vector<double>({ 1 }), vector<double>({ 3 }));
     FContext *con = new FContext(
         pot, highest_bet, index_bot, index_utg, index_button, index_active,
         betting_round, phase, seats, Action(ActionType::None, bb(0)), ccon);
@@ -220,12 +218,12 @@ SUITE(SimulationTests) {
   TEST_FIXTURE(TestStartup, TestSimulateContextAhAsWithRake) {
     ShowdownEval *evaluator = new ShowdownEval(calc, 7);
 
-    FPlayer mark("mark", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}),
-                 bot_hl, "default", StatusType::Active);
+    FPlayer mark(bb(10), vector<bb>({ bb(0), bb(0), bb(0), bb(0) }), bot_hl,
+                 "default", StatusType::Active);
 
-    vector<FPlayer> seats({mark, players[1]});
+    vector<FPlayer> seats({ mark, players[1] });
     FContextConfig *ccon = new FContextConfig(
-        Hand("AhAs"), 2, board, vector<double>({1}), vector<double>({3}),
+        Hand("AhAs"), 2, board, vector<double>({ 1 }), vector<double>({ 3 }),
         0.5); // rake of 0.5 for this test, normally much lower
     FContext *con = new FContext(
         pot, highest_bet, index_bot, index_utg, index_button, index_active,
@@ -249,13 +247,13 @@ SUITE(SimulationTests) {
   TEST_FIXTURE(TestStartup, TestSimulateContext7h2c) {
     ShowdownEval *evaluator = new ShowdownEval(calc, 7);
     Handlist *single = new SingleHandlist(Hand("7h2c"));
-    FPlayer mark("mark", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}),
-                 bot_hl, "default", StatusType::Active);
+    FPlayer mark(bb(10), vector<bb>({ bb(0), bb(0), bb(0), bb(0) }), bot_hl,
+                 "default", StatusType::Active);
 
     mark.handlist = single;
-    vector<FPlayer> seats({mark, players[1]});
+    vector<FPlayer> seats({ mark, players[1] });
     FContextConfig *ccon = new FContextConfig(
-        Hand("AhAs"), 2, board, vector<double>({1}), vector<double>({3}));
+        Hand("AhAs"), 2, board, vector<double>({ 1 }), vector<double>({ 3 }));
     FContext *con = new FContext(
         pot, highest_bet, index_bot, index_utg, index_button, index_active,
         betting_round, phase, seats, Action(ActionType::None, bb(0)), ccon);
@@ -280,12 +278,12 @@ SUITE(SimulationTests) {
   TEST_FIXTURE(TestStartup, TestSimulateContextNotWinnable) {
     ShowdownEval *evaluator = new ShowdownEval(calc, 7);
     Handlist *single = new SingleHandlist(Hand("AhAs"));
-    FPlayer mark("mark", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}),
-                 bot_hl, "default", StatusType::Active);
+    FPlayer mark(bb(10), vector<bb>({ bb(0), bb(0), bb(0), bb(0) }), bot_hl,
+                 "default", StatusType::Active);
 
-    vector<FPlayer> seats({mark, players[1]});
+    vector<FPlayer> seats({ mark, players[1] });
     FContextConfig *ccon = new FContextConfig(
-        Hand("AhAs"), 2, board, vector<double>({1}), vector<double>({3}));
+        Hand("AhAs"), 2, board, vector<double>({ 1 }), vector<double>({ 3 }));
     FContext *con = new FContext(
         pot, highest_bet, index_bot, index_utg, index_button, index_active,
         betting_round, phase, seats, Action(ActionType::None, bb(0)), ccon);
@@ -312,13 +310,13 @@ SUITE(SimulationTests) {
     ShowdownEval *evaluator = new ShowdownEval(calc, 7);
     Handlist *single = new SingleHandlist(Hand("AhAs"));
     vector<unsigned> bboard(
-        {Card("Ac").card(), Card("Ad").card(), Card("7c").card()});
-    FPlayer mark("mark", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}),
-                 bot_hl, "default", StatusType::Active);
+        { Card("Ac").card(), Card("Ad").card(), Card("7c").card() });
+    FPlayer mark(bb(10), vector<bb>({ bb(0), bb(0), bb(0), bb(0) }), bot_hl,
+                 "default", StatusType::Active);
 
-    vector<FPlayer> seats({mark, players[1]});
+    vector<FPlayer> seats({ mark, players[1] });
     FContextConfig *ccon = new FContextConfig(
-        Hand("AhAs"), 2, bboard, vector<double>({1}), vector<double>({3}));
+        Hand("AhAs"), 2, bboard, vector<double>({ 1 }), vector<double>({ 3 }));
     FContext *con = new FContext(
         pot, highest_bet, index_bot, index_utg, index_button, index_active,
         betting_round, phase, seats, Action(ActionType::None, bb(0)), ccon);
@@ -343,7 +341,7 @@ SUITE(SimulationTests) {
 
   TEST_FIXTURE(TestStartup, TestApplyExpDist) {
     WeightedShowdownEval *evaluator = new WeightedShowdownEval(calc, 700);
-    vector<double> weights({0, 0, 0, 0, 0, 0});
+    vector<double> weights({ 0, 0, 0, 0, 0, 0 });
     evaluator->apply_exp(weights);
 
     // for( int i = 0; i < weights.size(); ++i)
@@ -354,7 +352,7 @@ SUITE(SimulationTests) {
 
   TEST_FIXTURE(TestStartup, TestApplyGaussDist) {
     WeightedShowdownEval *evaluator = new WeightedShowdownEval(calc, 700);
-    vector<double> weights({0, 0, 0, 0, 0, 0});
+    vector<double> weights({ 0, 0, 0, 0, 0, 0 });
     evaluator->apply_gauss(weights);
 
     // for( int i = 0; i < weights.size(); ++i)
@@ -433,18 +431,18 @@ SUITE(SimulationTests) {
     // seq2.append(Action(ActionType::Call),PhaseType::Flop);
 
     WeightedBucketHandlist *handlist =
-        new WeightedBucketHandlist(buckets, vector<double>({1, 1, 1}), seq2);
+        new WeightedBucketHandlist(buckets, vector<double>({ 1, 1, 1 }), seq2);
 
     Handlist *single = new SingleHandlist(Hand("7h7d"));
-    vector<unsigned> bboard({Card("Kc").card()});
-    FPlayer mark("mark", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}),
-                 single, "default", StatusType::Active);
-    FPlayer p1("p1", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}), handlist,
+    vector<unsigned> bboard({ Card("Kc").card() });
+    FPlayer mark(bb(10), vector<bb>({ bb(0), bb(0), bb(0), bb(0) }), single,
+                 "default", StatusType::Active);
+    FPlayer p1(bb(10), vector<bb>({ bb(0), bb(0), bb(0), bb(0) }), handlist,
                "default", StatusType::Active);
 
-    vector<FPlayer> seats({mark, p1});
+    vector<FPlayer> seats({ mark, p1 });
     FContextConfig *ccon = new FContextConfig(
-        Hand("7h2d"), 2, bboard, vector<double>({1}), vector<double>({3}));
+        Hand("7h2d"), 2, bboard, vector<double>({ 1 }), vector<double>({ 3 }));
     FContext *con = new FContext(
         pot, highest_bet, index_bot, index_utg, index_button, index_active,
         betting_round, phase, seats, Action(ActionType::None, bb(0)), ccon);
@@ -491,18 +489,18 @@ SUITE(SimulationTests) {
     // seq2.append(Action(ActionType::Call),PhaseType::Flop);
 
     WeightedBucketHandlist *handlist =
-        new WeightedBucketHandlist(buckets, vector<double>({1, 1, 1}), seq2);
+        new WeightedBucketHandlist(buckets, vector<double>({ 1, 1, 1 }), seq2);
 
     Handlist *single = new SingleHandlist(Hand("6h7d"));
-    vector<unsigned> bboard({Card("Kc").card()});
-    FPlayer mark("mark", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}),
-                 single, "default", StatusType::Active);
-    FPlayer p1("p1", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}), handlist,
+    vector<unsigned> bboard({ Card("Kc").card() });
+    FPlayer mark(bb(10), vector<bb>({ bb(0), bb(0), bb(0), bb(0) }), single,
+                 "default", StatusType::Active);
+    FPlayer p1(bb(10), vector<bb>({ bb(0), bb(0), bb(0), bb(0) }), handlist,
                "default", StatusType::Active);
 
-    vector<FPlayer> seats({mark, p1});
+    vector<FPlayer> seats({ mark, p1 });
     FContextConfig *ccon = new FContextConfig(
-        Hand("7h2d"), 2, bboard, vector<double>({1}), vector<double>({3}));
+        Hand("7h2d"), 2, bboard, vector<double>({ 1 }), vector<double>({ 3 }));
     FContext *con = new FContext(
         pot, highest_bet, index_bot, index_utg, index_button, index_active,
         betting_round, phase, seats, Action(ActionType::None, bb(0)), ccon);

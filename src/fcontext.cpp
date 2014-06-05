@@ -6,7 +6,7 @@
 namespace freedom {
 
 FContext::FContext(const Value &data, FContextConfig *_config)
-    : config(_config), last_action(Action(ActionType::None, bb(0))) {
+    : last_action(Action(ActionType::None, bb(0))), config(_config) {
   pot = data["pot"].GetDouble();
   highest_bet = data["highest_bet"].GetDouble();
   index_bot = data["index_bot"].GetInt();
@@ -74,7 +74,7 @@ PhaseType::Enum FContext::load_phase(const Value &data) {
     return PhaseType::Turn;
   if (str_phase == "river")
     return PhaseType::River;
-  // TODO throw
+  throw std::runtime_error("phase not found. loading failed.");
 }
 
 void FContext::load_players(const Value &data) {
@@ -117,6 +117,7 @@ FContext FContext::transition(Action action) const {
       ncontext.active_seat().set_allin();
 
     break;
+  case ActionType::Bet:
   case ActionType::Raise:
   case ActionType::AllIn:
     raise = action.amount;
@@ -133,8 +134,7 @@ FContext FContext::transition(Action action) const {
       ncontext.active_seat().invested[phase] += bankroll;
 
       ncontext.highest_bet =
-          (ncontext.highest_bet <
-           ncontext.active_seat().invested[phase])
+          (ncontext.highest_bet < ncontext.active_seat().invested[phase])
               ? ncontext.active_seat().invested[phase]
               : ncontext.highest_bet;
 
@@ -147,11 +147,14 @@ FContext FContext::transition(Action action) const {
     ncontext.index_utg = index_active;
     ++ncontext.betting_round;
     break;
+  case ActionType::None:
+  default:
+    break;
   }
 
   // track players action sequence
-  ncontext.active_seat().action_sequence.append(action,
-                                                        ncontext.phase,betting_round);
+  ncontext.active_seat().action_sequence.append(action, ncontext.phase,
+                                                betting_round);
 
   if (ncontext.is_last_to_act()) {
     ncontext.transition_phase();
@@ -233,19 +236,19 @@ vector<Action> FContext::available_actions() const {
     case ActionType::Call:
       actions.push_back(Action(paction, to_call));
       break;
+    case ActionType::Bet:
+    case ActionType::AllIn:
     case ActionType::Raise:
       if (index_active == index_bot) {
         sizes = has_bet() ? config->raise_sizes : config->bet_sizes;
         for (unsigned i = 0; i < sizes.size(); ++i) {
           bb raise_amount = get_bet_raise_amount(sizes[i]);
-          bb real_raise =
-              raise_amount - player[index_active].invested[phase];
+          bb real_raise = raise_amount - player[index_active].invested[phase];
           // allin used here
           if (real_raise >= player[index_active].bankroll) {
-            actions.push_back(
-                Action(ActionType::Raise,
-                       player[index_active].bankroll +
-                           player[index_active].invested[phase]));
+            actions.push_back(Action(ActionType::Raise,
+                                     player[index_active].bankroll +
+                                         player[index_active].invested[phase]));
             return actions;
           }
           actions.push_back(Action(ActionType::Raise, raise_amount));
@@ -253,17 +256,18 @@ vector<Action> FContext::available_actions() const {
       } else {
         // model für betsize hier TODO
         bb raise_amount = get_bet_raise_amount(has_bet() ? 2 : 0.6);
-        bb real_raise =
-            raise_amount - player[index_active].invested[phase];
+        bb real_raise = raise_amount - player[index_active].invested[phase];
         if (real_raise >= player[index_active].bankroll)
           // allin
-          actions.push_back(
-              Action(ActionType::Raise,
-                     player[index_active].bankroll +
-                         player[index_active].invested[phase]));
+          actions.push_back(Action(ActionType::Raise,
+                                   player[index_active].bankroll +
+                                       player[index_active].invested[phase]));
         else
           actions.push_back(Action(ActionType::Raise, raise_amount));
       }
+    case ActionType::None:
+    default:
+      break;
     }
   }
 
@@ -314,7 +318,7 @@ FPlayer FContext::get_last_active_seat() const {
     if (player[i].is_active())
       return player[i];
   }
-  // TODO throw
+  throw std::runtime_error("last active seat not found.");
 }
 
 int FContext::nb_player_active() const {
@@ -358,8 +362,7 @@ int FContext::next_to_act() const {
   for (unsigned i = 1; i < player.size(); ++i) {
     next = (index_active + i) % player.size();
     if (player[next].is_active() &&
-        player[next].invested[phase] <= highest_bet &&
-        next != index_active)
+        player[next].invested[phase] <= highest_bet && next != index_active)
       return next;
   }
   return -1;

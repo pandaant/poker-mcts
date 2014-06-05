@@ -35,10 +35,6 @@ double ShowdownEval::simulate(const FContext &context) {
                         samples);
   ecalc::Result bot_result = res[bot_result_index];
 
-  double pwin = bot_result.pwin();
-  double ptie = bot_result.ptie();
-  // std::cout << pwin + ptie << std::endl;
-
   bb fixedreturn = get_fixed_win(context);
   bb notwinnable = get_not_winnable_pot(context);
   bb winnable_pot = context.pot - fixedreturn - notwinnable;

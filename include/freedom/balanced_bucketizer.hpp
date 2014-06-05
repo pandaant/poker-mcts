@@ -9,9 +9,9 @@ class BalancedBucketizer{
 public:
   // ----------------------------------------------------------------------
   /// @brief   maps a number of hands to a number of buckets according
-  ///          to an exponential distribution.
+  ///          to an balanced distribution. every buckets same nb hands.
   ///          Strong hands are in low index buckets, bad hand in big index
-  /// buckets.
+  ///          buckets.
   ///          example: AA is in bucket 0, 72o is in bucket n
   ///
   /// @param nb_buckets number of buckets to create

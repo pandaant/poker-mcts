@@ -6,8 +6,8 @@
 
 namespace freedom {
 FConfig::FConfig(sstrategy_t *_move_select_strat, bool seed, bool _dump_tree)
-    : move_selection_strat_(_move_select_strat), dump_tree(_dump_tree),
-      nb_gen_(new generator_t(0)) {} // TODO seed generator
+    : nb_gen_(new generator_t(0)), dump_tree(_dump_tree),
+      move_selection_strat_(_move_select_strat) {} // TODO seed generator
 
 FConfig::FConfig(double _time_s, int _ecalc_nb_samples, ECalc *_ecalc,
                  simstrategy_t *_simulation_strat,
@@ -16,16 +16,15 @@ FConfig::FConfig(double _time_s, int _ecalc_nb_samples, ECalc *_ecalc,
                  sstrategy_t *_decision_selection_strat,
                  sstrategy_t *_opponent_selection_strat,
                  sstrategy_t *_move_select_strat, bool seed, bool _dump_tree)
-    : move_selection_strat_(_move_select_strat),
-      // TODO seed gen
-      nb_gen_(new generator_t(0)), time_s(_time_s),
-      ecalc_nb_samples(_ecalc_nb_samples), ecalc(_ecalc),
-      simulation_strat(_simulation_strat),
+    : // TODO seed gen
+      nb_gen_(new generator_t(0)),
+      time_s(_time_s), ecalc_nb_samples(_ecalc_nb_samples),
+      dump_tree(_dump_tree), ecalc(_ecalc), simulation_strat(_simulation_strat),
+      opponent_selection_strat(_opponent_selection_strat),
       decision_backprop_strat(_decision_backprop_strat),
       opponent_backprop_strat(_opponent_backprop_strat),
-      decision_selection_strat(_decision_selection_strat),
-      opponent_selection_strat(_opponent_selection_strat),
-      dump_tree(_dump_tree) {}
+      move_selection_strat_(_move_select_strat),
+      decision_selection_strat(_decision_selection_strat) {}
 
 FConfig::FConfig(const Value &data, ECalc *_ecalc, bool seed) {
   ecalc = _ecalc;
@@ -71,5 +70,7 @@ void FConfig::readModels(const Value &data) {
 IModel *FConfig::model(string name) { return models[name]; }
 
 FConfig::generator_t *FConfig::nb_gen() { return nb_gen_; }
-FConfig::sstrategy_t *FConfig::move_selection_strat() { return move_selection_strat_; }
+FConfig::sstrategy_t *FConfig::move_selection_strat() {
+  return move_selection_strat_;
+}
 };

@@ -4,7 +4,6 @@
 namespace freedom {
 
 FPlayer::FPlayer(const Value &data) : status(load_status(data)) {
-  name = data["name"].GetString();
   model = data["model"].GetString();
   bankroll = bb(data["bankroll"].GetDouble());
   action_sequence = FActionSequence(data["sequence"]);
@@ -18,7 +17,6 @@ FPlayer::FPlayer(const Value &data) : status(load_status(data)) {
 }
 
 FPlayer &FPlayer::operator=(const FPlayer &p) {
-  name = p.name;
   bankroll = p.bankroll;
   invested = p.invested;
   action_sequence = p.action_sequence;
@@ -64,12 +62,12 @@ StatusType::Enum FPlayer::load_status(const Value &data) const{
     return StatusType::Inactive;
   if (stat == "allin")
     return StatusType::Allin;
+  throw std::runtime_error("Statustype unknown");
 }
 
 void FPlayer::serialize_fields(Writer<FileStream> &writer){
   writer.StartArray();
   writer.String("status");
-  writer.String("name");
   writer.String("bankroll");
   writer.String("invested");
   writer.String("sequence");
@@ -78,7 +76,6 @@ void FPlayer::serialize_fields(Writer<FileStream> &writer){
 
 void FPlayer::serialize(Writer<FileStream> &writer) const{
   writer.String(StatusType::ToStrShort[status]);
-  writer.String(name.c_str());
   writer.Double(bankroll.getAsDouble());
 
   writer.StartArray();

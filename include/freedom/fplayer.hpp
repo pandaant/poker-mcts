@@ -24,46 +24,41 @@ using namespace poker;
 
 class FPlayer {
 public:
-  string name;
   bb bankroll;
   vector<bb> invested;
-  string model;
   ActionSequence action_sequence;
   Handlist *handlist;
+  string model;
   StatusType::Enum status;
 
   FPlayer(const Value &data);
 
   ~FPlayer() {}
 
-  FPlayer(string _name, bb _bankroll)
-      : FPlayer(_name, _bankroll, vector<bb>(4, bb(0)), NULL, "default",
+  FPlayer(bb _bankroll)
+      : FPlayer(_bankroll, vector<bb>(4, bb(0)), NULL, "default",
                 StatusType::Active) {}
 
-  FPlayer(string _name, bb _bankroll, vector<bb> _invested)
-      : FPlayer(_name, _bankroll, _invested, NULL, "default",
-                StatusType::Active) {}
+  FPlayer(bb _bankroll, vector<bb> _invested)
+      : FPlayer(_bankroll, _invested, NULL, "default", StatusType::Active) {}
 
-  FPlayer(string _name, bb _bankroll, vector<bb> invested_, Handlist *_handlist,
+  FPlayer(bb _bankroll, vector<bb> invested_, Handlist *_handlist,
           string _model)
-      : FPlayer(_name, _bankroll, invested_, _handlist, _model,
-                StatusType::Active) {}
+      : FPlayer(_bankroll, invested_, _handlist, _model, StatusType::Active) {}
 
-  FPlayer(string _name, bb _bankroll, vector<bb> invested_,
-          StatusType::Enum status_)
-      : FPlayer(_name, _bankroll, invested_, NULL, "default", status_) {}
+  FPlayer(bb _bankroll, vector<bb> invested_, StatusType::Enum status_)
+      : FPlayer(_bankroll, invested_, NULL, "default", status_) {}
 
-  FPlayer(string _name, bb _bankroll, StatusType::Enum status_)
-      : FPlayer(_name, _bankroll, vector<bb>(4, bb(0)), NULL, "default",
-                status_) {}
+  FPlayer(bb _bankroll, StatusType::Enum status_)
+      : FPlayer(_bankroll, vector<bb>(4, bb(0)), NULL, "default", status_) {}
 
-  FPlayer(string _name, bb _bankroll, vector<bb> invested_, Handlist *_handlist,
+  FPlayer(bb _bankroll, vector<bb> invested_, Handlist *_handlist,
           string _model, StatusType::Enum status_)
-      : invested(invested_), name(_name), bankroll(_bankroll),
-        handlist(_handlist), model(_model), status(status_) {}
+      : bankroll(_bankroll), invested(invested_), handlist(_handlist),
+        model(_model), status(status_) {}
 
   FPlayer(const FPlayer &p)
-      : bankroll(p.bankroll), name(p.name), invested(p.invested),
+      : bankroll(p.bankroll), invested(p.invested),
         action_sequence(p.action_sequence), handlist(p.handlist),
         model(p.model), status(p.status) {}
 

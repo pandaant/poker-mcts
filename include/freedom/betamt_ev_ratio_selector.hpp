@@ -6,7 +6,6 @@
 #include "fcontext.hpp"
 
 namespace freedom {
-using namespace mcts;
 
 template <typename Context, typename Config>
 class BetamtEVRatioSelector : public ISelectionStrategy<Context, Config> {

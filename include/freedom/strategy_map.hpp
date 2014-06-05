@@ -1,10 +1,3 @@
-/*
- * File:   strategy_map.h
- * Author: batman
- *
- * Created on August 18, 2013, 5:31 PM
- */
-
 #ifndef STRATEGY_MAP_H
 #define STRATEGY_MAP_H
 
@@ -57,7 +50,6 @@ static IBackpropagationStrategy *lookup_backprop_strat(string strategy) {
   throw std::runtime_error("requested backprop strategy not found.");
 }
 };
-};
+}
 
-#endif /* STRATEGY_MAP_H */
-
+#endif

@@ -58,9 +58,9 @@ SUITE(FreedomNodeTests) {
     ISimulationStrategy<FContext> *sim_strat;
 
     ComplexSetup()
-        : players({FPlayer("mark", bb(10), vector<bb>({ bb(5), bb(0), bb(0), bb(0) }),
+        : players({FPlayer( bb(10), vector<bb>({ bb(5), bb(0), bb(0), bb(0) }),
                           StatusType::Active),
-                    FPlayer("simon", bb(10), vector<bb>({ bb(5), bb(0), bb(0), bb(0) }),StatusType::Active) }),
+                    FPlayer( bb(10), vector<bb>({ bb(5), bb(0), bb(0), bb(0) }),StatusType::Active) }),
           random(new ecalc::RandomHandlist()) {
       pot = bb(10);
       highest_bet = bb(0);
@@ -116,10 +116,10 @@ SUITE(FreedomNodeTests) {
 
    TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandXR) {
    players = vector<FPlayer>(
-  { FPlayer("mark", bb(10), vector<bb>({ bb(1), bb(0),
+  { FPlayer( bb(10), vector<bb>({ bb(1), bb(0),
   bb(0), bb(0) }),
    StatusType::Active),
-   FPlayer("simon", bb(10), vector<bb>({ bb(0.5), bb(0),
+   FPlayer( bb(10), vector<bb>({ bb(0.5), bb(0),
    bb(0), bb(0) }),
    StatusType::Active) });
 
@@ -150,10 +150,10 @@ SUITE(FreedomNodeTests) {
  
    TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandXRRR) {
    players = vector<FPlayer>(
-  { FPlayer("mark", bb(10), vector<bb>({ bb(1), bb(0),
+  { FPlayer( bb(10), vector<bb>({ bb(1), bb(0),
   bb(0), bb(0) }),
    StatusType::Active),
-   FPlayer("simon", bb(10), vector<bb>({ bb(0.5), bb(0),
+   FPlayer( bb(10), vector<bb>({ bb(0.5), bb(0),
    bb(0), bb(0) }),
    StatusType::Active) });
 
@@ -184,10 +184,10 @@ SUITE(FreedomNodeTests) {
    TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandFCR) {
 
    players = vector<FPlayer>(
-  { FPlayer("mark", bb(10), vector<bb>({ bb(1), bb(0),
+  { FPlayer( bb(10), vector<bb>({ bb(1), bb(0),
   bb(0), bb(0) }),
    StatusType::Active),
-   FPlayer("simon", bb(10), vector<bb>({ bb(1.5), bb(0),
+   FPlayer( bb(10), vector<bb>({ bb(1.5), bb(0),
    bb(0), bb(0) }),
    StatusType::Active) });
 
@@ -217,10 +217,10 @@ SUITE(FreedomNodeTests) {
    TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandAllIn) {
 
    players = vector<FPlayer>(
-  { FPlayer("mark", bb(9), vector<bb>({ bb(1), bb(0),
+  { FPlayer( bb(9), vector<bb>({ bb(1), bb(0),
   bb(0), bb(0) }),
    StatusType::Active),
-   FPlayer("simon", bb(2), vector<bb>({ bb(8), bb(0),
+   FPlayer( bb(2), vector<bb>({ bb(8), bb(0),
    bb(0), bb(0) }),
    StatusType::Active) });
 
@@ -250,10 +250,10 @@ SUITE(FreedomNodeTests) {
    TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandToShowdown) {
 
    players = vector<FPlayer>(
-  { FPlayer("mark", bb(5), vector<bb>({ bb(5), bb(0),
+  { FPlayer( bb(5), vector<bb>({ bb(5), bb(0),
   bb(0), bb(0) }), random, "default",
    StatusType::Active),
-   FPlayer("simon", bb(2), vector<bb>({ bb(5), bb(0),
+   FPlayer( bb(2), vector<bb>({ bb(5), bb(0),
    bb(0), bb(3) }), random, "default",
    StatusType::Active) });
 
@@ -300,10 +300,10 @@ SUITE(FreedomNodeTests) {
    TEST_FIXTURE(ComplexSetup, TestOpponentNodeExpandToShowdown) {
 
    players = vector<FPlayer>(
-  { FPlayer("mark", bb(2), vector<bb>({ bb(5), bb(0),
+  { FPlayer( bb(2), vector<bb>({ bb(5), bb(0),
   bb(0), bb(3) }), random, "default",
    StatusType::Active),
-   FPlayer("simon", bb(5), vector<bb>({ bb(5), bb(0),
+   FPlayer( bb(5), vector<bb>({ bb(5), bb(0),
    bb(0), bb(0) }), random, "default",
    StatusType::Active) });
 
@@ -357,10 +357,10 @@ SUITE(FreedomNodeTests) {
    TEST_FIXTURE(ComplexSetup, TestOpponentNodeExpandFCR) {
 
    players = vector<FPlayer>(
-  { FPlayer("mark", bb(10), vector<bb>({ bb(1.5), bb(0),
+  { FPlayer( bb(10), vector<bb>({ bb(1.5), bb(0),
   bb(0), bb(0) }),
    StatusType::Active),
-   FPlayer("simon", bb(10), vector<bb>({ bb(1), bb(0),
+   FPlayer( bb(10), vector<bb>({ bb(1), bb(0),
    bb(0), bb(0) }),
    StatusType::Active) });
 
@@ -392,7 +392,6 @@ SUITE(FreedomNodeTests) {
    CHECK_EQUAL(0, c1.index_active);
    CHECK_EQUAL(1, c1.nb_player_active());
    CHECK_EQUAL(PhaseType::Preflop, c1.phase);
-   CHECK_EQUAL("mark", c1.get_last_active_seat().name);
    CHECK_EQUAL(bb(10), c1.get_last_active_seat().bankroll);
    CHECK_EQUAL(bb(1.5),
    c1.get_last_active_seat().total_investment());

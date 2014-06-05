@@ -7,8 +7,8 @@ RoundHistogramm::RoundHistogramm(const double &_nb_fold,
                                  const double &_nb_call, const double &_nb_bet,
                                  const double &_nb_raise)
     : nb_fold(_nb_fold), nb_check(_nb_check), nb_call(_nb_call),
-      nb_bet(_nb_bet), nb_raise(_nb_raise), nb_all_nbet(_nb_check + _nb_bet),
-      nb_all_wbet(_nb_call + _nb_fold + _nb_raise) {}
+      nb_bet(_nb_bet), nb_raise(_nb_raise),
+      nb_all_wbet(_nb_call + _nb_fold + _nb_raise), nb_all_nbet(_nb_check + _nb_bet) {}
 
 RoundHistogramm::RoundHistogramm(const Value &data)
     : nb_fold(data[0u].GetDouble()), nb_check(data[1u].GetDouble()),
