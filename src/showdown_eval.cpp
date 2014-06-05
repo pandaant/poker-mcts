@@ -10,8 +10,8 @@ namespace freedom {
 
 using namespace poker;
 
-ShowdownEval::ShowdownEval(ECalc *_ecalc, int _samples)
-    : ecalc(_ecalc), samples(_samples) {}
+ShowdownEval::ShowdownEval(ECalc *ecalc_, const unsigned &samples_)
+    : ecalc(ecalc_), samples(samples_) {}
 
 ShowdownEval::~ShowdownEval() {}
 
@@ -31,25 +31,24 @@ double ShowdownEval::simulate(const FContext &context) {
   }
 
   ecalc::result_collection res;
-  res = ecalc->evaluate(lists, context.config->board,vector<unsigned>(), samples);
+  res = ecalc->evaluate(lists, context.config->board, vector<unsigned>(),
+                        samples);
   ecalc::Result bot_result = res[bot_result_index];
 
   double pwin = bot_result.pwin();
   double ptie = bot_result.ptie();
-  //std::cout << pwin + ptie << std::endl;
+  // std::cout << pwin + ptie << std::endl;
 
   bb fixedreturn = get_fixed_win(context);
   bb notwinnable = get_not_winnable_pot(context);
-  bb winnable_pot = context.pot - fixedreturn - notwinnable; 
-
+  bb winnable_pot = context.pot - fixedreturn - notwinnable;
 
   double ev = bot_result.pwin_tie() * winnable_pot.getAsDouble();
-  //double tie_ev = ptie * (winnable_pot.getAsDouble() / res.size());
-  //ev += tie_ev;
+  // double tie_ev = ptie * (winnable_pot.getAsDouble() / res.size());
+  // ev += tie_ev;
 
   // subtract our investment to the pot
-  bb our_investment =
-      context.bot_seat().total_investment() - fixedreturn;
+  bb our_investment = context.bot_seat().total_investment() - fixedreturn;
   ev -= our_investment.getAsDouble();
 
   return (1 - context.config->rake_factor) * ev;
@@ -94,7 +93,7 @@ bb ShowdownEval::get_not_winnable_pot(const FContext &context) const {
     not_winnable += (deficit > bb(0)) ? deficit : bb(0);
   }
 
-  //std::cout << bot_investment << "\n";
+  // std::cout << bot_investment << "\n";
   return not_winnable;
 }
 
@@ -103,8 +102,8 @@ bb ShowdownEval::winnable_pot(const FContext &context) const {
   return pot - get_fixed_win(context) - get_not_winnable_pot(context);
 }
 
-void ShowdownEval::set_ecalc(ECalc *_ecalc, int _samples) {
-  ecalc = _ecalc;
-  samples = _samples;
+void ShowdownEval::set_ecalc(ECalc *ecalc_, const unsigned &samples_) {
+  ecalc = ecalc_;
+  samples = samples_;
 }
 };

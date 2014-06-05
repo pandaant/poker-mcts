@@ -387,7 +387,7 @@ SUITE(RangePredictorTests) {
 
     overwrite = pr.update_equities(overwrite, source);
 
-    //    for(auto o:overwrite) std::cout << o.to_str() << " " << o.equity <<
+    //    for(auto o:overwrite) std::cout << o.str() << " " << o.equity <<
     // std::endl;
 
     // 3 hands less
@@ -607,7 +607,7 @@ SUITE(RangePredictorTests) {
     std::sort(hands.begin(), hands.end());
 
     // for(auto i : hands )
-    // std::cout << i.to_str() << " " << i.equity << std::endl;
+    // std::cout << i.str() << " " << i.equity << std::endl;
 
     BalancedBucketizer buckbuck;
     BucketCollection buckets = buckbuck.map_hands(663, hands);
@@ -616,8 +616,8 @@ SUITE(RangePredictorTests) {
     // buckets,
     // each bucket should contain 2 hands
 
-    for (auto b : buckets.buckets)
-      CHECK_EQUAL(2, b.size());
+    for(unsigned i = 0; i < buckets.nb_buckets(); ++i)
+      CHECK_EQUAL(2, buckets[i].size());
 
     // Bug which caused the balanced bucketizer to create a hand to much which
     // was wrong and
@@ -644,7 +644,7 @@ SUITE(RangePredictorTests) {
     BalancedBucketizer buckbuck;
     BucketCollection buckets = buckbuck.map_hands(100, hands);
 
-    CHECK(buckets.count_hands() > 0);
+    CHECK(buckets.nb_hands() > 0);
   }
 
   TEST_FIXTURE(Setup, TestHandCombinations) {
@@ -654,8 +654,8 @@ SUITE(RangePredictorTests) {
 
     CHECK_EQUAL(1326, hands.size());
 
-    CHECK_EQUAL("2d2c", hands[0].to_str());
-    CHECK_EQUAL("AsAh", hands[1325].to_str());
+    CHECK_EQUAL("2d2c", hands[0].str());
+    CHECK_EQUAL("AsAh", hands[1325].str());
 
     vector<unsigned> dead({Card("Ah").card(), Card("Qh").card()});
 
@@ -673,10 +673,10 @@ SUITE(RangePredictorTests) {
 
     // check some impossible hands
     for (auto o : hands) {
-      CHECK(o.to_str() != "QhQc");
-      CHECK(o.to_str() != "AhQc");
-      CHECK(o.to_str() != "QsQh");
-      //   std::cout << o.to_str() << std::endl;
+      CHECK(o.str() != "QhQc");
+      CHECK(o.str() != "AhQc");
+      CHECK(o.str() != "QsQh");
+      //   std::cout << o.str() << std::endl;
     }
   }
 
@@ -719,9 +719,9 @@ SUITE(RangePredictorTests) {
 
     BucketCollection coll(buckets);
 
-    CHECK_EQUAL(2, coll.bucket_range(1, 0).buckets.size());
-    CHECK_EQUAL(5, coll.bucket_range(4, 0).buckets.size());
-    CHECK_EQUAL(1, coll.bucket_range(0, 0).buckets.size());
+    CHECK_EQUAL(2, coll.bucket_range(1, 0).nb_buckets());
+    CHECK_EQUAL(5, coll.bucket_range(4, 0).nb_buckets());
+    CHECK_EQUAL(1, coll.bucket_range(0, 0).nb_buckets());
   }
 
   TEST_FIXTURE(Setup, TestBucketCollectionHandBucketRange) {
@@ -769,8 +769,8 @@ SUITE(RangePredictorTests) {
     // buckets,
     // each bucket should contain 2 hands
 
-    for (auto b : buckets.buckets)
-      CHECK_EQUAL(2, b.size());
+    for(unsigned i = 0; i < buckets.nb_buckets(); ++i)
+      CHECK_EQUAL(2, buckets[i].size());
   }
 
   // test with empty board deadcards
@@ -844,15 +844,11 @@ SUITE(RangePredictorTests) {
     string id = pr->build_cache(board, dead);
     vector<BucketHand> hands = pr->cache[id];
 
-    // for(auto i : hands)
-    // std::cout << i.to_str() << std::endl;
-    // return;
-
     ExponentialBucketizer buckbuck;
     BucketCollection buckets = buckbuck.map_hands(25, hands);
 
     int sum = 0;
-    for (int i = 0; i < buckets.nb_buckets; ++i) {
+    for (int i = 0; i < buckets.nb_buckets(); ++i) {
       sum += buckets[i].size();
     }
 

@@ -24,8 +24,8 @@ SUITE(WeightedBucketHandlistTest) {
     BucketCollection buckets(2);
     Hand hand_a("AhAs");
     Hand hand_b("KhKs");
-    buckets.buckets[0].push_back(BucketHand(hand_a,1));
-    buckets.buckets[1].push_back(BucketHand(hand_b,1));
+    buckets[0].push_back(BucketHand(hand_a,1));
+    buckets[1].push_back(BucketHand(hand_b,1));
     WeightedBucketHandlist handlist(buckets, vector<double>({1, 1}));
 
     // get 1000 hands from handlist
@@ -48,8 +48,8 @@ SUITE(WeightedBucketHandlistTest) {
     BucketCollection buckets(2);
     Hand hand_a("AhAs");
     Hand hand_b("KhKs");
-    buckets.buckets[0].push_back(BucketHand(hand_a,1));
-    buckets.buckets[1].push_back(BucketHand(hand_b,1));
+    buckets[0].push_back(BucketHand(hand_a,1));
+    buckets[1].push_back(BucketHand(hand_b,1));
     // first bucket 2 times more than second
     WeightedBucketHandlist handlist(buckets, vector<double>({2, 1})); 
 

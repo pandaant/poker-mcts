@@ -1,10 +1,3 @@
-/*
- * File:   showdown_eval.h
- * Author: batman
- *
- * Created on August 10, 2013, 10:19 AM
- */
-
 #ifndef SHOWDOWN_EVAL_STRATEGY_H
 #define SHOWDOWN_EVAL_STRATEGY_H
 
@@ -19,12 +12,13 @@ using ecalc::ECalc;
 class ShowdownEval : public mcts::ISimulationStrategy<FContext> {
 protected:
   ECalc *ecalc;
-  int samples;
+  unsigned samples;
 
 public:
-  ShowdownEval() {}
-  ShowdownEval(ECalc *_ecalc, int _samples);
+  ShowdownEval(ECalc *_ecalc, const unsigned &samples_);
+
   virtual ~ShowdownEval();
+
   virtual double simulate(const FContext &FContext);
 
   /**
@@ -43,9 +37,8 @@ public:
    */
   bb get_not_winnable_pot(const FContext &FContext) const;
   bb winnable_pot(const FContext &FContext) const;
-  void set_ecalc(ECalc *_ecalc, int _samples);
+  void set_ecalc(ECalc *ecalc_, const unsigned &samples_);
 };
-};
+}
 
-#endif /* SIMPLE_SIM_STRATEGY_H */
-
+#endif

@@ -3,7 +3,7 @@
 
 namespace freedom {
 
-FPlayer::FPlayer(const Value &data):status(load_status(data)) {
+FPlayer::FPlayer(const Value &data) : status(load_status(data)) {
   name = data["name"].GetString();
   model = data["model"].GetString();
   bankroll = bb(data["bankroll"].GetDouble());
@@ -28,7 +28,8 @@ FPlayer &FPlayer::operator=(const FPlayer &p) {
   return *this;
 }
 
-bool FPlayer::make_investment(bb amount, PhaseType::Enum phase) {
+bool FPlayer::make_investment(const bb &amount,
+                              const PhaseType::Enum &phase) {
   if (bankroll < amount)
     return false;
   bankroll -= amount;
@@ -55,7 +56,7 @@ void FPlayer::set_active() { status = StatusType::Active; }
 
 void FPlayer::set_allin() { status = StatusType::Allin; }
 
-StatusType::Enum FPlayer::load_status(const Value &data) {
+StatusType::Enum FPlayer::load_status(const Value &data) const{
   string stat = data["status"].GetString();
   if (stat == "active")
     return StatusType::Active;
@@ -65,7 +66,7 @@ StatusType::Enum FPlayer::load_status(const Value &data) {
     return StatusType::Allin;
 }
 
-void FPlayer::serialize_fields(Writer<FileStream> &writer) {
+void FPlayer::serialize_fields(Writer<FileStream> &writer){
   writer.StartArray();
   writer.String("status");
   writer.String("name");
@@ -75,7 +76,7 @@ void FPlayer::serialize_fields(Writer<FileStream> &writer) {
   writer.EndArray();
 }
 
-void FPlayer::serialize(Writer<FileStream> &writer) {
+void FPlayer::serialize(Writer<FileStream> &writer) const{
   writer.String(StatusType::ToStrShort[status]);
   writer.String(name.c_str());
   writer.Double(bankroll.getAsDouble());

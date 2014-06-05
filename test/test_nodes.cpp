@@ -251,10 +251,10 @@ SUITE(FreedomNodeTests) {
 
    players = vector<FPlayer>(
   { FPlayer("mark", bb(5), vector<bb>({ bb(5), bb(0),
-  bb(0), bb(0) }), random,
+  bb(0), bb(0) }), random, "default",
    StatusType::Active),
    FPlayer("simon", bb(2), vector<bb>({ bb(5), bb(0),
-   bb(0), bb(3) }), random,
+   bb(0), bb(3) }), random, "default",
    StatusType::Active) });
 
    phase = PhaseType::River;
@@ -301,10 +301,10 @@ SUITE(FreedomNodeTests) {
 
    players = vector<FPlayer>(
   { FPlayer("mark", bb(2), vector<bb>({ bb(5), bb(0),
-  bb(0), bb(3) }), random,
+  bb(0), bb(3) }), random, "default",
    StatusType::Active),
    FPlayer("simon", bb(5), vector<bb>({ bb(5), bb(0),
-   bb(0), bb(0) }), random,
+   bb(0), bb(0) }), random, "default",
    StatusType::Active) });
 
    phase = PhaseType::River;

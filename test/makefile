@@ -59,6 +59,6 @@ clean:
 
 all: $(OUT_BIN) 
 
-.PHONY: clean all run
+.PHONY: clean all run $(OUT_BIN)
 
 -include $(DEP_FILES)

@@ -18,7 +18,6 @@ namespace freedom {
 class WeightedShowdownEval : public ShowdownEval {
     std::map<string, WeightedBucketHandlist* > cache;
 public:
-  WeightedShowdownEval() {}
   WeightedShowdownEval(ECalc *_ecalc, int _samples);
   virtual ~WeightedShowdownEval();
   virtual double simulate(const FContext &context);

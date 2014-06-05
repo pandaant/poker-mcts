@@ -169,7 +169,7 @@ int RangePredictor::calculate_upper_bound(Action action, PhaseType::Enum phase,
     // get raise percentage to skip it
     double p_raise =
         model->get_action_probability(action, phase, betting_round);
-    int skiphands = (int)ceil(p_raise * collection.count_hands());
+    int skiphands = (int)ceil(p_raise * collection.nb_hands());
     return collection.get_bucket_index_including_nb_hands(skiphands);
   }
 
@@ -182,14 +182,14 @@ int RangePredictor::calculate_lower_bound(Action action, PhaseType::Enum phase,
                                           BucketCollection &collection,
                                           int upper_bound) {
   if (is_weak_call_or_raise(action, !(phase == PhaseType::Preflop)))
-    return collection.nb_buckets - 1;
+    return collection.nb_buckets() - 1;
 
   if (is_raise_or_bet_or_allin(action)) {
     double p_raise =
         model->get_action_probability(action, phase, betting_round);
     // fallback when models probability is zero
     p_raise = (p_raise > 1e-10) ? p_raise : zerop_rc;
-    int includehands = (int)ceil(p_raise * collection.count_hands());
+    int includehands = (int)ceil(p_raise * collection.nb_hands());
     return collection.get_bucket_index_including_nb_hands(includehands,
                                                           upper_bound);
   }
@@ -198,13 +198,13 @@ int RangePredictor::calculate_lower_bound(Action action, PhaseType::Enum phase,
     double p_call = model->get_action_probability(action, phase, betting_round);
     // fallback when model's probability is zero
     p_call = (p_call > 1e-10) ? p_call : zerop_rc;
-    int includehands = (int)ceil(p_call * collection.count_hands());
+    int includehands = (int)ceil(p_call * collection.nb_hands());
     return collection.get_bucket_index_including_nb_hands(includehands,
                                                           upper_bound);
   }
 
   // fallthrough for fold check, lowest bucket
-  return collection.nb_buckets - 1;
+  return collection.nb_buckets() - 1;
 }
 
 bool RangePredictor::is_weak_call_or_raise(Action action, bool is_postflop) {

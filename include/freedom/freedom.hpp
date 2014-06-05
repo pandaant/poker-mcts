@@ -1,10 +1,3 @@
-/*
- * File:   freedom.h
- * Author: batman
- *
- * Created on August 6, 2013, 12:27 PM
- */
-
 #ifndef FREEDOM_H
 #define FREEDOM_H
 
@@ -17,26 +10,25 @@
 
 namespace freedom {
 
+using mcts::MCTS;
 using ecalc::ECalc;
 using ecalc::Handranks;
-using mcts::MCTS;
 using std::shared_ptr;
 
 class Freedom {
-  Handranks* handranks;
 
 public:
-  typedef shared_ptr<Freedom> ptr;
-  ECalc *ecalc;
-  RangePredictor *pr;
-
-  Freedom(Handranks* handranks);
+  explicit Freedom(Handranks *handranks_);
   virtual ~Freedom();
 
   // calculate a range for every player
   void generate_handranges(FContext &context, FConfig *config);
+
+private:
+  ECalc *ecalc;
+  Handranks *handranks;
+  RangePredictor *range_predictor;
 };
 }
 
-#endif /* freedom_H */
-
+#endif

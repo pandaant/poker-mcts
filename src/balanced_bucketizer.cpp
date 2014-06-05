@@ -16,7 +16,7 @@ BalancedBucketizer::map_hands(const unsigned &nb_buckets,
     for (int j = 0; j < hands_per_bucket; ++j) {
       if (last_index > shands_)
         break;
-      bcollection.buckets[b].push_back(hands_[last_index]);
+      bcollection[b].push_back(hands_[last_index]);
       ++last_index;
     }
   }

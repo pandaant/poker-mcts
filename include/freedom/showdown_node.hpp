@@ -1,10 +1,3 @@
-/*
- * File:   showdown_node.h
- * Author: batman
- *
- * Created on August 6, 2013, 12:35 PM
- */
-
 #ifndef SHOWDOWN_NODE_H
 #define SHOWDOWN_NODE_H
 
@@ -25,6 +18,7 @@ using mcts::RunningStats;
  **/
 class ShowdownNode : public LeafNode<FContext, FConfig> {
   typedef typename INode<FContext, FConfig>::node_t node_t;
+
 public:
   RunningStats stats;
 
@@ -48,9 +42,8 @@ public:
     this->parent_->backpropagate(value);
   }
 
-  virtual ~ShowdownNode(){}
+  virtual ~ShowdownNode() {}
 };
-};
+}
 
-#endif /* SHOWDOWN_NODE_H */
-
+#endif

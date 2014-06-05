@@ -3,8 +3,8 @@
 namespace freedom {
 
 FActionSequence::FActionSequence(const Value &data) : ActionSequence() {
-  for (SizeType i = 0; i < 4; i++) {
-    for (SizeType j = 0; j < data[i].Size(); j++) {
+  for (SizeType i = 0; i < 4; ++i) {
+    for (SizeType j = 0; j < data[i].Size(); ++j) {
       PhaseType::Enum phase = static_cast<PhaseType::Enum>(i);
       Action action(resolve_action(data[i][j][0u].GetString()),
                     bb(data[i][j][1u].GetDouble()));
@@ -13,7 +13,7 @@ FActionSequence::FActionSequence(const Value &data) : ActionSequence() {
   }
 }
 
-ActionType::Enum FActionSequence::resolve_action(string action) {
+ActionType::Enum FActionSequence::resolve_action(const string &action) const{
   if (action == "X")
     return ActionType::Check;
   if (action == "F")

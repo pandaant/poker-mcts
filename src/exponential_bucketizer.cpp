@@ -36,7 +36,7 @@ ExponentialBucketizer::map_hands(const unsigned &nb_buckets,
       // TODO sort in in reverse directly above?
       std::reverse(bcollection[i].begin(), bcollection[i].end());
   }
-  std::reverse(bcollection.buckets.begin(), bcollection.buckets.end());
+  bcollection.reverse();
   return bcollection;
 }
 };

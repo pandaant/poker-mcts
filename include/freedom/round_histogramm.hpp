@@ -1,10 +1,3 @@
-/*
- * File:   round_histogramm.h
- * Author: batman
- *
- * Created on September 4, 2013, 11:00 AM
- */
-
 #ifndef ROUND_HISTOGRAMM_H
 #define ROUND_HISTOGRAMM_H
 
@@ -29,9 +22,11 @@ public:
   double nb_all_wbet; // with bet
   double nb_all_nbet; // no bet
 
-  RoundHistogramm(double _nb_fold = 0, double _nb_check = 0, double _nb_call = 0,
-                  double _nb_bet = 0, double _nb_raise = 0);
-  RoundHistogramm(const Value &data);
+  RoundHistogramm(const double &_nb_fold = 0, const double &_nb_check = 0,
+                  const double &_nb_call = 0, const double &_nb_bet = 0,
+                  const double &_nb_raise = 0);
+
+  explicit RoundHistogramm(const Value &data);
 
   tuple<double, double, double> getFoldCallRaiseProbabilities() const;
   tuple<double, double> getCheckBetProbabilities() const;
@@ -40,16 +35,15 @@ public:
   /**
    * ATTENTION
    * this function works only errorfree for postflop evaluations
-   * because the special case on prflop is not handled. 
+   * because the special case on prflop is not handled.
    * When nobody bets the bigblind can X/R but the function
    * will return values for X/B
    **/
-  double get_action_probability(ActionType::Enum action);
+  double get_action_probability(const ActionType::Enum &action) const;
 
   // returns number of times this action was taken
-  double get(ActionType::Enum action);
+  double get(const ActionType::Enum &action) const;
 };
-};
+}
 
-#endif /* ROUND_HISTOGRAMM_H */
-
+#endif

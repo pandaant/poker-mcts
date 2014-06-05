@@ -5,6 +5,12 @@
 
 namespace freedom {
 
+DecisionNode::DecisionNode(const FContext &fcontext_, FConfig *fconfig_,
+                           node_t *parent_)
+    : InnerNode<FContext, FConfig>(
+          fcontext_, fconfig_, parent_,
+          fconfig_->decision_backprop_strat->create()) {}
+
 void DecisionNode::expand() {
   vector<FContext> transitions = this->context().transition();
 
@@ -28,9 +34,9 @@ void DecisionNode::expand() {
   });
 }
 
-INode<FContext,FConfig>::node_t *DecisionNode::select_child() {
-  return this->config()->decision_selection_strat->select((INode *)this);
+INode<FContext, FConfig>::node_t *DecisionNode::select_child() {
+  return this->config()->decision_selection_strat->select(this);
 }
 
-DecisionNode::~DecisionNode() { }
+DecisionNode::~DecisionNode() {}
 };

@@ -9,7 +9,6 @@
 #include <poker/phase_type.hpp>
 #include <poker/action_type.hpp>
 #include "fcontext_config.hpp"
-#include "double_operations.hpp"
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/filestream.h>

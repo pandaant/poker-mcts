@@ -2,20 +2,18 @@
 
 namespace freedom {
 
-RoundHistogramm::RoundHistogramm(double _nb_fold, double _nb_check,
-                                 double _nb_call, double _nb_bet,
-                                 double _nb_raise)
+RoundHistogramm::RoundHistogramm(const double &_nb_fold,
+                                 const double &_nb_check,
+                                 const double &_nb_call, const double &_nb_bet,
+                                 const double &_nb_raise)
     : nb_fold(_nb_fold), nb_check(_nb_check), nb_call(_nb_call),
       nb_bet(_nb_bet), nb_raise(_nb_raise), nb_all_nbet(_nb_check + _nb_bet),
       nb_all_wbet(_nb_call + _nb_fold + _nb_raise) {}
 
-RoundHistogramm::RoundHistogramm(const Value &data) {
-  nb_fold = data[0u].GetDouble();
-  nb_check = data[1u].GetDouble();
-  nb_call = data[2u].GetDouble();
-  nb_bet = data[3u].GetDouble();
-  nb_raise = data[4u].GetDouble();
-
+RoundHistogramm::RoundHistogramm(const Value &data)
+    : nb_fold(data[0u].GetDouble()), nb_check(data[1u].GetDouble()),
+      nb_call(data[2u].GetDouble()), nb_bet(data[3u].GetDouble()),
+      nb_raise(data[4u].GetDouble()) {
   nb_all_nbet = nb_check + nb_bet;
   nb_all_wbet = nb_call + nb_fold + nb_raise;
 }
@@ -46,9 +44,10 @@ tuple<double, double> RoundHistogramm::getFoldCallProbabilities() const {
   return make_tuple(fold, call);
 }
 
-double RoundHistogramm::get_action_probability(ActionType::Enum action) {
+double
+RoundHistogramm::get_action_probability(const ActionType::Enum &action) const {
   using namespace ActionType;
-  double all = (action == Bet || action == Check ) ? nb_all_nbet : nb_all_wbet;
+  double all = (action == Bet || action == Check) ? nb_all_nbet : nb_all_wbet;
 
   // no data for this action, so prob is zero.
   // floatingpoint zero comparision
@@ -57,7 +56,7 @@ double RoundHistogramm::get_action_probability(ActionType::Enum action) {
   return get(action) / all;
 }
 
-double RoundHistogramm::get(ActionType::Enum action) {
+double RoundHistogramm::get(const ActionType::Enum &action) const {
   using namespace ActionType;
   switch (action) {
   case Fold:
@@ -75,4 +74,4 @@ double RoundHistogramm::get(ActionType::Enum action) {
     return 0;
   }
 }
-};
+}

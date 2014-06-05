@@ -193,7 +193,7 @@ SUITE(SimulationTests) {
     ShowdownEval *evaluator = new ShowdownEval(calc, 7);
 
     FPlayer mark("mark", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}),
-                 bot_hl, StatusType::Active);
+                 bot_hl, "default", StatusType::Active);
 
     vector<FPlayer> seats({mark, players[1]});
     FContextConfig *ccon = new FContextConfig(
@@ -221,7 +221,7 @@ SUITE(SimulationTests) {
     ShowdownEval *evaluator = new ShowdownEval(calc, 7);
 
     FPlayer mark("mark", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}),
-                 bot_hl, StatusType::Active);
+                 bot_hl, "default", StatusType::Active);
 
     vector<FPlayer> seats({mark, players[1]});
     FContextConfig *ccon = new FContextConfig(
@@ -250,7 +250,7 @@ SUITE(SimulationTests) {
     ShowdownEval *evaluator = new ShowdownEval(calc, 7);
     Handlist *single = new SingleHandlist(Hand("7h2c"));
     FPlayer mark("mark", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}),
-                 bot_hl, StatusType::Active);
+                 bot_hl, "default", StatusType::Active);
 
     mark.handlist = single;
     vector<FPlayer> seats({mark, players[1]});
@@ -281,7 +281,7 @@ SUITE(SimulationTests) {
     ShowdownEval *evaluator = new ShowdownEval(calc, 7);
     Handlist *single = new SingleHandlist(Hand("AhAs"));
     FPlayer mark("mark", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}),
-                 bot_hl, StatusType::Active);
+                 bot_hl, "default", StatusType::Active);
 
     vector<FPlayer> seats({mark, players[1]});
     FContextConfig *ccon = new FContextConfig(
@@ -314,7 +314,7 @@ SUITE(SimulationTests) {
     vector<unsigned> bboard(
         {Card("Ac").card(), Card("Ad").card(), Card("7c").card()});
     FPlayer mark("mark", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}),
-                 bot_hl, StatusType::Active);
+                 bot_hl, "default", StatusType::Active);
 
     vector<FPlayer> seats({mark, players[1]});
     FContextConfig *ccon = new FContextConfig(
@@ -386,12 +386,12 @@ SUITE(SimulationTests) {
   // Hand hand_e("ThTs");
   // Hand hand_f("9h9s");
   // BucketCollection buckets(6);
-  // buckets.buckets[0].push_back(BucketHand(hand_a, 1));
-  // buckets.buckets[1].push_back(BucketHand(hand_b, 1));
-  // buckets.buckets[2].push_back(BucketHand(hand_c, 1));
-  // buckets.buckets[3].push_back(BucketHand(hand_d, 1));
-  // buckets.buckets[4].push_back(BucketHand(hand_e, 1));
-  // buckets.buckets[5].push_back(BucketHand(hand_f, 1));
+  // buckets[0].push_back(BucketHand(hand_a, 1));
+  // buckets[1].push_back(BucketHand(hand_b, 1));
+  // buckets[2].push_back(BucketHand(hand_c, 1));
+  // buckets[3].push_back(BucketHand(hand_d, 1));
+  // buckets[4].push_back(BucketHand(hand_e, 1));
+  // buckets[5].push_back(BucketHand(hand_f, 1));
   // WeightedBucketHandlist *handlist =
   // new WeightedBucketHandlist(buckets, vector<double>({1, 1, 1, 1,1,1}));
 
@@ -405,7 +405,7 @@ SUITE(SimulationTests) {
   ////print_weights(new_weights);
 
   ////WeightedBucketHandlist* new_w = new
-  ///WeightedBucketHandlist(*handlist,new_weights);
+  /// WeightedBucketHandlist(*handlist,new_weights);
 
   // delete evaluator;
   // delete handlist;
@@ -422,12 +422,12 @@ SUITE(SimulationTests) {
     Hand hand_e("4h4s");
     Hand hand_f("3h3s");
     BucketCollection buckets(6);
-    buckets.buckets[0].push_back(BucketHand(hand_a, 1));
-    buckets.buckets[1].push_back(BucketHand(hand_b, 1));
-    buckets.buckets[2].push_back(BucketHand(hand_c, 1));
-    buckets.buckets[3].push_back(BucketHand(hand_d, 1));
-    buckets.buckets[4].push_back(BucketHand(hand_e, 1));
-    buckets.buckets[5].push_back(BucketHand(hand_f, 1));
+    buckets[0].push_back(BucketHand(hand_a, 1));
+    buckets[1].push_back(BucketHand(hand_b, 1));
+    buckets[2].push_back(BucketHand(hand_c, 1));
+    buckets[3].push_back(BucketHand(hand_d, 1));
+    buckets[4].push_back(BucketHand(hand_e, 1));
+    buckets[5].push_back(BucketHand(hand_f, 1));
 
     ActionSequence seq2;
     // seq2.append(Action(ActionType::Call),PhaseType::Flop);
@@ -438,9 +438,9 @@ SUITE(SimulationTests) {
     Handlist *single = new SingleHandlist(Hand("7h7d"));
     vector<unsigned> bboard({Card("Kc").card()});
     FPlayer mark("mark", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}),
-                 single, StatusType::Active);
+                 single, "default", StatusType::Active);
     FPlayer p1("p1", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}), handlist,
-               StatusType::Active);
+               "default", StatusType::Active);
 
     vector<FPlayer> seats({mark, p1});
     FContextConfig *ccon = new FContextConfig(
@@ -480,12 +480,12 @@ SUITE(SimulationTests) {
     Hand hand_e("4h4s");
     Hand hand_f("3h3s");
     BucketCollection buckets(6);
-    buckets.buckets[0].push_back(BucketHand(hand_a, 1));
-    buckets.buckets[1].push_back(BucketHand(hand_b, 1));
-    buckets.buckets[2].push_back(BucketHand(hand_c, 1));
-    buckets.buckets[3].push_back(BucketHand(hand_d, 1));
-    buckets.buckets[4].push_back(BucketHand(hand_e, 1));
-    buckets.buckets[5].push_back(BucketHand(hand_f, 1));
+    buckets[0].push_back(BucketHand(hand_a, 1));
+    buckets[1].push_back(BucketHand(hand_b, 1));
+    buckets[2].push_back(BucketHand(hand_c, 1));
+    buckets[3].push_back(BucketHand(hand_d, 1));
+    buckets[4].push_back(BucketHand(hand_e, 1));
+    buckets[5].push_back(BucketHand(hand_f, 1));
 
     ActionSequence seq2;
     // seq2.append(Action(ActionType::Call),PhaseType::Flop);
@@ -496,9 +496,9 @@ SUITE(SimulationTests) {
     Handlist *single = new SingleHandlist(Hand("6h7d"));
     vector<unsigned> bboard({Card("Kc").card()});
     FPlayer mark("mark", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}),
-                 single, StatusType::Active);
+                 single, "default", StatusType::Active);
     FPlayer p1("p1", bb(10), vector<bb>({bb(0), bb(0), bb(0), bb(0)}), handlist,
-               StatusType::Active);
+               "default", StatusType::Active);
 
     vector<FPlayer> seats({mark, p1});
     FContextConfig *ccon = new FContextConfig(

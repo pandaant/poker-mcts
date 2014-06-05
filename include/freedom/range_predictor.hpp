@@ -9,6 +9,7 @@
 #define RANGE_PREDICTOR_H
 
 #include <vector>
+#include <iostream>
 #include <ecalc/ecalc.hpp>
 #include <ecalc/handlist.hpp>
 #include <poker/action.hpp>
@@ -81,6 +82,8 @@ public:
                  int _threshold_min_hands = 5,
                  double _zerop_rc = 0.20,
                  bool _use_cache = true);
+
+  virtual ~RangePredictor(){}
 
   /**
    * Generates a range for a given action/IModel combination

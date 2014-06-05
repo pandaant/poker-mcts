@@ -14,8 +14,8 @@
 
 namespace freedom {
 
-using rapidjson::Value;
 using ecalc::ECalc;
+using rapidjson::Value;
 using mcts::ISelectionStrategy;
 using mcts::ISimulationStrategy;
 using mcts::IBackpropagationStrategy;
@@ -45,9 +45,7 @@ public:
 
   FConfig(const Value &data, ECalc *_ecalc, bool seed = true);
   FConfig(sstrategy_t *_move_select_strat, bool seed = true,
-          bool _dump_tree = false)
-      : move_selection_strat_(_move_select_strat), dump_tree(_dump_tree),
-        nb_gen_(new generator_t(0)) {} // TODO seed generator
+          bool _dump_tree = false);
 
   // TODO clone strategies here. so constructor can take care of
   // deletion without external segfaults
@@ -58,25 +56,15 @@ public:
           sstrategy_t *_decision_selection_strat,
           sstrategy_t *_opponent_selection_strat,
           sstrategy_t *_move_select_strat, bool seed = true,
-          bool _dump_tree = false)
-      : move_selection_strat_(_move_select_strat),
-      //TODO seed gen
-        nb_gen_(new generator_t(0)), time_s(_time_s),
-        ecalc_nb_samples(_ecalc_nb_samples), ecalc(_ecalc),
-        simulation_strat(_simulation_strat),
-        decision_backprop_strat(_decision_backprop_strat),
-        opponent_backprop_strat(_opponent_backprop_strat),
-        decision_selection_strat(_decision_selection_strat),
-        opponent_selection_strat(_opponent_selection_strat),
-        dump_tree(_dump_tree) {}
+          bool _dump_tree = false);
 
   ~FConfig();
 
   IModel *model(string name);
   void readModels(const Value &data);
 
-  generator_t *nb_gen() { return nb_gen_; }
-  sstrategy_t *move_selection_strat() { return move_selection_strat_; }
+  generator_t *nb_gen();
+  sstrategy_t *move_selection_strat();
 };
 };
 

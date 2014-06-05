@@ -1,10 +1,3 @@
-/* 
- * File:   ehs2_range_predictor.h
- * Author: batman
- *
- * Created on February 26, 2014, 11:24 PM
- */
-
 #ifndef EHS2_RANGE_PREDICTOR_H
 #define	EHS2_RANGE_PREDICTOR_H
 
@@ -48,7 +41,6 @@ public:
   double equity_first(vector<Handlist *> lists, vector<unsigned> board,
                       vector<unsigned> deadcards, ECalc *c);
 };
-};
+}
 
-#endif	/* EHS2_RANGE_PREDICTOR_H */
-
+#endif

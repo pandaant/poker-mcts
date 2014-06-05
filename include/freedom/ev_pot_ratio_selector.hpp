@@ -1,10 +1,3 @@
-/*
- * File:   ev_pot_ratio_selector.h
- * Author: batman
- *
- * Created on March 25, 2014, 10:14 AM
- */
-
 #ifndef EV_AMT_RATIO_SELECTOR_H
 #define EV_AMT_RATIO_SELECTOR_H
 
@@ -15,20 +8,19 @@
 namespace freedom {
 using namespace mcts;
 
-template<typename Context, typename Config>
+template <typename Context, typename Config>
 class EVPotRatioSelector : public MaxFunctionSelector<Context, Config> {
-    typedef typename INode<Context, Config>::node_t node_t;
+  typedef typename INode<Context, Config>::node_t node_t;
 
 public:
   virtual double evaluate(node_t *node) const {
     FContext context = node->context();
     double ev = node->ev();
     bb action_amount = context.last_action.amount;
-    bb pot = context.pot+action_amount;
-    return ev/pot.getAsDouble();
+    bb pot = context.pot + action_amount;
+    return ev / pot.getAsDouble();
   }
 };
-};
+}
 
-#endif /* EV_AMT_RATIO_SELECTOR_H */
-
+#endif

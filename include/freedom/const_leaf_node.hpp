@@ -1,17 +1,10 @@
-/*
- * File:   const_leaf_node.h
- * Author: batman
- *
- * Created on August 6, 2013, 12:34 PM
- */
-
 #ifndef CONST_LEAF_NODE_H
 #define CONST_LEAF_NODE_H
 
-#include <mcts/inode.hpp>
-#include <mcts/leaf_node.hpp>
 #include "fconfig.hpp"
 #include "fcontext.hpp"
+#include <mcts/inode.hpp>
+#include <mcts/leaf_node.hpp>
 
 namespace freedom {
 
@@ -28,10 +21,12 @@ class ConstantLeafNode : public LeafNode<FContext, FConfig> {
 public:
   double value;
 
-  ConstantLeafNode(const FContext &_FContext, FConfig *_FConfig, node_t *_parent,
-                   double _value)
-      : LeafNode<FContext, FConfig>(_FContext, _FConfig, _parent), value(_value) {}
-  ~ConstantLeafNode() {}
+  ConstantLeafNode(const FContext &fcontext_, FConfig *fconfig_,
+                   node_t *parent_, const double &value_)
+      : LeafNode<FContext, FConfig>(fcontext_, fconfig_, parent_),
+        value(value_) {}
+
+  virtual ~ConstantLeafNode() {}
 
   virtual double ev() const { return value; }
 
@@ -46,7 +41,6 @@ public:
     this->parent_->backpropagate(value);
   }
 };
-};
+}
 
-#endif /* CONST_LEAF_NODE_H */
-
+#endif
