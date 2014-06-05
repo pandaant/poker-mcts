@@ -13,7 +13,7 @@ class BetamtEVRatioSelector : public ISelectionStrategy<Context, Config> {
   double threshold;
 
 public:
-  BetamtEVRatioSelector(double _threshold) : threshold(_threshold) {}
+  explicit BetamtEVRatioSelector(double _threshold) : threshold(_threshold) {}
 
   node_t *select(node_t *node) {
     vector<node_t *> children = node->children();

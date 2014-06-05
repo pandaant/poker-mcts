@@ -16,6 +16,35 @@ FPlayer::FPlayer(const Value &data) : status(load_status(data)) {
   handlist = NULL;
 }
 
+FPlayer::FPlayer(const bb &bankroll_, const vector<bb> &invested_,
+                 Handlist *handlist_, const string &model_,
+                 const StatusType::Enum &status_)
+    : bankroll(bankroll_), invested(invested_), handlist(handlist_),
+      model(model_), status(status_) {}
+
+FPlayer::FPlayer(const bb &bankroll_)
+    : FPlayer(bankroll_, vector<bb>(4, bb(0)), NULL, "default",
+              StatusType::Active) {}
+
+FPlayer::FPlayer(const bb &bankroll_, const vector<bb> &invested_)
+    : FPlayer(bankroll_, invested_, NULL, "default", StatusType::Active) {}
+
+FPlayer::FPlayer(const bb &bankroll_, const vector<bb> &invested_,
+                 Handlist *handlist_, const string &model_)
+    : FPlayer(bankroll_, invested_, handlist_, model_, StatusType::Active) {}
+
+FPlayer::FPlayer(const bb &bankroll_, const vector<bb> &invested_,
+                 StatusType::Enum status_)
+    : FPlayer(bankroll_, invested_, NULL, "default", status_) {}
+
+FPlayer::FPlayer(const bb &bankroll_, StatusType::Enum status_)
+    : FPlayer(bankroll_, vector<bb>(4, bb(0)), NULL, "default", status_) {}
+
+FPlayer::FPlayer(const FPlayer &p)
+    : bankroll(p.bankroll), invested(p.invested),
+      action_sequence(p.action_sequence), handlist(p.handlist), model(p.model),
+      status(p.status) {}
+
 FPlayer &FPlayer::operator=(const FPlayer &p) {
   bankroll = p.bankroll;
   invested = p.invested;
@@ -26,8 +55,9 @@ FPlayer &FPlayer::operator=(const FPlayer &p) {
   return *this;
 }
 
-bool FPlayer::make_investment(const bb &amount,
-                              const PhaseType::Enum &phase) {
+FPlayer::~FPlayer() {}
+
+bool FPlayer::make_investment(const bb &amount, const PhaseType::Enum &phase) {
   if (bankroll < amount)
     return false;
   bankroll -= amount;
@@ -54,7 +84,7 @@ void FPlayer::set_active() { status = StatusType::Active; }
 
 void FPlayer::set_allin() { status = StatusType::Allin; }
 
-StatusType::Enum FPlayer::load_status(const Value &data) const{
+StatusType::Enum FPlayer::load_status(const Value &data) const {
   string stat = data["status"].GetString();
   if (stat == "active")
     return StatusType::Active;
@@ -65,7 +95,7 @@ StatusType::Enum FPlayer::load_status(const Value &data) const{
   throw std::runtime_error("Statustype unknown");
 }
 
-void FPlayer::serialize_fields(Writer<FileStream> &writer){
+void FPlayer::serialize_fields(Writer<FileStream> &writer) {
   writer.StartArray();
   writer.String("status");
   writer.String("bankroll");
@@ -74,7 +104,7 @@ void FPlayer::serialize_fields(Writer<FileStream> &writer){
   writer.EndArray();
 }
 
-void FPlayer::serialize(Writer<FileStream> &writer) const{
+void FPlayer::serialize(Writer<FileStream> &writer) const {
   writer.String(StatusType::ToStrShort[status]);
   writer.Double(bankroll.getAsDouble());
 

@@ -33,36 +33,26 @@ public:
 
   FPlayer(const Value &data);
 
-  ~FPlayer() {}
+  FPlayer(const bb &bankroll_);
 
-  FPlayer(bb _bankroll)
-      : FPlayer(_bankroll, vector<bb>(4, bb(0)), NULL, "default",
-                StatusType::Active) {}
+  FPlayer(const bb &bankroll_, StatusType::Enum status_);
 
-  FPlayer(bb _bankroll, vector<bb> _invested)
-      : FPlayer(_bankroll, _invested, NULL, "default", StatusType::Active) {}
+  FPlayer(const bb &bankroll_, const vector<bb> &invested_);
 
-  FPlayer(bb _bankroll, vector<bb> invested_, Handlist *_handlist,
-          string _model)
-      : FPlayer(_bankroll, invested_, _handlist, _model, StatusType::Active) {}
+  FPlayer(const bb &bankroll_, const vector<bb> &invested_,
+          StatusType::Enum status_);
 
-  FPlayer(bb _bankroll, vector<bb> invested_, StatusType::Enum status_)
-      : FPlayer(_bankroll, invested_, NULL, "default", status_) {}
+  FPlayer(const bb &bankroll_, const vector<bb> &invested_, Handlist *handlist_,
+          const string &model_);
 
-  FPlayer(bb _bankroll, StatusType::Enum status_)
-      : FPlayer(_bankroll, vector<bb>(4, bb(0)), NULL, "default", status_) {}
+  FPlayer(const bb &bankroll_, const vector<bb> &invested_, Handlist *handlist_,
+          const string &model_, const StatusType::Enum &status_);
 
-  FPlayer(bb _bankroll, vector<bb> invested_, Handlist *_handlist,
-          string _model, StatusType::Enum status_)
-      : bankroll(_bankroll), invested(invested_), handlist(_handlist),
-        model(_model), status(status_) {}
-
-  FPlayer(const FPlayer &p)
-      : bankroll(p.bankroll), invested(p.invested),
-        action_sequence(p.action_sequence), handlist(p.handlist),
-        model(p.model), status(p.status) {}
+  FPlayer(const FPlayer &p);
 
   FPlayer &operator=(const FPlayer &p);
+
+  ~FPlayer();
 
   bool make_investment(const bb &amount, const PhaseType::Enum &phase);
   bb total_investment() const;
