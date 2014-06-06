@@ -32,7 +32,7 @@ public:
   int index_utg;
   int index_button;
   int index_active;
-  int betting_round;
+  unsigned betting_round;
 
   PhaseType::Enum phase;
   vector<FPlayer> player;
@@ -60,7 +60,7 @@ public:
    * @param action
    * @return 
    */
-  FContext transition(Action action) const;
+  FContext transition(const Action &action) const;
   
   /**
    * generates all possible contexts that can be derived from
@@ -104,7 +104,7 @@ public:
   int nb_player_not_inactive() const;
   int next_utg() const;
   int next_to_act() const;
-  string json();
+  string json() const;
 
   PhaseType::Enum load_phase(const Value &data);
   void load_players(const Value &data);
@@ -116,7 +116,7 @@ public:
    * @param factor
    * @return
    */
-  bb get_bet_raise_amount(double factor) const;
+  bb get_bet_raise_amount(const double &factor) const;
 
   FPlayer &bot_seat();
   const FPlayer &bot_seat() const;
@@ -140,5 +140,4 @@ public:
 };
 };
 
-#endif /* FCONTEXT_H */
-
+#endif

@@ -32,40 +32,36 @@ public:
   generator_t *nb_gen_;
   double time_s;
   int ecalc_nb_samples;
-  bool dump_tree;
   model_map models;
 
   ECalc *ecalc;
   simstrategy_t *simulation_strat;
-  sstrategy_t *move_selection_strat_;
+  sstrategy_t *move_selection_strat;
   sstrategy_t *decision_selection_strat;
   sstrategy_t *opponent_selection_strat;
   IBackpropagationStrategy *decision_backprop_strat;
   IBackpropagationStrategy *opponent_backprop_strat;
 
-  FConfig(const Value &data, ECalc *_ecalc, bool seed = true);
-  FConfig(sstrategy_t *_move_select_strat, bool seed = true,
-          bool _dump_tree = false);
+  FConfig(const Value &data, ECalc *ecalc_, const bool &seed = true);
+  FConfig(sstrategy_t *move_select_strat_, const bool &seed = true);
 
   // TODO clone strategies here. so constructor can take care of
   // deletion without external segfaults
-  FConfig(double _time_s, int _ecalc_nb_samples, ECalc *_ecalc,
-          simstrategy_t *_simulation_strat,
-          IBackpropagationStrategy *_decision_backprop_strat,
-          IBackpropagationStrategy *_opponent_backprop_strat,
-          sstrategy_t *_decision_selection_strat,
-          sstrategy_t *_opponent_selection_strat,
-          sstrategy_t *_move_select_strat, bool seed = true,
-          bool _dump_tree = false);
+  FConfig(const double &time_s_, const unsigned &ecalc_nb_samples_,
+          ECalc *ecalc_, simstrategy_t *simulation_strat_,
+          IBackpropagationStrategy *decision_backprop_strat_,
+          IBackpropagationStrategy *opponent_backprop_strat_,
+          sstrategy_t *decision_selection_strat_,
+          sstrategy_t *opponent_selection_strat_,
+          sstrategy_t *move_select_strat_, const bool &seed = true);
 
   ~FConfig();
 
-  IModel *model(string name);
+  IModel *model(const string &name);
   void readModels(const Value &data);
 
   generator_t *nb_gen();
-  sstrategy_t *move_selection_strat();
 };
-};
+}
 
 #endif

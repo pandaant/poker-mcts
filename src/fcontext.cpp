@@ -82,7 +82,7 @@ void FContext::load_players(const Value &data) {
     player.push_back(FPlayer(data["player"][i]));
 }
 
-FContext FContext::transition(Action action) const {
+FContext FContext::transition(const Action &action) const {
   FContext ncontext = FContext(*this);
 
   if (ncontext.is_terminal())
@@ -299,7 +299,7 @@ void FContext::transition_phase() {
   }
 }
 
-bb FContext::get_bet_raise_amount(double factor) const {
+bb FContext::get_bet_raise_amount(const double &factor) const {
   return has_bet() ? (highest_bet * bb(factor)) : (pot * bb(factor));
 }
 
@@ -410,4 +410,4 @@ void FContext::serialize(Writer<FileStream> &writer) {
 
   writer.EndArray();
 }
-};
+}

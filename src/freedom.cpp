@@ -13,7 +13,7 @@ Freedom::Freedom(Handranks *handranks_) : ecalc(new ECalc(handranks_)) {
   range_predictor = new EHS2RangePredictor(
       ecalc, 1200,
       Threshold(1, 1), // TODO lie this to the other config options (was 2, 2)
-      vector<int>({ 20, 10, 10, 10 }), 10, false);
+      vector<unsigned>({ 20, 10, 10, 10 }), 10, false);
 }
 
 Freedom::~Freedom() {

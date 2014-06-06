@@ -1,15 +1,7 @@
-/*
- * File:   range_predictor.h
- * Author: batman
- *
- * Created on August 13, 2013, 11:48 PM
- */
-
 #ifndef RANGE_PREDICTOR_H
 #define RANGE_PREDICTOR_H
 
 #include <vector>
-#include <iostream>
 #include <ecalc/ecalc.hpp>
 #include <ecalc/handlist.hpp>
 #include <poker/action.hpp>
@@ -24,6 +16,7 @@ namespace freedom {
 using std::vector;
 using ecalc::ECalc;
 using ecalc::Handlist;
+using ecalc::cards;
 using poker::Hand;
 using poker::Action;
 using poker::ActionSequence;
@@ -31,10 +24,11 @@ using poker::ActionSequence;
 struct Threshold {
   double preflop, postflop;
 
-  Threshold(double prf, double pof) : preflop(prf), postflop(pof) {}
+  Threshold(const double &prf, const double &pof)
+      : preflop(prf), postflop(pof) {}
 };
 
-//TODO make range predictor base class an derive from there. at the moment
+// TODO make range predictor base class an derive from there. at the moment
 // ehs2 handpredictor overwrites equity_first and because of this
 // in this class the function has to be made virtual
 /**
@@ -49,10 +43,10 @@ protected:
   ECalc *ecalc;
   // is a copy of ecalc for threading
   ECalc *ecalc2;
-  int nb_samples;
+  unsigned nb_samples;
   Threshold threshold;
-  vector<int> nb_buckets;
-  int threshold_min_hands;
+  vector<unsigned> nb_buckets;
+  unsigned threshold_min_hands;
   // if an action has zero % of occuring,
   // this percentage is used instead
   // for raise call actions.
@@ -60,7 +54,7 @@ protected:
   bool use_cache;
 
 public:
-  //TODO clear when max size reached to keep cache from growing
+  // TODO clear when max size reached to keep cache from growing
   // to big
   // TODO i could use a ordnered map here, because faster lookup and stuff
   // cache table
@@ -76,14 +70,13 @@ public:
    * or raise percentage
    * buckets to use in that round (0=preflop, 3=river)
    */
-  RangePredictor(ECalc *_calc, int _nb_samples,
-                 Threshold _thresholds = Threshold(2, 2),
-                 vector<int> _nb_buckets = vector<int>(4, 20),
-                 int _threshold_min_hands = 5,
-                 double _zerop_rc = 0.20,
-                 bool _use_cache = true);
+  RangePredictor(ECalc *calc_, const unsigned &nb_samples_,
+                 const Threshold &thresholds_ = Threshold(2, 2),
+                 const vector<unsigned> &nb_buckets_ = vector<unsigned>(4, 20),
+                 const unsigned &threshold_min_hands_ = 5,
+                 const double &zerop_rc_ = 0.20, const bool &use_cache_ = true);
 
-  virtual ~RangePredictor(){}
+  virtual ~RangePredictor() {}
 
   /**
    * Generates a range for a given action/IModel combination
@@ -94,10 +87,10 @@ public:
    * @return
    */
   template <class Bucketizer>
-  vector<Hand> predict_range(ActionSequence actions, IModel *IModel,
-                             vector<unsigned> board, vector<unsigned> dead) {
-
-    vector<BucketHand> collection = _predict_range<Bucketizer>(actions,IModel,board,dead);
+  vector<Hand> predict_range(const ActionSequence &actions, IModel *IModel,
+                             const cards &board, const cards &dead) {
+    vector<BucketHand> collection =
+        _predict_range<Bucketizer>(actions, IModel, board, dead);
     // ugly conversion
     vector<Hand> range;
     for (auto bhand : collection)
@@ -106,8 +99,10 @@ public:
   }
 
   template <class Bucketizer>
-  vector<BucketHand> _predict_range(ActionSequence actions, IModel *IModel,
-                             vector<unsigned> board, vector<unsigned> dead) { // TODO use ecalcdefs here?
+  vector<BucketHand>
+  _predict_range(const ActionSequence &actions, IModel *IModel,
+                 const cards &board,
+                 const cards &dead) { // TODO use ecalcdefs here?
     vector<Hand> current_range;
 
     // get initial
@@ -131,7 +126,7 @@ public:
       if (curr_line.empty())
         continue;
       // TODO also check that only actions are processed in phases where
-      // we have enough boardcards. this is a prevention ... i dont know 
+      // we have enough boardcards. this is a prevention ... i dont know
       // .. maybe its ok like this. if it happens, would mean that the
       // supplied history is wrong. so we better fold because of an error
       // than calculate wrong results because of wrong input
@@ -141,7 +136,8 @@ public:
                         dead_by_phase(board, dead, curr_phase));
 
       // apply new equities to range
-      collection = update_equities(collection, cache[pid]); //TODO delete, is obsolete
+      collection =
+          update_equities(collection, cache[pid]); // TODO delete, is obsolete
 
       // loop over actions in phase
       for (ActionSequence::LineAction action : curr_line) {
@@ -151,9 +147,11 @@ public:
         BucketCollection buckets =
             buckbuck.map_hands(nb_buckets[i], collection);
         // calc bounds
-        upper = calculate_upper_bound(action.action, curr_phase, action.betting_round,  IModel, buckets);
+        upper = calculate_upper_bound(action.action, curr_phase,
+                                      action.betting_round, IModel, buckets);
         lower =
-            calculate_lower_bound(action.action, curr_phase, action.betting_round, IModel, buckets, upper);
+            calculate_lower_bound(action.action, curr_phase,
+                                  action.betting_round, IModel, buckets, upper);
 
         // new range
         temp_collection = buckets.hand_bucket_range(lower, upper);
@@ -165,7 +163,7 @@ public:
       }
     }
 
-    // remove entries from cache if we 
+    // remove entries from cache if we
     // dont wanna use it
     if (!use_cache)
       cache.clear();
@@ -177,7 +175,7 @@ public:
    * returns the hand with the best equity for a given board
    * and deadcards.
    */
-  Hand get_best_hand(vector<unsigned> board, vector<unsigned> deadcards);
+  Hand get_best_hand(const cards &board, const cards &deadcards);
 
   /**
    * returns the percentage the best hand possible will be sampled
@@ -190,7 +188,7 @@ public:
    * @param p_fold percentage of hands folded in context
    * @param board,deadcards vectors of cards
    */
-  double calculate_best_hand_percentage(double p_fold) const;
+  double calculate_best_hand_percentage(const double &p_fold) const;
 
   /**
    * generates an id to identify board/deadcard combination
@@ -198,7 +196,7 @@ public:
    * @param deadcards
    * @return
    */
-  string generate_cache_id(vector<unsigned> board, vector<unsigned> deadcards);
+  string generate_cache_id(const cards &board, const cards &deadcards) const;
 
   /**
    * looks for the entry. if it cant find it, it will be generated and saved
@@ -207,14 +205,14 @@ public:
    * @return the uniqe identdifier for this cache entry as created by
    * generate_cache_id
    */
-  string build_cache(vector<unsigned> board, vector<unsigned> deadcards);
+  string build_cache(const cards &board, const cards &deadcards);
 
   /**
    * calculates all possible hands
    * @param deadcards
    * @return
    */
-  vector<BucketHand> hand_combinations(vector<unsigned> deadcards);
+  vector<BucketHand> hand_combinations(const cards &deadcards);
 
   /**
    * calculates equity (pwin+ptie) for the first handlist
@@ -223,8 +221,9 @@ public:
    * @param deadcards
    * @return
    */
-  virtual double equity_first(vector<Handlist *> lists, vector<unsigned> board,
-                      vector<unsigned> deadcards, ECalc *c);
+  virtual double equity_first(const vector<Handlist *> &lists,
+                              const cards &board, const cards &deadcards,
+                              ECalc *c) const;
 
   /**
    * calculates equities for a range of hands in 2 threads of calculate_subset
@@ -232,8 +231,9 @@ public:
    * @param board
    * @param deadcards
    */
-  void calculate_handstrengths(vector<BucketHand> &hands, vector<unsigned> board,
-                               vector<unsigned> deadcards);
+  void calculate_handstrengths(vector<BucketHand> &hands,
+                               const cards &board,
+                               const cards &deadcards);
 
   /**
    * threaded calculation of range
@@ -242,8 +242,8 @@ public:
    * @param deadcards
    * @param c
    */
-  void calculate_subset(vector<BucketHand> &hands, vector<unsigned> board,
-                        vector<unsigned> deadcards, ECalc *c);
+  void calculate_subset(vector<BucketHand> &hands, const cards &board,
+                        const cards &deadcards, ECalc *c);
 
   /**
    * updates collection @overwrite
@@ -253,25 +253,28 @@ public:
    * @param overwrite   collection to be modified
    * @param source      reference collection
    */
-  //TODO depreciated, not needed anymore because now it is impossible 
+  // TODO depreciated, not needed anymore because now it is impossible
   // to carry hands that cant be because they use a board or a deadcard
   vector<BucketHand> update_equities(vector<BucketHand> &overwrite,
                                      vector<BucketHand> &source) const;
 
   /**
    * the upper_bound is the index of the first bucket to get hands from.
-   * The BucketCollection stores strong hands at low indexes and weaker in 
+   * The BucketCollection stores strong hands at low indexes and weaker in
    * ascending order. because of this the upper_bound is always >= lower_bound.
    * contrary to intuition.
    */
-  int calculate_upper_bound(Action action, PhaseType::Enum phase, int betting_round, IModel *IModel,
-                            BucketCollection &collection);
-  int calculate_lower_bound(Action action, PhaseType::Enum phase, int betting_round, IModel *IModel,
-                            BucketCollection &collection, int upper_bound);
+  int calculate_upper_bound(const Action &action, const PhaseType::Enum &phase,
+                            const unsigned &betting_round, IModel *IModel,
+                            const BucketCollection &collection) const;
+  int calculate_lower_bound(const Action &action, const PhaseType::Enum &phase,
+                            const unsigned &betting_round, IModel *IModel,
+                            const BucketCollection &collection, const unsigned &upper_bound) const;
 
-  bool is_weak_call_or_raise(Action action, bool is_postflop);
+  bool is_weak_call_or_raise(const Action &action, const bool &is_postflop) const;
 
-  vector<unsigned> board_by_phase(vector<unsigned> complete_board, PhaseType::Enum phase);
+  vector<unsigned> board_by_phase(const cards &complete_board,
+                                  const PhaseType::Enum &phase) const;
 
   /**
    * returns deadcards concatenated with boardcards.
@@ -279,7 +282,9 @@ public:
    * (because they are from later phases). but we already know them,
    * so we use them.
    **/
-  vector<unsigned> dead_by_phase(vector<unsigned> complete_board, vector<unsigned> dead_cards,PhaseType::Enum phase);
+  vector<unsigned> dead_by_phase(const cards &complete_board,
+                                 const cards & dead_cards,
+                                 const PhaseType::Enum &phase) const;
 
   /**
    * returns top nb_hands of hands rounded up to the buckets that contain them
@@ -287,11 +292,10 @@ public:
    * will
    * be returned, because the whole bucket is returned.
    */
-  vector<BucketHand> top_n_hands(BucketCollection &buckets, int nb_hands);
+  vector<BucketHand> top_n_hands(const BucketCollection &buckets, const unsigned &nb_hands) const;
 
   bool is_raise_or_bet_or_allin(const Action &action) const;
 };
-};
+}
 
-#endif /* RANGE_PREDICTOR_H */
-
+#endif

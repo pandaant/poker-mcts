@@ -24,7 +24,7 @@ public:
    * Constructor
    * @look @ class RangePredictor
    */
-  EHS2RangePredictor(ECalc *_calc, const unsigned &nb_samples_,
+  EHS2RangePredictor(ECalc *calc_, const unsigned &nb_samples_,
                      const Threshold &thresholds_ = Threshold(2, 2),
                      const vector<unsigned> &nb_buckets_ = vector<unsigned>(4,
                                                                             20),
@@ -40,8 +40,8 @@ public:
    * @return
    */
   double equity_first(const Handlist::collection_t &lists,
-                      const vector<unsigned> &board,
-                      const vector<unsigned> &deadcards, ECalc *c);
+                      const cards &board,
+                      const cards &deadcards, ECalc *c) const;
 };
 }
 

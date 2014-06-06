@@ -12,24 +12,25 @@ namespace freedom {
 
 using std::thread;
 
-RangePredictor::RangePredictor(ECalc *_calc, int _nb_samples,
-                               Threshold _thresholds, vector<int> _nb_buckets,
-                               int _threshold_min_hands, double _zerop_rc,
-                               bool _use_cache)
-    : ecalc(_calc), ecalc2(_calc), nb_samples(_nb_samples),
-      threshold(_thresholds), nb_buckets(_nb_buckets),
-      threshold_min_hands(_threshold_min_hands), zerop_rc(_zerop_rc),
-      use_cache(_use_cache) {}
+RangePredictor::RangePredictor(ECalc *calc_, const unsigned &nb_samples_,
+                               const Threshold &thresholds_,
+                               const vector<unsigned> &nb_buckets_,
+                               const unsigned &threshold_min_hands_,
+                               const double &zerop_rc_, const bool &use_cache_)
+    : ecalc(calc_), ecalc2(calc_), nb_samples(nb_samples_),
+      threshold(thresholds_), nb_buckets(nb_buckets_),
+      threshold_min_hands(threshold_min_hands_), zerop_rc(zerop_rc_),
+      use_cache(use_cache_) {}
 
-vector<BucketHand> RangePredictor::top_n_hands(BucketCollection &buckets,
-                                               int nb_hands) {
+vector<BucketHand> RangePredictor::top_n_hands(const BucketCollection &buckets,
+                                               const unsigned &nb_hands) const {
   int end = buckets.get_bucket_index_including_nb_hands(nb_hands);
   return buckets.hand_bucket_range(end, 0);
 }
 
 // TODO ein bitset als id wäre sehr viel effizienter
-string RangePredictor::generate_cache_id(vector<unsigned> board,
-                                         vector<unsigned> deadcards) {
+string RangePredictor::generate_cache_id(const cards &board,
+                                         const cards &deadcards) const {
   // TODO "for" makes unnecessary copies
   std::stringstream ss;
   vector<Card> cards;
@@ -43,14 +44,14 @@ string RangePredictor::generate_cache_id(vector<unsigned> board,
   return ss.str();
 }
 
-Hand RangePredictor::get_best_hand(vector<unsigned> board,
-                                   vector<unsigned> deadcards) {
+Hand RangePredictor::get_best_hand(const cards &board, const cards &deadcards) {
   string id = build_cache(board, deadcards);
   vector<BucketHand> hands = cache[id];
   return static_cast<Hand>(hands[0]);
 }
 
-double RangePredictor::calculate_best_hand_percentage(double p_fold) const {
+double
+RangePredictor::calculate_best_hand_percentage(const double &p_fold) const {
   double factor = 1 / 3.0;
 
   // player folds less than 33%
@@ -73,8 +74,7 @@ double RangePredictor::calculate_best_hand_percentage(double p_fold) const {
   return 0;
 }
 
-string RangePredictor::build_cache(vector<unsigned> board,
-                                   vector<unsigned> deadcards) {
+string RangePredictor::build_cache(const cards &board, const cards &deadcards) {
   string id = generate_cache_id(board, deadcards);
   if (cache.find(id) == cache.end()) {
     vector<unsigned> cards(board);
@@ -89,8 +89,7 @@ string RangePredictor::build_cache(vector<unsigned> board,
   return id;
 }
 
-vector<BucketHand>
-RangePredictor::hand_combinations(vector<unsigned> deadcards) {
+vector<BucketHand> RangePredictor::hand_combinations(const cards &deadcards) {
   std::bitset<52> deadmap(0);
   for (int card : deadcards)
     deadmap[card - 1] = 1;
@@ -104,17 +103,17 @@ RangePredictor::hand_combinations(vector<unsigned> deadcards) {
   return hands;
 }
 
-double RangePredictor::equity_first(vector<Handlist *> lists,
-                                    vector<unsigned> board,
-                                    vector<unsigned> deadcards, ECalc *c) {
+double RangePredictor::equity_first(const vector<Handlist *> &lists,
+                                    const cards &board, const cards &deadcards,
+                                    ECalc *c) const {
   ecalc::result_collection results;
   results = c->evaluate(lists, board, deadcards, nb_samples);
   return results[0].pwin_tie();
 }
 
 void RangePredictor::calculate_subset(vector<BucketHand> &hands,
-                                      vector<unsigned> board,
-                                      vector<unsigned> deadcards, ECalc *c) {
+                                      const cards &board,
+                                      const cards &deadcards, ECalc *c) {
   if (hands.empty())
     return;
 
@@ -133,8 +132,8 @@ void RangePredictor::calculate_subset(vector<BucketHand> &hands,
 }
 
 void RangePredictor::calculate_handstrengths(vector<BucketHand> &hands,
-                                             vector<unsigned> board,
-                                             vector<unsigned> deadcards) {
+                                             const cards &board,
+                                             const cards &deadcards) {
 
   std::size_t const half_size = hands.size() / 2;
   vector<BucketHand> b1(hands.begin(), hands.begin() + half_size);
@@ -157,9 +156,10 @@ bool RangePredictor::is_raise_or_bet_or_allin(const Action &action) const {
   return action.is_raise() || action.is_bet() || action.is_allin();
 }
 
-int RangePredictor::calculate_upper_bound(Action action, PhaseType::Enum phase,
-                                          int betting_round, IModel *model,
-                                          BucketCollection &collection) {
+int RangePredictor::calculate_upper_bound(
+    const Action &action, const PhaseType::Enum &phase,
+    const unsigned &betting_round, IModel *model,
+    const BucketCollection &collection) const {
   // top bucket for raises and alike aswell as weak actions
   if (is_raise_or_bet_or_allin(action) ||
       is_weak_call_or_raise(action, !(phase == PhaseType::Preflop)))
@@ -177,10 +177,12 @@ int RangePredictor::calculate_upper_bound(Action action, PhaseType::Enum phase,
   return 0;
 }
 
-int RangePredictor::calculate_lower_bound(Action action, PhaseType::Enum phase,
-                                          int betting_round, IModel *model,
-                                          BucketCollection &collection,
-                                          int upper_bound) {
+int RangePredictor::calculate_lower_bound(const Action &action,
+                                          const PhaseType::Enum &phase,
+                                          const unsigned &betting_round,
+                                          IModel *model,
+                                          const BucketCollection &collection,
+                                          const unsigned &upper_bound) const {
   if (is_weak_call_or_raise(action, !(phase == PhaseType::Preflop)))
     return collection.nb_buckets() - 1;
 
@@ -207,7 +209,8 @@ int RangePredictor::calculate_lower_bound(Action action, PhaseType::Enum phase,
   return collection.nb_buckets() - 1;
 }
 
-bool RangePredictor::is_weak_call_or_raise(Action action, bool is_postflop) {
+bool RangePredictor::is_weak_call_or_raise(const Action &action,
+                                           const bool &is_postflop) const {
   if (is_raise_or_bet_or_allin(action) || action.is_call())
     if (action.amount <=
         bb((is_postflop ? threshold.postflop : threshold.preflop)))
@@ -215,9 +218,9 @@ bool RangePredictor::is_weak_call_or_raise(Action action, bool is_postflop) {
   return false;
 }
 
-vector<unsigned> RangePredictor::board_by_phase(vector<unsigned> complete_board,
-                                                PhaseType::Enum phase) {
-  vector<unsigned> board;
+cards RangePredictor::board_by_phase(const cards &complete_board,
+                                     const PhaseType::Enum &phase) const {
+  cards board;
   switch (phase) {
   case PhaseType::Preflop:
   case PhaseType::Showdown:
@@ -245,10 +248,10 @@ vector<unsigned> RangePredictor::board_by_phase(vector<unsigned> complete_board,
   return board;
 }
 
-vector<unsigned> RangePredictor::dead_by_phase(vector<unsigned> complete_board,
-                                               vector<unsigned> deadcards,
-                                               PhaseType::Enum phase) {
-  vector<unsigned> dead = deadcards;
+cards RangePredictor::dead_by_phase(const cards &complete_board,
+                                    const cards &deadcards,
+                                    const PhaseType::Enum &phase) const{
+  cards dead = deadcards;
   switch (phase) {
   case PhaseType::Preflop:
     dead.insert(dead.end(), complete_board.begin(), complete_board.end());

@@ -1,10 +1,3 @@
-/*
- * File:   final_move_selector.h
- * Author: batman
- *
- * Created on April 11, 2014, 10:34 PM
- */
-
 #ifndef FINAL_MOVE_SELECTOR_H
 #define FINAL_MOVE_SELECTOR_H
 
@@ -86,4 +79,4 @@ public:
 };
 }
 
-#endif /* FINAL_MOVE_SELECTOR_H */
+#endif

@@ -35,7 +35,7 @@ public:
 
   FPlayer(const bb &bankroll_);
 
-  FPlayer(const bb &bankroll_, StatusType::Enum status_);
+  FPlayer(const bb &bankroll_, const StatusType::Enum &status_);
 
   FPlayer(const bb &bankroll_, const vector<bb> &invested_);
 

@@ -22,7 +22,7 @@ using std::string;
 using namespace mcts;
 
 template<typename Context, typename Config>
-static ISelectionStrategy<Context, Config> *lookup_selection_strat(string strategy) {
+static ISelectionStrategy<Context, Config> *lookup_selection_strat(const string &strategy) {
   if (strategy == "sampling")
     return new SamplingSelector<Context, Config>();
   if (strategy == "max_value")
@@ -42,7 +42,7 @@ static ISelectionStrategy<Context, Config> *lookup_selection_strat(string strate
   throw std::runtime_error("requested selection strategy not found.");
 }
 
-static IBackpropagationStrategy *lookup_backprop_strat(string strategy) {
+static IBackpropagationStrategy *lookup_backprop_strat(const string &strategy) {
   /*if (strategy == "robust_max")
       return new RobustMaxBackpropagationStrategy();*/
   if (strategy == "sample_weighted")

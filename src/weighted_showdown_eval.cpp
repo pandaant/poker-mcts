@@ -5,7 +5,7 @@ namespace freedom {
 using namespace poker;
 
 WeightedShowdownEval::WeightedShowdownEval(ECalc *_ecalc, int _samples)
-    : ShowdownEval(_ecalc, _samples){}
+    : ShowdownEval(_ecalc, _samples) {}
 
 // BAD, errors happenb when someone uses this
 WeightedShowdownEval::~WeightedShowdownEval() {}
@@ -24,24 +24,24 @@ double WeightedShowdownEval::simulate(const FContext &context) {
         // save relative bot index for retrival
         bot_result_index = lists.size() - 1;
       } else {
-          string sequence = context.player[i].action_sequence.str();
-          string key = std::to_string(i) + sequence;
-          if (!is_cached(key)){
-            WeightedBucketHandlist *hl = static_cast<WeightedBucketHandlist *>(
-                context.player[i].handlist);
-            ActionSequence seq =
-                context.player[i].action_sequence.subtract(
-                    hl->range_sequence);
-            vector<double> weights = modify_range(hl->weights, seq);
-            cache[key] = new WeightedBucketHandlist(*hl, weights);
-          }
-          lists.push_back(cache[key]);
+        string sequence = context.player[i].action_sequence.str();
+        string key = std::to_string(i) + sequence;
+        if (!is_cached(key)) {
+          WeightedBucketHandlist *hl =
+              static_cast<WeightedBucketHandlist *>(context.player[i].handlist);
+          ActionSequence seq =
+              context.player[i].action_sequence.subtract(hl->range_sequence);
+          vector<double> weights = modify_range(hl->weights, seq);
+          cache[key] = new WeightedBucketHandlist(*hl, weights);
+        }
+        lists.push_back(cache[key]);
       }
     }
   }
 
   ecalc::result_collection res;
-  res = ecalc->evaluate(lists, context.config->board, vector<unsigned>(), samples);
+  res = ecalc->evaluate(lists, context.config->board, vector<unsigned>(),
+                        samples);
   ecalc::Result bot_result = res[bot_result_index];
 
   bb fixedreturn = get_fixed_win(context);
@@ -80,12 +80,11 @@ WeightedShowdownEval::modify_range(const vector<double> &bucket_probabilities,
     for (FActionSequence::LineAction action : curr_line) {
       if (action.action.action == ActionType::Call) {
         // TODO make gauss and exp dist configurable from freedom_node
-        apply_gauss(new_weights, (new_weights.size() / 2.0) - 1,
-                    sum / 2.0);
+        apply_gauss(new_weights, (new_weights.size() / 2.0) - 1, sum / 2.0);
       }
       if (action.action.action == ActionType::Raise) {
         // TODO make gauss and exp dist configurable from freedom_node
-        apply_exp(new_weights, 0.75,sum/2.0);
+        apply_exp(new_weights, 0.75, sum / 2.0);
       }
     }
   }
@@ -93,14 +92,15 @@ WeightedShowdownEval::modify_range(const vector<double> &bucket_probabilities,
   return new_weights;
 }
 
-void WeightedShowdownEval::apply_exp(vector<double> &vec, double lambda, double multiplicator) const{
+void WeightedShowdownEval::apply_exp(vector<double> &vec, const double &lambda,
+                                     const double &multiplicator) const {
   ExponentialDistribution exp_dist(lambda);
   for (unsigned i = 0; i < vec.size(); ++i)
     vec[i] += exp_dist(i) * multiplicator;
 }
 
-void WeightedShowdownEval::apply_gauss(vector<double> &vec, double mean,
-                                               double std_dev) const{
+void WeightedShowdownEval::apply_gauss(vector<double> &vec, const double &mean,
+                                       const double &std_dev) const {
   GaussianDistribution gauss_dist(mean, std_dev);
   for (unsigned i = 0; i < vec.size(); ++i)
     vec[i] += gauss_dist(i);

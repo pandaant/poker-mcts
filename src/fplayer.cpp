@@ -37,7 +37,7 @@ FPlayer::FPlayer(const bb &bankroll_, const vector<bb> &invested_,
                  StatusType::Enum status_)
     : FPlayer(bankroll_, invested_, NULL, "default", status_) {}
 
-FPlayer::FPlayer(const bb &bankroll_, StatusType::Enum status_)
+FPlayer::FPlayer(const bb &bankroll_, const StatusType::Enum &status_)
     : FPlayer(bankroll_, vector<bb>(4, bb(0)), NULL, "default", status_) {}
 
 FPlayer::FPlayer(const FPlayer &p)

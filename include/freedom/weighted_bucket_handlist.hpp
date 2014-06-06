@@ -33,7 +33,7 @@ public:
                                       ecalc::bitset &deck);
 
   // returns the sum of all weights each bucket has
-  virtual unsigned weight_sum() {
+  virtual unsigned weight_sum() const{
     unsigned sum = 0;
     for (unsigned i = 0; i < weights.size(); ++i)
       sum += weights[i];

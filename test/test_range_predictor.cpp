@@ -173,7 +173,7 @@ SUITE(RangePredictorTests) {
    **/
   TEST_FIXTURE(Setup, TestPredictRange) {
     RangePredictor pr(calc, 10, Threshold(2, 2),
-                      vector<int>({663, 20, 20, 20}));
+                      vector<unsigned>({663, 20, 20, 20}));
 
     /* create action sequence for preflop
      * preflop: Bet 10bb
@@ -193,7 +193,7 @@ SUITE(RangePredictorTests) {
   // test 2 actions over two phases
   TEST_FIXTURE(Setup, TestPredictRange2action) {
     RangePredictor pr(calc, 300, Threshold(2, 2),
-                      vector<int>({663, 20, 20, 20}));
+                      vector<unsigned>({663, 20, 20, 20}));
 
     /* create action sequence for preflop
      * preflop: Bet 10bb
@@ -213,7 +213,7 @@ SUITE(RangePredictorTests) {
   }
 
   TEST_FIXTURE(Setup, TestPredictRangeTheThird) {
-    RangePredictor pr(calc, 10, Threshold(2, 2), vector<int>({10, 20, 20}));
+    RangePredictor pr(calc, 10, Threshold(2, 2), vector<unsigned>({10, 20, 20}));
 
     /* create action sequence for preflop
      * preflop: call 10bb
@@ -232,7 +232,7 @@ SUITE(RangePredictorTests) {
   }
 
   TEST_FIXTURE(Setup, TestPredictRangeTheFourth) {
-    RangePredictor pr(calc, 10, Threshold(2, 2), vector<int>({20, 20, 20, 20}));
+    RangePredictor pr(calc, 10, Threshold(2, 2), vector<unsigned>({20, 20, 20, 20}));
 
     /* create action sequence for preflop
      * preflop: call 10bb
@@ -258,7 +258,7 @@ SUITE(RangePredictorTests) {
    */
   TEST_FIXTURE(Setup, TestBugEmptyRange) {
     RangePredictor pr(calc, 1000, Threshold(2, 2),
-                      vector<int>({6, 10, 10, 10}));
+                      vector<unsigned>({6, 10, 10, 10}));
 
     /* create action sequence for preflop
      * preflop: call 4bb
@@ -287,7 +287,7 @@ SUITE(RangePredictorTests) {
    * check that there exists no configuration that returns an empty range.
    */
   TEST_FIXTURE(Setup, TestRangeCannotBeEmpty) {
-    RangePredictor pr(calc, 10, Threshold(2, 2), vector<int>({10, 20, 20, 20}),
+    RangePredictor pr(calc, 10, Threshold(2, 2), vector<unsigned>({10, 20, 20, 20}),
                       50);
 
     ActionSequence actions;
@@ -306,7 +306,7 @@ SUITE(RangePredictorTests) {
   }
 
   TEST_FIXTURE(Setup, TestTopNHands) {
-    RangePredictor pr(calc, 10, Threshold(2, 2), vector<int>({2, 20, 20, 20}),
+    RangePredictor pr(calc, 10, Threshold(2, 2), vector<unsigned>({2, 20, 20, 20}),
                       5);
 
     vector<BucketHand> collection(
@@ -324,7 +324,7 @@ SUITE(RangePredictorTests) {
   }
 
   TEST_FIXTURE(Setup, TestPredictRangeActionZeroProbability) {
-    RangePredictor pr(calc, 10, Threshold(2, 2), vector<int>({10, 20, 20, 20}),
+    RangePredictor pr(calc, 10, Threshold(2, 2), vector<unsigned>({10, 20, 20, 20}),
                       5, 0.2);
     /* create action sequence for preflop
      * preflop:call 10bb in betting round 2

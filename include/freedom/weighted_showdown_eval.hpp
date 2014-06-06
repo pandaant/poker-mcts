@@ -1,10 +1,3 @@
-/*
- * File:   weighted_showdown_eval.h
- * Author: batman
- *
- * Created on April 25, 2014, 1:17 AM
- */
-
 #ifndef WEIGHTED_SHOWDOWN_EVAL_H
 #define WEIGHTED_SHOWDOWN_EVAL_H
 
@@ -28,15 +21,14 @@ public:
    * the index of every element in the vector and 
    * adds it to the current index's value
    */
-  virtual void apply_exp(vector<double> &vec, double lambda = 1, double multiplicator = 1) const;
-  virtual void apply_gauss(vector<double> &vec, double mean = 0,
-                           double std_dev = 1) const;
+  virtual void apply_exp(vector<double> &vec, const double &lambda = 1, const double &multiplicator = 1) const;
+  virtual void apply_gauss(vector<double> &vec, const double &mean = 0,
+                           const double &std_dev = 1) const;
 
-  bool is_cached(string key) const{
+  bool is_cached(const string &key) const{
     return cache.find(key) != cache.end();
   }
 };
 }
 
-#endif /* WEIGHTED_SHOWDOWN_EVAL_H */
-
+#endif

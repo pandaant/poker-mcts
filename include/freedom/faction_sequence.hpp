@@ -12,7 +12,7 @@ using rapidjson::SizeType;
 
 class FActionSequence : public ActionSequence {
 public:
-  FActionSequence(const Value &data);
+  explicit FActionSequence(const Value &data);
   ActionType::Enum resolve_action(const string &action) const;
 };
 }

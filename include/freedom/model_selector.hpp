@@ -70,7 +70,7 @@ public:
    * output is an index of that vector that was choosen
    * accordingly to the distribution
    */
-  int choose_discrete_index(generator_t &gen, vector<double> probs) {
+  int choose_discrete_index(generator_t &gen, const vector<double> &probs) {
     std::discrete_distribution<int> distribution(probs.begin(), probs.end());
     return distribution(gen);
   }
