@@ -34,7 +34,7 @@ public:
 
   virtual double variance() const { return 0; }
 
-  virtual double simulate() { return value; }
+  virtual double simulate() const { return value; }
 
   virtual void backpropagate(const double &value) {
     ++this->nb_samples_;

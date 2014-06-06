@@ -25,7 +25,7 @@ public:
   ShowdownNode(const FContext &_context, FConfig *_config, node_t *_parent)
       : LeafNode<FContext, FConfig>(_context, _config, _parent), stats() {}
 
-  virtual double simulate() {
+  virtual double simulate() const{
     return this->config_->simulation_strat->simulate(this->context_);
   }
 
