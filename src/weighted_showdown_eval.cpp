@@ -51,7 +51,7 @@ double WeightedShowdownEval::simulate(const FContext &context) {
   double ev = bot_result.pwin_tie() * winnable_pot.getAsDouble();
 
   // subtract our investment to the pot
-  bb player_investment = context.bot_seat().total_investment();
+  bb player_investment = context.bot_player().total_investment();
   bb our_investment = player_investment - fixedreturn;
   ev -= our_investment.getAsDouble();
 

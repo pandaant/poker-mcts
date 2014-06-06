@@ -20,10 +20,10 @@ void OpponentNode::expand() {
 
     if (c.is_terminal()) {
       // bot last remaining player
-      if (!c.bot_seat().is_inactive() && c.nb_player_not_inactive() == 1) {
+      if (!c.bot_player().is_inactive() && c.nb_player_not_inactive() == 1) {
         bb ev = sim_strat->winnable_pot(c);
         bb our_investment =
-            c.bot_seat().total_investment() - sim_strat->get_fixed_win(c);
+            c.bot_player().total_investment() - sim_strat->get_fixed_win(c);
         ev -= our_investment;
         // subtract rake
         ev *= bb(1 - c.config->rake_factor);
@@ -47,6 +47,5 @@ INode<FContext, FConfig>::node_t *OpponentNode::select_child() {
 }
 
 OpponentNode::~OpponentNode() {
-  //        delete static_cast<FContext*>(context);
 }
 };

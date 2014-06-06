@@ -6,10 +6,22 @@
 
 namespace freedom {
 
-//  https://en.wikipedia.org/wiki/Exponential_distribution
+// ----------------------------------------------------------------------
+/// @brief   encapsulates a exponential function with scaling parameter
+///          lambda.
+///          https://en.wikipedia.org/wiki/Exponential_distribution
+// ----------------------------------------------------------------------
 class ExponentialDistribution {
 public:
   explicit ExponentialDistribution(const double &lambda_) : lambda(lambda_) {}
+
+  // ----------------------------------------------------------------------
+  /// @brief   gets the function value of point x
+  ///
+  /// @param x point to get value for
+  ///
+  /// @return f(x)
+  // ----------------------------------------------------------------------
   double operator()(const double &x) const {
     return lambda * exp(-(lambda * x));
   }

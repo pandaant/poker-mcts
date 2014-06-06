@@ -32,6 +32,7 @@ SUITE(SelectionTests) {
   typedef typename ISelectionStrategy<FContext, FConfig>::sstrategy_t
   sstrategy_t;
   typedef typename INode<FContext, FConfig>::node_t node_t;
+  typedef typename PAction<FConfig>::paction_t paction_t;
 
   ecalc::Handranks handranks("../../../bin/data/handranks.dat");
 
@@ -160,7 +161,7 @@ SUITE(SelectionTests) {
   };
 
   TEST_FIXTURE(Setup, TestGetNormalizedActionProbabilitiesXB) {
-    ModelSelector<FContext, FConfig> select;
+    ModelSelector<FConfig> select;
 
     setp.players = vector<FPlayer>(
         { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
@@ -179,10 +180,10 @@ SUITE(SelectionTests) {
                                 Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, setp.root);
+        new DecisionNode(*setp.context, setp.config, setp.root);
     dn->expand();
 
-    vector<PAction<FContext, FConfig> > actions =
+    vector<paction_t > actions =
         select.normalized_probabilities(dn);
 
     CHECK_EQUAL(ActionType::Check, actions[0].action.action);
@@ -198,7 +199,7 @@ SUITE(SelectionTests) {
   // look @ RoundHistogramm::get_action_probabilities
 
   TEST_FIXTURE(Setup, TestGetNormalizedActionProbabilitiesXR) {
-    ModelSelector<FContext, FConfig> select;
+    ModelSelector<FConfig> select;
 
     setp.players = vector<FPlayer>(
         { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
@@ -217,10 +218,10 @@ SUITE(SelectionTests) {
                                 Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, setp.root);
+        new DecisionNode(*setp.context, setp.config, setp.root);
     dn->expand();
 
-    vector<PAction<FContext, FConfig> > actions =
+    vector<paction_t > actions =
         select.normalized_probabilities(dn);
 
     //        for(auto a:actions) std::cout << a.action.to_str() << " " <<
@@ -236,7 +237,7 @@ SUITE(SelectionTests) {
   }
 
   TEST_FIXTURE(Setup, TestGetNormalizedActionProbabilitiesFCR) {
-    ModelSelector<FContext, FConfig> select;
+    ModelSelector<FConfig> select;
 
     setp.config->models["default"] = test_hist;
 
@@ -255,9 +256,9 @@ SUITE(SelectionTests) {
                                 Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, setp.root);
+        new DecisionNode(*setp.context, setp.config, setp.root);
     dn->expand();
-    vector<PAction<FContext, FConfig> > actions =
+    vector<paction_t > actions =
         select.normalized_probabilities(dn);
 
     CHECK_EQUAL(ActionType::Fold, actions[0].action.action);
@@ -273,7 +274,7 @@ SUITE(SelectionTests) {
   }
 
   TEST_FIXTURE(Setup, TestModelSelectorGetDiscreteIndex) {
-    ModelSelector<FContext, FConfig> select;
+    ModelSelector<FConfig> select;
 
     setp.config->models["default"] = test_hist;
 
@@ -292,10 +293,9 @@ SUITE(SelectionTests) {
                                 Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, setp.root);
+        new DecisionNode(*setp.context, setp.config, setp.root);
     dn->expand();
-    vector<PAction<FContext, FConfig> > actions =
-        select.normalized_probabilities(dn);
+    vector<paction_t> actions = select.normalized_probabilities(dn);
 
     CHECK_EQUAL(ActionType::Fold, actions[0].action.action);
     CHECK_EQUAL(ActionType::Call, actions[1].action.action);
@@ -327,7 +327,7 @@ SUITE(SelectionTests) {
   }
 
   TEST_FIXTURE(Setup, TestModelSelectorSelect) {
-    ModelSelector<FContext, FConfig> select;
+    ModelSelector<FConfig> select;
 
     setp.config->models["default"] = test_hist;
 
@@ -346,7 +346,7 @@ SUITE(SelectionTests) {
                                 Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, setp.root);
+        new DecisionNode(*setp.context, setp.config, setp.root);
     dn->expand();
 
     int count_f = 0;
@@ -371,7 +371,7 @@ SUITE(SelectionTests) {
   }
 
   TEST_FIXTURE(Setup, TestBetAmtRatioSelector) {
-    BetamtEVRatioSelector<FContext, FConfig> select(1);
+    BetamtEVRatioSelector select(1);
 
     setp.players = vector<FPlayer>(
         { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
@@ -385,7 +385,7 @@ SUITE(SelectionTests) {
                                 Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, setp.root);
+        new DecisionNode(*setp.context, setp.config, setp.root);
     dn->expand();
 
     // ratio -> 2
@@ -399,7 +399,7 @@ SUITE(SelectionTests) {
   }
 
   TEST_FIXTURE(Setup, TestBetAmtRatioSelectorThreshold) {
-    BetamtEVRatioSelector<FContext, FConfig> select(2.5);
+    BetamtEVRatioSelector select(2.5);
 
     setp.players = vector<FPlayer>(
         { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
@@ -413,7 +413,7 @@ SUITE(SelectionTests) {
                                 Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, setp.root);
+        new DecisionNode(*setp.context, setp.config, setp.root);
     dn->expand();
 
     // ratio -> 2
@@ -427,7 +427,7 @@ SUITE(SelectionTests) {
   }
 
   TEST_FIXTURE(Setup, TestFinalMoveSelector) {
-    FinalMoveSelector<FContext, FConfig> selector(1, 3, 2);
+    FinalMoveSelector selector(1, 3, 2);
 
     setp.players = vector<FPlayer>(
         { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
@@ -441,7 +441,7 @@ SUITE(SelectionTests) {
                                 Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, setp.root);
+        new DecisionNode(*setp.context, setp.config, setp.root);
     dn->expand();
 
     dn->children()[1]->backpropagate(1);
@@ -453,7 +453,7 @@ SUITE(SelectionTests) {
   }
 
   TEST_FIXTURE(Setup, TestFinalMoveSelectorAmtEvRatioToLow) {
-    FinalMoveSelector<FContext, FConfig> selector(1.5, 3, 2);
+    FinalMoveSelector selector(1.5, 3, 2);
 
     setp.players = vector<FPlayer>(
         { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
@@ -467,7 +467,7 @@ SUITE(SelectionTests) {
                                 Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, setp.root);
+        new DecisionNode(*setp.context, setp.config, setp.root);
     dn->expand();
 
     dn->children()[1]->backpropagate(0.5);
@@ -479,7 +479,7 @@ SUITE(SelectionTests) {
   }
 
   TEST_FIXTURE(Setup, TestFinalMoveSelectorBigRaise) {
-    FinalMoveSelector<FContext, FConfig> selector(1, 3, 2);
+    FinalMoveSelector selector(1, 3, 2);
 
     setp.players = vector<FPlayer>(
         { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
@@ -493,7 +493,7 @@ SUITE(SelectionTests) {
                                 Action(ActionType::None, bb(0)), setp.cconfig);
 
     DecisionNode *dn =
-        new DecisionNode(setp.context->clone(), setp.config, setp.root);
+        new DecisionNode(*setp.context, setp.config, setp.root);
     dn->expand();
 
     dn->children()[1]->backpropagate(0.5);

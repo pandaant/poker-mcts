@@ -44,7 +44,7 @@ double ShowdownEval::simulate(const FContext &context) {
   // ev += tie_ev;
 
   // subtract our investment to the pot
-  bb our_investment = context.bot_seat().total_investment() - fixedreturn;
+  bb our_investment = context.bot_player().total_investment() - fixedreturn;
   ev -= our_investment.getAsDouble();
 
   return (1 - context.config->rake_factor) * ev;

@@ -5,8 +5,8 @@
 
 namespace freedom {
 
-FContext::FContext(const Value &data, FContextConfig *_config)
-    : last_action(Action(ActionType::None, bb(0))), config(_config) {
+FContext::FContext(const Value &data, FContextConfig *config_)
+    : last_action(Action(ActionType::None, bb(0))), config(config_) {
   pot = data["pot"].GetDouble();
   highest_bet = data["highest_bet"].GetDouble();
   index_bot = data["index_bot"].GetInt();
@@ -20,25 +20,27 @@ FContext::FContext(const Value &data, FContextConfig *_config)
   // set the bot players hand. this is important or he will be having a
   // randomhandlist.
   // TODO delete this pointer on descturct?
-  bot_seat().handlist = new ecalc::SingleHandlist(config->bot_hand);
+  bot_player().handlist = new ecalc::SingleHandlist(config->bot_hand);
 }
 
-FContext::FContext(int _index_bot, int _index_utg, int _index_button,
-                   int _index_active, vector<FPlayer> _player,
-                   FContextConfig *_config)
-    : pot(0), highest_bet(0), index_bot(_index_bot), index_utg(_index_utg),
-      index_button(_index_button), index_active(_index_active),
-      betting_round(0), phase(PhaseType::Preflop), player(_player),
-      last_action(Action(ActionType::None, bb(0))), config(_config) {}
+FContext::FContext(const int &index_bot_, const int &index_utg_,
+                   const int &index_button_, const int &index_active_,
+                   const vector<FPlayer> &player_, FContextConfig *config_)
+    : pot(0), highest_bet(0), index_bot(index_bot_), index_utg(index_utg_),
+      index_button(index_button_), index_active(index_active_),
+      betting_round(0), phase(PhaseType::Preflop), player(player_),
+      last_action(Action(ActionType::None, bb(0))), config(config_) {}
 
-FContext::FContext(bb _pot, bb _highest_bet, int _index_bot, int _index_utg,
-                   int _index_button, int _index_active, int _betting_round,
-                   PhaseType::Enum _phase, vector<FPlayer> _player,
-                   Action _last_action, FContextConfig *_config)
-    : pot(_pot), highest_bet(_highest_bet), index_bot(_index_bot),
-      index_utg(_index_utg), index_button(_index_button),
-      index_active(_index_active), betting_round(_betting_round), phase(_phase),
-      player(_player), last_action(_last_action), config(_config) {}
+FContext::FContext(const bb &pot_, const bb &highest_bet_,
+                   const int &index_bot_, const int &index_utg_,
+                   const int &index_button_, const int &index_active_,
+                   const int &betting_round_, const PhaseType::Enum &phase_,
+                   const vector<FPlayer> player_, const Action &last_action_,
+                   FContextConfig *config_)
+    : pot(pot_), highest_bet(highest_bet_), index_bot(index_bot_),
+      index_utg(index_utg_), index_button(index_button_),
+      index_active(index_active_), betting_round(betting_round_), phase(phase_),
+      player(player_), last_action(last_action_), config(config_) {}
 
 FContext::FContext(const FContext &fc)
     : pot(fc.pot), highest_bet(fc.highest_bet), index_bot(fc.index_bot),
@@ -92,57 +94,57 @@ FContext FContext::transition(const Action &action) const {
 
   bool ok;
   bb bankroll, investment, to_call, raise;
-  bankroll = active_seat().bankroll;
-  investment = active_seat().invested[phase];
+  bankroll = active_player().bankroll;
+  investment = active_player().invested[phase];
 
   switch (action.action) {
   case ActionType::Fold:
-    ncontext.active_seat().set_inactive();
+    ncontext.active_player().set_inactive();
     break;
   case ActionType::Check:
     break;
   case ActionType::Call:
     to_call = action.amount;
-    ok = ncontext.active_seat().make_investment(to_call, phase);
+    ok = ncontext.active_player().make_investment(to_call, phase);
 
     if (ok) {
       ncontext.pot += to_call;
     } else {
       ncontext.pot += bankroll;
-      ncontext.active_seat().invested[phase] += bankroll;
-      ncontext.active_seat().bankroll = bb(0);
+      ncontext.active_player().invested[phase] += bankroll;
+      ncontext.active_player().bankroll = bb(0);
     }
 
     if (bankroll <= to_call)
-      ncontext.active_seat().set_allin();
+      ncontext.active_player().set_allin();
 
     break;
   case ActionType::Bet:
   case ActionType::Raise:
   case ActionType::AllIn:
     raise = action.amount;
-    ok = ncontext.active_seat().make_investment(raise, phase);
+    ok = ncontext.active_player().make_investment(raise, phase);
 
     if (ok) {
       // transaction successfull
       ncontext.pot += raise;
-      ncontext.highest_bet = ncontext.active_seat().invested[phase];
+      ncontext.highest_bet = ncontext.active_player().invested[phase];
     } else {
       // raise > bankroll
       ncontext.pot += bankroll;
       // can only pay partially. add amount to invested manually
-      ncontext.active_seat().invested[phase] += bankroll;
+      ncontext.active_player().invested[phase] += bankroll;
 
       ncontext.highest_bet =
-          (ncontext.highest_bet < ncontext.active_seat().invested[phase])
-              ? ncontext.active_seat().invested[phase]
+          (ncontext.highest_bet < ncontext.active_player().invested[phase])
+              ? ncontext.active_player().invested[phase]
               : ncontext.highest_bet;
 
-      ncontext.active_seat().bankroll = bb(0);
+      ncontext.active_player().bankroll = bb(0);
     }
 
     if (bankroll <= raise)
-      ncontext.active_seat().set_allin();
+      ncontext.active_player().set_allin();
 
     ncontext.index_utg = index_active;
     ++ncontext.betting_round;
@@ -153,8 +155,8 @@ FContext FContext::transition(const Action &action) const {
   }
 
   // track players action sequence
-  ncontext.active_seat().action_sequence.append(action, ncontext.phase,
-                                                betting_round);
+  ncontext.active_player().action_sequence.append(action, ncontext.phase,
+                                                  betting_round);
 
   if (ncontext.is_last_to_act()) {
     ncontext.transition_phase();
@@ -242,7 +244,7 @@ vector<Action> FContext::available_actions() const {
       if (index_active == index_bot) {
         sizes = has_bet() ? config->raise_sizes : config->bet_sizes;
         for (unsigned i = 0; i < sizes.size(); ++i) {
-          bb raise_amount = get_bet_raise_amount(sizes[i]);
+          bb raise_amount = bet_raise_amount(sizes[i]);
           bb real_raise = raise_amount - player[index_active].invested[phase];
           // allin used here
           if (real_raise >= player[index_active].bankroll) {
@@ -255,7 +257,7 @@ vector<Action> FContext::available_actions() const {
         }
       } else {
         // model für betsize hier TODO
-        bb raise_amount = get_bet_raise_amount(has_bet() ? 2 : 0.6);
+        bb raise_amount = bet_raise_amount(has_bet() ? 2 : 0.6);
         bb real_raise = raise_amount - player[index_active].invested[phase];
         if (real_raise >= player[index_active].bankroll)
           // allin
@@ -299,7 +301,7 @@ void FContext::transition_phase() {
   }
 }
 
-bb FContext::get_bet_raise_amount(const double &factor) const {
+bb FContext::bet_raise_amount(const double &factor) const {
   return has_bet() ? (highest_bet * bb(factor)) : (pot * bb(factor));
 }
 
@@ -309,16 +311,16 @@ bool FContext::is_terminal() const {
   return (phase == PhaseType::Showdown ||
           (nb_player_active() < 2 && index_active == -1) ||
           (nb_player_active() == 1 &&
-           get_last_active_seat().invested[phase] == highest_bet) ||
+           last_active_player().invested[phase] == highest_bet) ||
           player[index_bot].is_inactive());
 }
 
-FPlayer FContext::get_last_active_seat() const {
+const FPlayer &FContext::last_active_player() const {
   for (int i = 0; i < player.size(); ++i) {
     if (player[i].is_active())
       return player[i];
   }
-  throw std::runtime_error("last active seat not found.");
+  throw std::runtime_error("last active player not found.");
 }
 
 int FContext::nb_player_active() const {
@@ -341,11 +343,11 @@ int FContext::nb_player_not_inactive() const {
                        [](const FPlayer &s) { return !s.is_inactive(); });
 }
 
-FPlayer &FContext::bot_seat() { return player[index_bot]; }
-const FPlayer &FContext::bot_seat() const { return player[index_bot]; }
+FPlayer &FContext::bot_player() { return player[index_bot]; }
+const FPlayer &FContext::bot_player() const { return player[index_bot]; }
 
-FPlayer &FContext::active_seat() { return player[index_active]; }
-const FPlayer &FContext::active_seat() const { return player[index_active]; }
+FPlayer &FContext::active_player() { return player[index_active]; }
+const FPlayer &FContext::active_player() const { return player[index_active]; }
 
 int FContext::next_utg() const {
   int next;

@@ -4,8 +4,10 @@
 #include "bucket_collection.hpp"
 
 namespace freedom {
-
-class BalancedBucketizer{
+// ----------------------------------------------------------------------
+/// @brief   every bucket gets the same number of hands.
+// ----------------------------------------------------------------------
+class BalancedBucketizer {
 public:
   // ----------------------------------------------------------------------
   /// @brief   maps a number of hands to a number of buckets according
@@ -20,7 +22,7 @@ public:
   /// @return mapped hands in a bucketcollection
   // ----------------------------------------------------------------------
   BucketCollection map_hands(const unsigned &nb_buckets,
-                                     const vector<BucketHand> &hands_) const;
+                             const vector<BucketHand> &hands_) const;
 };
 }
 

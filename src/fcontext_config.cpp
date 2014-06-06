@@ -2,12 +2,15 @@
 
 namespace freedom {
 
-FContextConfig::FContextConfig(Hand _bot_hand, unsigned _betting_rounds,
-                               vector<card> _board, vector<double> _bet_sizes,
-                               vector<double> _raise_sizes, double _rake_factor)
-    : betting_rounds(_betting_rounds), rake_factor(_rake_factor),
-      bot_hand(_bot_hand), board(_board), bet_sizes(_bet_sizes),
-      raise_sizes(_raise_sizes) {}
+FContextConfig::FContextConfig(const Hand &bot_hand_,
+                               const unsigned &betting_rounds_,
+                               const vector<card> &board_,
+                               const vector<double> &bet_sizes_,
+                               const vector<double> &raise_sizes_,
+                               const double &rake_factor_)
+    : betting_rounds(betting_rounds_), rake_factor(rake_factor_),
+      bot_hand(bot_hand_), board(board_), bet_sizes(bet_sizes_),
+      raise_sizes(raise_sizes_) {}
 
 FContextConfig::FContextConfig(const FContextConfig &oc)
     : betting_rounds(oc.betting_rounds), bot_hand(oc.bot_hand), board(oc.board),

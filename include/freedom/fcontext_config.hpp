@@ -11,27 +11,35 @@
 namespace freedom {
 using std::vector;
 using ecalc::card;
+using ecalc::cards;
 using poker::Hand;
 using rapidjson::Value;
 using rapidjson::SizeType;
 
-/**
- * contains data that is used in every
- * context in the tree.
- **/
+// ----------------------------------------------------------------------
+/// @brief   Contains context data that is fixed for the entire duration
+///          of a game.
+// ----------------------------------------------------------------------
 struct FContextConfig {
+  /// number of max bettingrounds a phase can have.
   unsigned betting_rounds;
+  /// rake factor is removed from a simulated pot. (1-rake_f)*pot = real pot
   double rake_factor;
+  /// the hand the bot holds in the game
   Hand bot_hand;
-  vector<card> board;
+  /// community cards
+  cards board;
+  /// each entry is created as bet node.
   vector<double> bet_sizes;
+  /// each entry is created as raise node.
   vector<double> raise_sizes;
 
   explicit FContextConfig(const Value &data);
 
-  FContextConfig(Hand _bot_hand, unsigned _betting_rounds, vector<unsigned> _board,
-                 vector<double> _bet_sizes, vector<double> _raise_sizes,
-                 double _rake_factor = 0);
+  FContextConfig(const Hand &bot_hand_, const unsigned &betting_rounds_,
+                 const cards &board_, const vector<double> &bet_sizes_,
+                 const vector<double> &raise_sizes_,
+                 const double &rake_factor_ = 0);
 
   FContextConfig(const FContextConfig &oc);
 

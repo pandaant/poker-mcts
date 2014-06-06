@@ -19,7 +19,7 @@ public:
   ///          context and player according to the model.
   ///
   /// @param gs a context
-  /// @param index_seat the player to get probabilities for
+  /// @param index_player the player to get probabilities for
   ///
   /// @return probability distribution tuple
   // ----------------------------------------------------------------------
@@ -30,7 +30,7 @@ public:
   /// @brief   gets the check/bet probabilities for a context.
   ///
   /// @param gs a context 
-  /// @param index_seat the player to get probabilities for
+  /// @param index_player the player to get probabilities for
   ///
   /// @return probability distribution tuple
   // ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ public:
   /// @brief   gets the fold/call probabilities for a context.
   ///
   /// @param gs a context 
-  /// @param index_seat the player to get probabilities for
+  /// @param index_player the player to get probabilities for
   ///
   /// @return probability distribution tuple
   // ----------------------------------------------------------------------

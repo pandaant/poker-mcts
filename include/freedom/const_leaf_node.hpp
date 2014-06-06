@@ -10,15 +10,15 @@ namespace freedom {
 
 using mcts::LeafNode;
 
-/**
- * ConstantLeafNode
- * An leaf node with an exact value
- * if the game ends without an showdown.
- **/
+// ----------------------------------------------------------------------
+/// @brief   An leaf node with an exact value,
+///          if the game ends without an showdown.
+// ----------------------------------------------------------------------
 class ConstantLeafNode : public LeafNode<FContext, FConfig> {
   typedef typename INode<FContext, FConfig>::node_t node_t;
 
 public:
+  /// stores a constant value for this leaf
   double value;
 
   ConstantLeafNode(const FContext &fcontext_, FConfig *fconfig_,

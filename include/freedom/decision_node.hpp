@@ -10,11 +10,10 @@ namespace freedom {
 using mcts::INode;
 using mcts::InnerNode;
 
-/**
- * DecisionNode
- * Uses a selectionStrategy for nodes
- * in which we (the bot) have to make a move.
- **/
+// ----------------------------------------------------------------------
+/// @brief   Uses a selectionStrategy for nodes in which we (the bot) 
+///          has to make a move.
+// ----------------------------------------------------------------------
 class DecisionNode : public InnerNode<FContext, FConfig> {
   typedef typename INode<FContext, FConfig>::node_t node_t;
 

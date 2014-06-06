@@ -6,6 +6,7 @@
 #include "phase_histogramm.hpp"
 
 namespace freedom {
+
 using std::get;
 
 // ----------------------------------------------------------------------

@@ -24,9 +24,9 @@ using namespace poker;
 class FConfig {
   typedef std::mt19937 generator_t;
   typedef std::unordered_map<std::string, IModel *> model_map;
+  typedef typename ISimulationStrategy<FContext>::simstrategy_t simstrategy_t;
   typedef typename ISelectionStrategy<FContext, FConfig>::sstrategy_t
   sstrategy_t;
-  typedef typename ISimulationStrategy<FContext>::simstrategy_t simstrategy_t;
 
 public:
   generator_t *nb_gen_;
@@ -43,7 +43,6 @@ public:
   IBackpropagationStrategy *opponent_backprop_strat;
 
   FConfig(const Value &data, ECalc *ecalc_, const bool &seed = true);
-  FConfig(sstrategy_t *move_select_strat_, const bool &seed = true);
 
   // TODO clone strategies here. so constructor can take care of
   // deletion without external segfaults
@@ -57,9 +56,27 @@ public:
 
   ~FConfig();
 
+  // ----------------------------------------------------------------------
+  /// @brief   returns the model with the given name
+  ///
+  /// @param name of model
+  ///
+  /// @return pointer to model or NULL if model not found.
+  // ----------------------------------------------------------------------
   IModel *model(const string &name);
+
+  // ----------------------------------------------------------------------
+  /// @brief   parse models from json.
+  ///
+  /// @param data json 
+  // ----------------------------------------------------------------------
   void readModels(const Value &data);
 
+  // ----------------------------------------------------------------------
+  /// @brief   gets the number generator
+  ///
+  /// @return nb gen
+  // ----------------------------------------------------------------------
   generator_t *nb_gen();
 };
 }

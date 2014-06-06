@@ -5,9 +5,6 @@
 #include "histogramm.hpp"
 
 namespace freedom {
-FConfig::FConfig(sstrategy_t *move_select_strat_, const bool &seed)
-    : nb_gen_(new generator_t(0)), move_selection_strat(move_select_strat_) {
-} // TODO seed generator
 
 FConfig::FConfig(const double &time_s_, const unsigned &ecalc_nb_samples_,
                  ECalc *ecalc_, simstrategy_t *simulation_strat_,

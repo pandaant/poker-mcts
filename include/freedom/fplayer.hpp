@@ -20,8 +20,9 @@ using rapidjson::FileStream;
 using std::string;
 using std::vector;
 
-using namespace poker;
-
+// ----------------------------------------------------------------------
+/// @brief   Represents a poker player. 
+// ----------------------------------------------------------------------
 class FPlayer {
 public:
   bb bankroll;

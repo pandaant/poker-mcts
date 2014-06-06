@@ -136,8 +136,8 @@ public:
                         dead_by_phase(board, dead, curr_phase));
 
       // apply new equities to range
-      collection =
-          update_equities(collection, cache[pid]); // TODO delete, is obsolete
+      //collection =
+          //update_equities(collection, cache[pid]); // TODO delete, is obsolete
 
       // loop over actions in phase
       for (ActionSequence::LineAction action : curr_line) {

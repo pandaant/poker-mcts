@@ -1,9 +1,13 @@
 #ifndef EXPONENTIAL_BUCKETIZER_H
-#define	EXPONENTIAL_BUCKETIZER_H
+#define EXPONENTIAL_BUCKETIZER_H
 
 #include "bucket_collection.hpp"
 
-namespace freedom{
+namespace freedom {
+
+// ----------------------------------------------------------------------
+/// @brief   maps hands according to a exponential distribution
+// ----------------------------------------------------------------------
 class ExponentialBucketizer {
 public:
   // ----------------------------------------------------------------------

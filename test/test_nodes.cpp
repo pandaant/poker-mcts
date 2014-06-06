@@ -24,7 +24,8 @@ SUITE(FreedomNodeTests) {
   using namespace mcts;
   using namespace poker;
 
-  typedef typename ISelectionStrategy<FContext, FConfig>::sstrategy_t sstrategy_t;
+  typedef typename ISelectionStrategy<FContext, FConfig>::sstrategy_t
+  sstrategy_t;
 
   ecalc::Handranks handranks("../../../bin/data/handranks.dat");
 
@@ -58,9 +59,10 @@ SUITE(FreedomNodeTests) {
     ISimulationStrategy<FContext> *sim_strat;
 
     ComplexSetup()
-        : players({FPlayer( bb(10), vector<bb>({ bb(5), bb(0), bb(0), bb(0) }),
-                          StatusType::Active),
-                    FPlayer( bb(10), vector<bb>({ bb(5), bb(0), bb(0), bb(0) }),StatusType::Active) }),
+        : players({FPlayer(bb(10), vector<bb>({bb(5), bb(0), bb(0), bb(0)}),
+                           StatusType::Active),
+                   FPlayer(bb(10), vector<bb>({bb(5), bb(0), bb(0), bb(0)}),
+                           StatusType::Active)}),
           random(new ecalc::RandomHandlist()) {
       pot = bb(10);
       highest_bet = bb(0);
@@ -80,10 +82,9 @@ SUITE(FreedomNodeTests) {
 
       cconfig = new FContextConfig(Hand("AhAs"), 2, board, vector<double>({1}),
                                    vector<double>({3}), rake_factor);
-      context =
-          new FContext(pot, highest_bet, index_bot, index_utg, index_button,
-                       index_active, betting_round, phase, players,
-                       Action(ActionType::None, bb(0)), cconfig);
+      context = new FContext(pot, highest_bet, index_bot, index_utg,
+                             index_button, index_active, betting_round, phase,
+                             players, Action(ActionType::None, bb(0)), cconfig);
 
       calc = new ECalc(&handranks, 0);
       time_s = 1;
@@ -114,318 +115,290 @@ SUITE(FreedomNodeTests) {
     }
   };
 
-   TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandXR) {
-   players = vector<FPlayer>(
-  { FPlayer( bb(10), vector<bb>({ bb(1), bb(0),
-  bb(0), bb(0) }),
-   StatusType::Active),
-   FPlayer( bb(10), vector<bb>({ bb(0.5), bb(0),
-   bb(0), bb(0) }),
-   StatusType::Active) });
+  TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandXR) {
+    players = vector<FPlayer>(
+        {FPlayer(bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
+                 StatusType::Active),
+         FPlayer(bb(10), vector<bb>({bb(0.5), bb(0), bb(0), bb(0)}),
+                 StatusType::Active)});
 
-   context = new FContext(bb(1.5), bb(1), index_bot, index_utg,
-   index_button,
-   index_active, betting_round, phase, players,
-   Action(ActionType::None, bb(0)), cconfig);
+    context = new FContext(bb(1.5), bb(1), index_bot, index_utg, index_button,
+                           index_active, betting_round, phase, players,
+                           Action(ActionType::None, bb(0)), cconfig);
 
-   DecisionNode *dn = new DecisionNode(context->clone(), config, NULL);
-   dn->expand();
-   CHECK_EQUAL(2, dn->children().size());
+    DecisionNode *dn = new DecisionNode(*context, config, NULL);
+    dn->expand();
+    CHECK_EQUAL(2, dn->children().size());
 
-   FContext c1 =
-   dn->children()[0]->context();
-   FContext c2 =
-   dn->children()[1]->context();
-   CHECK_EQUAL(ActionType::Check, c1.last_action.action);
-   CHECK_EQUAL(ActionType::Raise, c2.last_action.action);
+    FContext c1 = dn->children()[0]->context();
+    FContext c2 = dn->children()[1]->context();
+    CHECK_EQUAL(ActionType::Check, c1.last_action.action);
+    CHECK_EQUAL(ActionType::Raise, c2.last_action.action);
 
-   delete dn;
+    delete dn;
   }
 
-   TEST_FIXTURE(ComplexSetup, TestExpandNotPossible){
-  //TODO
+  TEST_FIXTURE(ComplexSetup, TestExpandNotPossible) {
+    // TODO
   }
 
-   //test multiple raise sizes
- 
-   TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandXRRR) {
-   players = vector<FPlayer>(
-  { FPlayer( bb(10), vector<bb>({ bb(1), bb(0),
-  bb(0), bb(0) }),
-   StatusType::Active),
-   FPlayer( bb(10), vector<bb>({ bb(0.5), bb(0),
-   bb(0), bb(0) }),
-   StatusType::Active) });
+  // test multiple raise sizes
 
-   cconfig = new FContextConfig(Hand("AhAs"), 2, board, vector<double>({ 1 }),
-   vector<double>({ 3, 4, 5 }), rake_factor);
-   context = new FContext(bb(1.5), bb(1), index_bot, index_utg,
-   index_button,
-   index_active, betting_round, phase, players,
-   Action(ActionType::None, bb(0)), cconfig);
+  TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandXRRR) {
+    players = vector<FPlayer>(
+        {FPlayer(bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
+                 StatusType::Active),
+         FPlayer(bb(10), vector<bb>({bb(0.5), bb(0), bb(0), bb(0)}),
+                 StatusType::Active)});
 
-   DecisionNode *dn = new DecisionNode(context->clone(), config, NULL);
-   dn->expand();
-   CHECK_EQUAL(4, dn->children().size());
+    cconfig = new FContextConfig(Hand("AhAs"), 2, board, vector<double>({1}),
+                                 vector<double>({3, 4, 5}), rake_factor);
+    context = new FContext(bb(1.5), bb(1), index_bot, index_utg, index_button,
+                           index_active, betting_round, phase, players,
+                           Action(ActionType::None, bb(0)), cconfig);
 
-   FContext c1 = dn->children()[0]->context();
-   FContext c2 = dn->children()[1]->context();
-   FContext c3 = dn->children()[2]->context();
-   FContext c4 = dn->children()[3]->context();
+    DecisionNode *dn = new DecisionNode(*context, config, NULL);
+    dn->expand();
+    CHECK_EQUAL(4, dn->children().size());
 
-   CHECK_EQUAL(ActionType::Check, c1.last_action.action);
-   CHECK_EQUAL(ActionType::Raise, c2.last_action.action);
-   CHECK_EQUAL(ActionType::Raise, c3.last_action.action);
-   CHECK_EQUAL(ActionType::Raise, c4.last_action.action);
+    FContext c1 = dn->children()[0]->context();
+    FContext c2 = dn->children()[1]->context();
+    FContext c3 = dn->children()[2]->context();
+    FContext c4 = dn->children()[3]->context();
 
-   delete dn;
+    CHECK_EQUAL(ActionType::Check, c1.last_action.action);
+    CHECK_EQUAL(ActionType::Raise, c2.last_action.action);
+    CHECK_EQUAL(ActionType::Raise, c3.last_action.action);
+    CHECK_EQUAL(ActionType::Raise, c4.last_action.action);
+
+    delete dn;
   }
 
-   TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandFCR) {
+  TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandFCR) {
 
-   players = vector<FPlayer>(
-  { FPlayer( bb(10), vector<bb>({ bb(1), bb(0),
-  bb(0), bb(0) }),
-   StatusType::Active),
-   FPlayer( bb(10), vector<bb>({ bb(1.5), bb(0),
-   bb(0), bb(0) }),
-   StatusType::Active) });
+    players = vector<FPlayer>(
+        {FPlayer(bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
+                 StatusType::Active),
+         FPlayer(bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
+                 StatusType::Active)});
 
-   context = new FContext(bb(2.5), bb(1.5), index_bot, index_utg,
-   index_button,
-   index_active, betting_round, phase, players,
-   Action(ActionType::None, bb(0)), cconfig);
+    context = new FContext(bb(2.5), bb(1.5), index_bot, index_utg, index_button,
+                           index_active, betting_round, phase, players,
+                           Action(ActionType::None, bb(0)), cconfig);
 
-   DecisionNode *dn = new DecisionNode(context->clone(), config, NULL);
-   dn->expand();
+    DecisionNode *dn = new DecisionNode(*context, config, NULL);
+    dn->expand();
 
-   CHECK_EQUAL(3, dn->children().size());
+    CHECK_EQUAL(3, dn->children().size());
 
-   FContext c1 = dn->children()[0]->context();
-   FContext c2 = dn->children()[1]->context();
-   FContext c3 = dn->children()[2]->context();
+    FContext c1 = dn->children()[0]->context();
+    FContext c2 = dn->children()[1]->context();
+    FContext c3 = dn->children()[2]->context();
 
-   CHECK_EQUAL(ActionType::Fold, c1.last_action.action);
-   CHECK_EQUAL(true, c1.is_terminal());
+    CHECK_EQUAL(ActionType::Fold, c1.last_action.action);
+    CHECK_EQUAL(true, c1.is_terminal());
 
-   CHECK_EQUAL(ActionType::Call, c2.last_action.action);
-   CHECK_EQUAL(ActionType::Raise, c3.last_action.action);
+    CHECK_EQUAL(ActionType::Call, c2.last_action.action);
+    CHECK_EQUAL(ActionType::Raise, c3.last_action.action);
 
-   delete dn;
+    delete dn;
   }
 
-   TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandAllIn) {
+  TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandAllIn) {
 
-   players = vector<FPlayer>(
-  { FPlayer( bb(9), vector<bb>({ bb(1), bb(0),
-  bb(0), bb(0) }),
-   StatusType::Active),
-   FPlayer( bb(2), vector<bb>({ bb(8), bb(0),
-   bb(0), bb(0) }),
-   StatusType::Active) });
+    players = vector<FPlayer>(
+        {FPlayer(bb(9), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
+                 StatusType::Active),
+         FPlayer(bb(2), vector<bb>({bb(8), bb(0), bb(0), bb(0)}),
+                 StatusType::Active)});
 
-   context = new FContext(bb(9), bb(8), index_bot, index_utg,
-   index_button,
-   index_active, betting_round, phase, players,
-   Action(ActionType::None, bb(0)), cconfig);
+    context = new FContext(bb(9), bb(8), index_bot, index_utg, index_button,
+                           index_active, betting_round, phase, players,
+                           Action(ActionType::None, bb(0)), cconfig);
 
-   DecisionNode *dn = new DecisionNode(context->clone(), config, NULL);
-   dn->expand();
+    DecisionNode *dn = new DecisionNode(*context, config, NULL);
+    dn->expand();
 
-   CHECK_EQUAL(3, dn->children().size());
+    CHECK_EQUAL(3, dn->children().size());
 
-   FContext c1 = dn->children()[0]->context();
-   FContext c2 = dn->children()[1]->context();
-   FContext c3 = dn->children()[2]->context();
+    FContext c1 = dn->children()[0]->context();
+    FContext c2 = dn->children()[1]->context();
+    FContext c3 = dn->children()[2]->context();
 
-   CHECK_EQUAL(ActionType::Fold, c1.last_action.action);
-   CHECK_EQUAL(true, c1.is_terminal());
+    CHECK_EQUAL(ActionType::Fold, c1.last_action.action);
+    CHECK_EQUAL(true, c1.is_terminal());
 
-   CHECK_EQUAL(ActionType::Call, c2.last_action.action);
-   CHECK_EQUAL(ActionType::Raise, c3.last_action.action);
+    CHECK_EQUAL(ActionType::Call, c2.last_action.action);
+    CHECK_EQUAL(ActionType::Raise, c3.last_action.action);
 
-   delete dn;
+    delete dn;
   }
 
-   TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandToShowdown) {
+  TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandToShowdown) {
 
-   players = vector<FPlayer>(
-  { FPlayer( bb(5), vector<bb>({ bb(5), bb(0),
-  bb(0), bb(0) }), random, "default",
-   StatusType::Active),
-   FPlayer( bb(2), vector<bb>({ bb(5), bb(0),
-   bb(0), bb(3) }), random, "default",
-   StatusType::Active) });
+    players = vector<FPlayer>(
+        {FPlayer(bb(5), vector<bb>({bb(5), bb(0), bb(0), bb(0)}), random,
+                 "default", StatusType::Active),
+         FPlayer(bb(2), vector<bb>({bb(5), bb(0), bb(0), bb(3)}), random,
+                 "default", StatusType::Active)});
 
-   phase = PhaseType::River;
-   betting_round = 1;
-   index_utg = 1;
-   context = new FContext(bb(13), bb(3), index_bot, index_utg,
-   index_button,
-   index_active, betting_round, phase, players,
-   Action(ActionType::None, bb(0)), cconfig);
+    phase = PhaseType::River;
+    betting_round = 1;
+    index_utg = 1;
+    context = new FContext(bb(13), bb(3), index_bot, index_utg, index_button,
+                           index_active, betting_round, phase, players,
+                           Action(ActionType::None, bb(0)), cconfig);
 
-   DecisionNode *dn = new DecisionNode(context->clone(), config, NULL);
-   dn->expand();
+    DecisionNode *dn = new DecisionNode(*context, config, NULL);
+    dn->expand();
 
-   CHECK_EQUAL(3, dn->children().size());
+    CHECK_EQUAL(3, dn->children().size());
 
-   FContext c1 = dn->children()[0]->context();
-   FContext c2 = dn->children()[1]->context();
-   FContext c3 = dn->children()[2]->context();
+    FContext c1 = dn->children()[0]->context();
+    FContext c2 = dn->children()[1]->context();
+    FContext c3 = dn->children()[2]->context();
 
-   CHECK_EQUAL(ActionType::Fold, c1.last_action.action);
-   CHECK_EQUAL(true, c1.is_terminal());
+    CHECK_EQUAL(ActionType::Fold, c1.last_action.action);
+    CHECK_EQUAL(true, c1.is_terminal());
 
-   CHECK_EQUAL(ActionType::Call, c2.last_action.action);
-   CHECK_EQUAL(ActionType::Raise, c3.last_action.action);
+    CHECK_EQUAL(ActionType::Call, c2.last_action.action);
+    CHECK_EQUAL(ActionType::Raise, c3.last_action.action);
 
-  // c2 should be showdown node
-   CHECK_EQUAL(true, c2.is_terminal());
+    // c2 should be showdown node
+    CHECK_EQUAL(true, c2.is_terminal());
 
-   vector<Action> actions = c2.available_actions();
-   CHECK_EQUAL(0, actions.size());
+    vector<Action> actions = c2.available_actions();
+    CHECK_EQUAL(0, actions.size());
 
-   try {
-   dn->children()[1]->simulate();
-   CHECK(true);
-  }
-   catch (std::exception e) {
-   CHECK(false);
-  }
+    try {
+      dn->children()[1]->simulate();
+      CHECK(true);
+    }
+    catch (std::exception e) {
+      CHECK(false);
+    }
 
-   delete dn;
+    delete dn;
   }
 
-   TEST_FIXTURE(ComplexSetup, TestOpponentNodeExpandToShowdown) {
+  TEST_FIXTURE(ComplexSetup, TestOpponentNodeExpandToShowdown) {
 
-   players = vector<FPlayer>(
-  { FPlayer( bb(2), vector<bb>({ bb(5), bb(0),
-  bb(0), bb(3) }), random, "default",
-   StatusType::Active),
-   FPlayer( bb(5), vector<bb>({ bb(5), bb(0),
-   bb(0), bb(0) }), random, "default",
-   StatusType::Active) });
+    players = vector<FPlayer>(
+        {FPlayer(bb(2), vector<bb>({bb(5), bb(0), bb(0), bb(3)}), random,
+                 "default", StatusType::Active),
+         FPlayer(bb(5), vector<bb>({bb(5), bb(0), bb(0), bb(0)}), random,
+                 "default", StatusType::Active)});
 
-   phase = PhaseType::River;
-   index_utg = 0;
-   index_active = 1;
-   betting_round = 1;
-   players[0].handlist = random;
-   players[1].handlist = random;
-   context = new FContext(bb(13), bb(3), index_bot, index_utg,
-   index_button,
-   index_active, betting_round, phase, players,
-   Action(ActionType::None, bb(0)), cconfig);
+    phase = PhaseType::River;
+    index_utg = 0;
+    index_active = 1;
+    betting_round = 1;
+    players[0].handlist = random;
+    players[1].handlist = random;
+    context = new FContext(bb(13), bb(3), index_bot, index_utg, index_button,
+                           index_active, betting_round, phase, players,
+                           Action(ActionType::None, bb(0)), cconfig);
 
-   RootNode<FContext, FConfig, DecisionNode> *root = new RootNode<FContext, FConfig, DecisionNode>(*context, config);
-   OpponentNode *dn = new OpponentNode(context->clone(), config, root);
-   dn->expand();
+    RootNode<FContext, FConfig, DecisionNode> *root =
+        new RootNode<FContext, FConfig, DecisionNode>(*context, config);
+    OpponentNode *dn = new OpponentNode(*context, config, root);
+    dn->expand();
 
-   FContext cc = dn->context();
-   cc.transition(Action(ActionType::Call, bb(3)));
-  //    delete cc;
+    FContext cc = dn->context();
+    cc.transition(Action(ActionType::Call, bb(3)));
+    //    delete cc;
 
-   vector<Action> actions = context->available_actions();
-   CHECK_EQUAL(3, dn->children().size());
-  // for(auto ac : actions) std::cout << ActionType::ToStr[ac.action] << " "
-  // << ac.amount << std::endl;
+    vector<Action> actions = context->available_actions();
+    CHECK_EQUAL(3, dn->children().size());
+    // for(auto ac : actions) std::cout << ActionType::ToStr[ac.action] << " "
+    // << ac.amount << std::endl;
 
-   FContext c1 = dn->children()[0]->context();
-   FContext c2 = dn->children()[1]->context();
-   FContext c3 = dn->children()[2]->context();
+    FContext c1 = dn->children()[0]->context();
+    FContext c2 = dn->children()[1]->context();
+    FContext c3 = dn->children()[2]->context();
 
-   CHECK_EQUAL(ActionType::Fold, c1.last_action.action);
-   CHECK_EQUAL(true, c1.is_terminal());
+    CHECK_EQUAL(ActionType::Fold, c1.last_action.action);
+    CHECK_EQUAL(true, c1.is_terminal());
 
-   CHECK_EQUAL(ActionType::Call, c2.last_action.action);
-   CHECK_EQUAL(ActionType::Raise, c3.last_action.action);
+    CHECK_EQUAL(ActionType::Call, c2.last_action.action);
+    CHECK_EQUAL(ActionType::Raise, c3.last_action.action);
 
-  // c2 should be showdown node
-   CHECK_EQUAL(true, c2.is_terminal());
+    // c2 should be showdown node
+    CHECK_EQUAL(true, c2.is_terminal());
 
-   actions = c2.available_actions();
-   CHECK_EQUAL(0, actions.size());
+    actions = c2.available_actions();
+    CHECK_EQUAL(0, actions.size());
 
-   for (int i = 0; i < 1000; ++i)
-   dn->children()[1]->backpropagate(dn->children()[1]->simulate());
-   CHECK_CLOSE(0, dn->children()[1]->ev(), 0.1);
+    for (int i = 0; i < 1000; ++i)
+      dn->children()[1]->backpropagate(dn->children()[1]->simulate());
+    CHECK_CLOSE(0, dn->children()[1]->ev(), 0.1);
 
-   delete dn;
+    delete dn;
   }
 
-   TEST_FIXTURE(ComplexSetup, TestOpponentNodeExpandFCR) {
+  TEST_FIXTURE(ComplexSetup, TestOpponentNodeExpandFCR) {
 
-   players = vector<FPlayer>(
-  { FPlayer( bb(10), vector<bb>({ bb(1.5), bb(0),
-  bb(0), bb(0) }),
-   StatusType::Active),
-   FPlayer( bb(10), vector<bb>({ bb(1), bb(0),
-   bb(0), bb(0) }),
-   StatusType::Active) });
+    players = vector<FPlayer>(
+        {FPlayer(bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
+                 StatusType::Active),
+         FPlayer(bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
+                 StatusType::Active)});
 
-   index_utg = 1;
-   index_active = 1;
-   context = new FContext(bb(2.5), bb(1.5), index_bot, index_utg,
-   index_button,
-   index_active, betting_round, phase, players,
-   Action(ActionType::None, bb(0)), cconfig);
+    index_utg = 1;
+    index_active = 1;
+    context = new FContext(bb(2.5), bb(1.5), index_bot, index_utg, index_button,
+                           index_active, betting_round, phase, players,
+                           Action(ActionType::None, bb(0)), cconfig);
 
-   CHECK_EQUAL(bb(1.5), players[0].total_investment());
-   CHECK_EQUAL(bb(1.5), players[0].invested[PhaseType::Preflop]);
-   CHECK_EQUAL(bb(1.5), context->player[0].total_investment());
-   CHECK_EQUAL(bb(1.5),
-   context->player[0].invested[PhaseType::Preflop]);
+    CHECK_EQUAL(bb(1.5), players[0].total_investment());
+    CHECK_EQUAL(bb(1.5), players[0].invested[PhaseType::Preflop]);
+    CHECK_EQUAL(bb(1.5), context->player[0].total_investment());
+    CHECK_EQUAL(bb(1.5), context->player[0].invested[PhaseType::Preflop]);
 
-   OpponentNode *dn = new OpponentNode(context->clone(), config, NULL);
-   dn->expand();
+    OpponentNode *dn = new OpponentNode(*context, config, NULL);
+    dn->expand();
 
-   CHECK_EQUAL(3, dn->children().size());
+    CHECK_EQUAL(3, dn->children().size());
 
-   FContext c1 =
-   dn->children()[0]->context();
-   FContext c2 =
-   dn->children()[1]->context();
-   FContext c3 =
-   dn->children()[2]->context();
+    FContext c1 = dn->children()[0]->context();
+    FContext c2 = dn->children()[1]->context();
+    FContext c3 = dn->children()[2]->context();
 
-   CHECK_EQUAL(0, c1.index_active);
-   CHECK_EQUAL(1, c1.nb_player_active());
-   CHECK_EQUAL(PhaseType::Preflop, c1.phase);
-   CHECK_EQUAL(bb(10), c1.get_last_active_seat().bankroll);
-   CHECK_EQUAL(bb(1.5),
-   c1.get_last_active_seat().total_investment());
-   CHECK_EQUAL(bb(1.5),
-   c1.get_last_active_seat().invested[PhaseType::Preflop]);
-   CHECK_EQUAL(ActionType::Fold, c1.last_action.action);
-   CHECK_EQUAL(true, c1.is_terminal());
-   CHECK_CLOSE(1, dn->children()[0]->ev(), 0.1);
+    CHECK_EQUAL(0, c1.index_active);
+    CHECK_EQUAL(1, c1.nb_player_active());
+    CHECK_EQUAL(PhaseType::Preflop, c1.phase);
+    CHECK_EQUAL(bb(10), c1.last_active_player().bankroll);
+    CHECK_EQUAL(bb(1.5), c1.last_active_player().total_investment());
+    CHECK_EQUAL(bb(1.5), c1.last_active_player().invested[PhaseType::Preflop]);
+    CHECK_EQUAL(ActionType::Fold, c1.last_action.action);
+    CHECK_EQUAL(true, c1.is_terminal());
+    CHECK_CLOSE(1, dn->children()[0]->ev(), 0.1);
 
-   CHECK_EQUAL(ActionType::Call, c2.last_action.action);
-   CHECK_EQUAL(ActionType::Raise, c3.last_action.action);
+    CHECK_EQUAL(ActionType::Call, c2.last_action.action);
+    CHECK_EQUAL(ActionType::Raise, c3.last_action.action);
 
-   delete dn;
+    delete dn;
   }
 
-   TEST_FIXTURE(ComplexSetup, TestConstLeafNode) {
-   ConstantLeafNode *dn =
-   new ConstantLeafNode(context->clone(), config, NULL, 10);
+  TEST_FIXTURE(ComplexSetup, TestConstLeafNode) {
+    ConstantLeafNode *dn = new ConstantLeafNode(*context, config, NULL, 10);
 
-   CHECK_EQUAL(10, dn->ev());
-   CHECK_EQUAL(0, dn->nb_samples());
+    CHECK_EQUAL(10, dn->ev());
+    CHECK_EQUAL(0, dn->nb_samples());
 
-   delete dn;
+    delete dn;
   }
 
-   TEST_FIXTURE(ComplexSetup, TestShowdownNode) {
-   RootNode<FContext, FConfig, DecisionNode> *root = new RootNode<FContext, FConfig, DecisionNode>(*context, config);
-   ShowdownNode *dn = new ShowdownNode(context->clone(), config, root);
+  TEST_FIXTURE(ComplexSetup, TestShowdownNode) {
+    RootNode<FContext, FConfig, DecisionNode> *root =
+        new RootNode<FContext, FConfig, DecisionNode>(*context, config);
+    ShowdownNode *dn = new ShowdownNode(*context, config, root);
 
-   for (int i = 0; i < 1000; ++i)
-   dn->backpropagate(dn->simulate());
+    for (int i = 0; i < 1000; ++i)
+      dn->backpropagate(dn->simulate());
 
-   CHECK_CLOSE(3.5, dn->ev(), 0.1);
+    CHECK_CLOSE(3.5, dn->ev(), 0.1);
 
-   delete dn;
+    delete dn;
   }
 }
