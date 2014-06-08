@@ -24,7 +24,7 @@ public:
   // calculate a range for every player
   void generate_handranges(FContext &context, FConfig *config);
 
-private:
+protected:
   ECalc *ecalc;
   RangePredictor *range_predictor;
 };

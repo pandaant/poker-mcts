@@ -226,7 +226,7 @@ public:
   ///
   /// @param writer object
   // ----------------------------------------------------------------------
-  void serialize(Writer<FileStream> &writer);
+  void serialize(Writer<FileStream> &writer) const;
 
   // ----------------------------------------------------------------------
   /// @brief   write the name of all data fields to a stream

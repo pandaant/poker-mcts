@@ -8,8 +8,8 @@
 #include <mcts/isimulation_strategy.hpp>
 #include <mcts/ibackpropagation_strategy.hpp>
 #include <rapidjson/document.h>
-#include <strategy_map.hpp>
 #include <unordered_map>
+#include "strategy_map.hpp"
 #include "imodel.hpp"
 
 namespace freedom {
@@ -78,6 +78,8 @@ public:
   /// @return nb gen
   // ----------------------------------------------------------------------
   generator_t *nb_gen();
+
+  sstrategy_t *move_selector(){ return move_selection_strat; }
 };
 }
 

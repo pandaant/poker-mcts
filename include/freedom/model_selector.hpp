@@ -3,6 +3,7 @@
 
 #include <mcts/iselection_strategy.hpp>
 #include "imodel.hpp"
+#include <iostream>
 
 namespace freedom {
 
@@ -78,6 +79,12 @@ public:
    */
   int choose_discrete_index(generator_t &gen, const vector<double> &probs) {
     std::discrete_distribution<int> distribution(probs.begin(), probs.end());
+    //vector<double> p = distribution.probabilities();
+    //for(int i = 0; i < p.size(); i++)
+        //std::cout << p[i] << std::endl;
+    //std::cout << "\n";
+    //for(int i = 0; i < 10; i++)
+    //std::cout <<distribution(gen) << std::endl; 
     return distribution(gen);
   }
 };

@@ -3,14 +3,14 @@
 
 namespace freedom {
 
-FPlayer::FPlayer(const Value &data) : status(load_status(data)) {
+FPlayer::FPlayer(const Value &data) : status(load_status(data)){
   model = data["model"].GetString();
   bankroll = bb(data["bankroll"].GetDouble());
   action_sequence = FActionSequence(data["sequence"]);
 
   for (SizeType i = 0; i < data["invested"].Size(); ++i) {
     bb amount = bb(data["invested"][i].GetDouble());
-    invested[i] = amount;
+    invested.push_back(amount);
   }
 
   handlist = NULL;

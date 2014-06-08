@@ -14,7 +14,7 @@ FConfig::FConfig(const double &time_s_, const unsigned &ecalc_nb_samples_,
                  sstrategy_t *opponent_selection_strat_,
                  sstrategy_t *move_select_strat_, const bool &seed)
     : // TODO seed gen
-      nb_gen_(new generator_t(0)),
+      nb_gen_(new generator_t(seed ? time(NULL) : 0)),
       time_s(time_s_), ecalc_nb_samples(ecalc_nb_samples_), ecalc(ecalc_),
       simulation_strat(simulation_strat_),
       opponent_selection_strat(opponent_selection_strat_),
@@ -24,7 +24,8 @@ FConfig::FConfig(const double &time_s_, const unsigned &ecalc_nb_samples_,
       decision_selection_strat(decision_selection_strat_) {}
 
 FConfig::FConfig(const Value &data, ECalc *ecalc_, const bool &seed)
-    : ecalc(ecalc_), time_s(data["time"].GetDouble()),
+    : nb_gen_(new generator_t(seed ? time(NULL) : 0)), ecalc(ecalc_),
+      time_s(data["time"].GetDouble()),
       ecalc_nb_samples(data["ecalc_nb_samples"].GetInt()),
       simulation_strat(new WeightedShowdownEval(ecalc, ecalc_nb_samples)),
       decision_backprop_strat(StrategyMap::lookup_backprop_strat(

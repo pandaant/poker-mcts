@@ -5,8 +5,8 @@
 #include <poker/hand.hpp>
 #include <poker/pokerdefs.hpp>
 #include <ecalc/types.hpp>
-#include <schema_exception.hpp>
 #include <rapidjson/document.h>
+#include "schema_exception.hpp"
 
 namespace freedom {
 using std::vector;

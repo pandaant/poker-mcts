@@ -387,7 +387,7 @@ void FContext::serialize_fields(Writer<FileStream> &writer) {
   writer.EndArray();
 }
 
-void FContext::serialize(Writer<FileStream> &writer) {
+void FContext::serialize(Writer<FileStream> &writer) const {
   writer.StartArray();
 
   writer.String(PhaseType::ToStr[phase]);

@@ -326,6 +326,15 @@ SUITE(SelectionTests) {
     delete dn;
   }
 
+  TEST_FIXTURE(Setup, TestDiscreteIndex2){
+    ModelSelector<FConfig> select;
+    //setp.config->models["default"] = test_hist;
+
+    vector<double> probs({0.69999999999999996,0.29999999999999999 });
+    for(int i = 0; i < 40; i++)
+        CHECK(select.choose_discrete_index(*setp.config->nb_gen(), probs) < 2);
+  }
+
   TEST_FIXTURE(Setup, TestModelSelectorSelect) {
     ModelSelector<FConfig> select;
 
