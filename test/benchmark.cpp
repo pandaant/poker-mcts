@@ -15,7 +15,7 @@
 #include "decision_node.hpp"
 #include <showdown_eval.hpp>
 
-#define NB_SAMPLES 10000
+#define NB_SAMPLES 7 
 
 SUITE(ECalcBenchmarks) {
 
@@ -35,19 +35,17 @@ SUITE(ECalcBenchmarks) {
   using namespace mcts;
   using namespace std::chrono;
 
-  struct Response{
-    
-  };
+  struct Response {};
 
   Handranks handranks("../../../bin/data/handranks.dat");
 
   void print_benchmark_result(string name, system_clock::duration duration,
-                              int nb_samples) {
-    std::cout << name << " | Samples: " << nb_samples << "\t\t\t"
-              << duration_cast<seconds>(duration).count() << " s | "
-              << duration_cast<milliseconds>(duration).count() << " ms | "
-              << duration_cast<microseconds>(duration).count() << " micros"
-              << std::endl;
+                              unsigned iterations, unsigned nb_nodes, size_t tree_s) {
+    std::cout << name << " | Iterations: " << iterations 
+              << " | nbNodes: " << nb_nodes 
+              << " | TreeSize(MB): " << tree_s / 1024.0 
+              << " | Time: " << duration_cast<milliseconds>(duration).count()
+              << " ms | " << std::endl;
   }
 
   // ----------------------------------------------------------------------
@@ -58,7 +56,7 @@ SUITE(ECalcBenchmarks) {
   // ----------------------------------------------------------------------
   TEST(BenchmarkNodesFromPreflop) {
     ECalc *calc = new ECalc(&handranks);
-    FConfig *config = new FConfig(1.0, 10, calc, new ShowdownEval(calc, 10),
+    FConfig *config = new FConfig(1.0, 10, calc, new ShowdownEval(calc, NB_SAMPLES),
                                   new AvgBackpropagationStrategy(),
                                   new AvgBackpropagationStrategy(),
                                   new SamplingSelector<FContext, FConfig>(),
@@ -66,30 +64,32 @@ SUITE(ECalcBenchmarks) {
                                   new MaxValueSelector<FContext, FConfig>());
 
     FContextConfig *fconfig =
-        new FContextConfig(Hand("AhAs"), 5, {}, { 1.0 }, { 0 });
+        new FContextConfig(Hand("AhAs"), 5, {}, {1.0}, {0});
 
-    RandomHandlist* random = new RandomHandlist();
+    RandomHandlist *random = new RandomHandlist();
 
-    vector<FPlayer> player{ FPlayer(bb(10)),
-                            FPlayer(bb(10)),
-                            FPlayer(bb(10)),
-                            FPlayer(bb(10)),
-                            FPlayer(bb(9.5), { bb(0.5), bb(0), bb(0), bb(0) }),
-                            FPlayer(bb(9), { bb(1), bb(0), bb(0), bb(0) }) };
+    vector<FPlayer> player{FPlayer(bb(10)),
+                           FPlayer(bb(10)),
+                           FPlayer(bb(10)),
+                           FPlayer(bb(10)),
+                           FPlayer(bb(9.5), {bb(0.5), bb(0), bb(0), bb(0)}),
+                           FPlayer(bb(9), {bb(1), bb(0), bb(0), bb(0)})};
 
     for (unsigned i = 0; i < player.size(); ++i) {
-        player[i].handlist = random;
+      player[i].handlist = random;
     }
 
     FContext *context = new FContext(0, 0, 3, 0, player, fconfig);
 
+    std::chrono::seconds runtime(1);
     MCTS<FContext, FConfig, DecisionNode, Response> mcts(*context, config);
 
     auto start = std::chrono::system_clock::now();
-    auto end = std::chrono::system_clock::now();
 
-    //while(now-start > 1 )
-    mcts.iterate();
+    while (std::chrono::system_clock::now() - start < runtime)
+      mcts.iterate();
+
+    print_benchmark_result("6pPfUTGAA",runtime, mcts.nb_iterations(), mcts.nb_nodes(), sizeof(*mcts.root())*mcts.nb_nodes());
   }
 }
 
