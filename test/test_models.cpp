@@ -116,7 +116,7 @@ SUITE(ModelTests) {
         { RH(600, 600, 300, 400, 100), RH(800, 0, 150, 0, 50) });
 
     // so betting round 2 should everything be 0
-    vector<PH> phases({ pfrounds });
+    vector<PH> phases{ pfrounds };
     Histogramm test(phases);
 
     Action action(ActionType::Call, bb(10));

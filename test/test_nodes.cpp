@@ -1,3 +1,5 @@
+#include <iostream>
+#include <string.h>
 #include <UnitTest++.h>
 #include <fcontext.hpp>
 #include <fcontext_config.hpp>
@@ -14,8 +16,6 @@
 #include <showdown_node.hpp>
 #include <opponent_node.hpp>
 #include <const_leaf_node.hpp>
-#include <iostream>
-#include <string.h>
 #include <mcts/root_node.hpp>
 #include <ecalc/handranks.hpp>
 
@@ -59,10 +59,10 @@ SUITE(FreedomNodeTests) {
     ISimulationStrategy<FContext> *sim_strat;
 
     ComplexSetup()
-        : players({FPlayer(bb(10), vector<bb>({bb(5), bb(0), bb(0), bb(0)}),
-                           StatusType::Active),
-                   FPlayer(bb(10), vector<bb>({bb(5), bb(0), bb(0), bb(0)}),
-                           StatusType::Active)}),
+        : players({ FPlayer(bb(10), { bb(5), bb(0), bb(0), bb(0) },
+                            StatusType::Active),
+                    FPlayer(bb(10), { bb(5), bb(0), bb(0), bb(0) },
+                            StatusType::Active) }),
           random(new ecalc::RandomHandlist()) {
       pot = bb(10);
       highest_bet = bb(0);
@@ -80,8 +80,8 @@ SUITE(FreedomNodeTests) {
       players[1].handlist = random;
       // players[2].handlist = random;
 
-      cconfig = new FContextConfig(Hand("AhAs"), 2, board, vector<double>({1}),
-                                   vector<double>({3}), rake_factor);
+      cconfig =
+          new FContextConfig(Hand("AhAs"), 2, board, { 1 }, { 3 }, rake_factor);
       context = new FContext(pot, highest_bet, index_bot, index_utg,
                              index_button, index_active, betting_round, phase,
                              players, Action(ActionType::None, bb(0)), cconfig);
@@ -117,10 +117,9 @@ SUITE(FreedomNodeTests) {
 
   TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandXR) {
     players = vector<FPlayer>(
-        {FPlayer(bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                 StatusType::Active),
-         FPlayer(bb(10), vector<bb>({bb(0.5), bb(0), bb(0), bb(0)}),
-                 StatusType::Active)});
+        { FPlayer(bb(10), { bb(1), bb(0), bb(0), bb(0) }, StatusType::Active),
+          FPlayer(bb(10), { bb(0.5), bb(0), bb(0), bb(0) },
+                  StatusType::Active) });
 
     context = new FContext(bb(1.5), bb(1), index_bot, index_utg, index_button,
                            index_active, betting_round, phase, players,
@@ -146,13 +145,12 @@ SUITE(FreedomNodeTests) {
 
   TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandXRRR) {
     players = vector<FPlayer>(
-        {FPlayer(bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                 StatusType::Active),
-         FPlayer(bb(10), vector<bb>({bb(0.5), bb(0), bb(0), bb(0)}),
-                 StatusType::Active)});
+        { FPlayer(bb(10), { bb(1), bb(0), bb(0), bb(0) }, StatusType::Active),
+          FPlayer(bb(10), { bb(0.5), bb(0), bb(0), bb(0) },
+                  StatusType::Active) });
 
-    cconfig = new FContextConfig(Hand("AhAs"), 2, board, vector<double>({1}),
-                                 vector<double>({3, 4, 5}), rake_factor);
+    cconfig = new FContextConfig(Hand("AhAs"), 2, board, { 1 }, { 3, 4, 5 },
+                                 rake_factor);
     context = new FContext(bb(1.5), bb(1), index_bot, index_utg, index_button,
                            index_active, betting_round, phase, players,
                            Action(ActionType::None, bb(0)), cconfig);
@@ -176,11 +174,10 @@ SUITE(FreedomNodeTests) {
 
   TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandFCR) {
 
-    players = vector<FPlayer>(
-        {FPlayer(bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                 StatusType::Active),
-         FPlayer(bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
-                 StatusType::Active)});
+    players = {
+      FPlayer(bb(10), { bb(1), bb(0), bb(0), bb(0) }, StatusType::Active),
+      FPlayer(bb(10), { bb(1.5), bb(0), bb(0), bb(0) }, StatusType::Active)
+    };
 
     context = new FContext(bb(2.5), bb(1.5), index_bot, index_utg, index_button,
                            index_active, betting_round, phase, players,
@@ -206,11 +203,10 @@ SUITE(FreedomNodeTests) {
 
   TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandAllIn) {
 
-    players = vector<FPlayer>(
-        {FPlayer(bb(9), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                 StatusType::Active),
-         FPlayer(bb(2), vector<bb>({bb(8), bb(0), bb(0), bb(0)}),
-                 StatusType::Active)});
+    players = {
+      FPlayer(bb(9), { bb(1), bb(0), bb(0), bb(0) }, StatusType::Active),
+      FPlayer(bb(2), { bb(8), bb(0), bb(0), bb(0) }, StatusType::Active)
+    };
 
     context = new FContext(bb(9), bb(8), index_bot, index_utg, index_button,
                            index_active, betting_round, phase, players,
@@ -236,11 +232,10 @@ SUITE(FreedomNodeTests) {
 
   TEST_FIXTURE(ComplexSetup, TestDecisionNodeExpandToShowdown) {
 
-    players = vector<FPlayer>(
-        {FPlayer(bb(5), vector<bb>({bb(5), bb(0), bb(0), bb(0)}), random,
-                 "default", StatusType::Active),
-         FPlayer(bb(2), vector<bb>({bb(5), bb(0), bb(0), bb(3)}), random,
-                 "default", StatusType::Active)});
+    players = { FPlayer(bb(5), { bb(5), bb(0), bb(0), bb(0) }, random,
+                        "default", StatusType::Active),
+                FPlayer(bb(2), { bb(5), bb(0), bb(0), bb(3) }, random,
+                        "default", StatusType::Active) };
 
     phase = PhaseType::River;
     betting_round = 1;
@@ -283,11 +278,10 @@ SUITE(FreedomNodeTests) {
 
   TEST_FIXTURE(ComplexSetup, TestOpponentNodeExpandToShowdown) {
 
-    players = vector<FPlayer>(
-        {FPlayer(bb(2), vector<bb>({bb(5), bb(0), bb(0), bb(3)}), random,
-                 "default", StatusType::Active),
-         FPlayer(bb(5), vector<bb>({bb(5), bb(0), bb(0), bb(0)}), random,
-                 "default", StatusType::Active)});
+    players = { FPlayer(bb(2), { bb(5), bb(0), bb(0), bb(3) }, random,
+                        "default", StatusType::Active),
+                FPlayer(bb(5), { bb(5), bb(0), bb(0), bb(0) }, random,
+                        "default", StatusType::Active) };
 
     phase = PhaseType::River;
     index_utg = 0;
@@ -338,11 +332,10 @@ SUITE(FreedomNodeTests) {
 
   TEST_FIXTURE(ComplexSetup, TestOpponentNodeExpandFCR) {
 
-    players = vector<FPlayer>(
-        {FPlayer(bb(10), vector<bb>({bb(1.5), bb(0), bb(0), bb(0)}),
-                 StatusType::Active),
-         FPlayer(bb(10), vector<bb>({bb(1), bb(0), bb(0), bb(0)}),
-                 StatusType::Active)});
+    players = {
+      FPlayer(bb(10), { bb(1.5), bb(0), bb(0), bb(0) }, StatusType::Active),
+      FPlayer(bb(10), { bb(1), bb(0), bb(0), bb(0) }, StatusType::Active)
+    };
 
     index_utg = 1;
     index_active = 1;

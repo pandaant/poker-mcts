@@ -20,9 +20,8 @@ SUITE(FreedomContextTests) {
     Setup()
         : players({ FPlayer(bb(10), StatusType::Active),
                     FPlayer(bb(10), StatusType::Active) }),
-          cconfig(new FContextConfig(Hand("AhAs"), 5, vector<unsigned>(),
-                                     vector<double>({ 0.5, 1 }),
-                                     vector<double>({ 2, 3 }))),
+          cconfig(
+              new FContextConfig(Hand("AhAs"), 5, {}, { 0.5, 1 }, { 2, 3 })),
           context(new FContext(bb(2), bb(0), 0, 0, 0, 0, 0, PhaseType::Preflop,
                                players, Action(ActionType::None, bb(0)),
                                cconfig)) {
@@ -64,14 +63,13 @@ SUITE(FreedomContextTests) {
       board = vector<unsigned>();
       phase = PhaseType::Preflop;
       bot_hl = new ecalc::SingleHandlist(Hand("AhKh"));
-      players = { FPlayer(bb(10), vector<bb>(4, bb(0)), StatusType::Active),
-                  FPlayer(bb(10), vector<bb>{ bb(0.5), bb(0), bb(0), bb(0) },
-                          StatusType::Active),
-                  FPlayer(bb(10), vector<bb>{ bb(1), bb(0), bb(0), bb(0) },
-                          StatusType::Active) };
+      players = {
+        FPlayer(bb(10), vector<bb>(4, bb(0)), StatusType::Active),
+        FPlayer(bb(10), { bb(0.5), bb(0), bb(0), bb(0) }, StatusType::Active),
+        FPlayer(bb(10), { bb(1), bb(0), bb(0), bb(0) }, StatusType::Active)
+      };
       random = new ecalc::RandomHandlist();
-      cconfig = new FContextConfig(
-          Hand("AhKh"), 2, board, vector<double>({ 1 }), vector<double>({ 3 }));
+      cconfig = new FContextConfig(Hand("AhKh"), 2, board, { 1 }, { 3 });
       context = new FContext(pot, highest_bet, index_bot, index_utg,
                              index_button, index_active, betting_round, phase,
                              players, Action(ActionType::None, bb(0)), cconfig);
@@ -431,11 +429,10 @@ SUITE(FreedomContextTests) {
   }
 
   TEST_FIXTURE(ComplexSetup, TestTransitionFCR1) {
-    players = vector<FPlayer>(
-        { FPlayer(bb(10), vector<bb>({ bb(1), bb(0), bb(0), bb(0) }),
-                  StatusType::Active),
-          FPlayer(bb(10), vector<bb>({ bb(1.5), bb(0), bb(0), bb(0) }),
-                  StatusType::Active) });
+    players = {
+      FPlayer(bb(10), { bb(1), bb(0), bb(0), bb(0) }, StatusType::Active),
+      FPlayer(bb(10), { bb(1.5), bb(0), bb(0), bb(0) }, StatusType::Active)
+    };
 
     context = new FContext(bb(2.5), bb(1.5), index_bot, index_utg, index_button,
                            index_active, betting_round, phase, players,
@@ -470,11 +467,10 @@ SUITE(FreedomContextTests) {
   }
 
   TEST_FIXTURE(ComplexSetup, TestNextUtgActiveIndexGoesAllin2) {
-    players = vector<FPlayer>(
-        { FPlayer(bb(10), vector<bb>({ bb(0), bb(0), bb(0), bb(0) }),
-                  StatusType::Active),
-          FPlayer(bb(0), vector<bb>({ bb(10), bb(0), bb(0), bb(0) }),
-                  StatusType::Allin) });
+    players = {
+      FPlayer(bb(10), { bb(0), bb(0), bb(0), bb(0) }, StatusType::Active),
+      FPlayer(bb(0), { bb(10), bb(0), bb(0), bb(0) }, StatusType::Allin)
+    };
 
     context = new FContext(bb(11), bb(10), index_bot, 1, index_button,
                            index_active, betting_round, phase, players,
