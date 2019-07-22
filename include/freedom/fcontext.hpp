@@ -7,9 +7,9 @@
 #include <poker/action.hpp>
 #include <poker/phase_type.hpp>
 #include <poker/action_type.hpp>
-#include <rapidjson/writer.h>
-#include <rapidjson/document.h>
-#include <rapidjson/filestream.h>
+//#include <rapidjson/writer.h>
+//#include <rapidjson/document.h>
+//#include <rapidjson/filestream.h>
 #include "fplayer.hpp"
 #include "fcontext_config.hpp"
 #include "schema_exception.hpp"
@@ -17,10 +17,10 @@
 namespace freedom {
 
 using std::vector;
-using rapidjson::Value;
-using rapidjson::Writer;
-using rapidjson::FileStream;
-using rapidjson::SizeType;
+//using rapidjson::Value;
+//using rapidjson::Writer;
+//using rapidjson::FileStream;
+//using rapidjson::SizeType;
 
 // ----------------------------------------------------------------------
 /// @brief   represents a pokersituation. the class can transition
@@ -226,14 +226,14 @@ public:
   ///
   /// @param writer object
   // ----------------------------------------------------------------------
-  void serialize(Writer<FileStream> &writer) const;
+  //void serialize(Writer<FileStream> &writer) const;
 
   // ----------------------------------------------------------------------
   /// @brief   write the name of all data fields to a stream
   ///
   /// @param writer object
   // ----------------------------------------------------------------------
-  void serialize_fields(Writer<FileStream> &writer);
+  //void serialize_fields(Writer<FileStream> &writer);
 };
 };
 

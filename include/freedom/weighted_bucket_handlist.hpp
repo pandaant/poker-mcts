@@ -1,6 +1,7 @@
 #ifndef WEIGHTED_BUCKET_HANDLIST_H
 #define WEIGHTED_BUCKET_HANDLIST_H
 
+#include <random>
 #include <algorithm>
 #include <ecalc/handlist.hpp>
 #include <ecalc/array_handlist.hpp>

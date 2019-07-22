@@ -1,6 +1,5 @@
-
 #include <iostream>
-#include <UnitTest++.h>
+#include <UnitTest++/UnitTest++.h>
 #include <histogramm.hpp>
 #include <phase_histogramm.hpp>
 #include <round_histogramm.hpp>
@@ -34,7 +33,7 @@ SUITE(SelectionTests) {
   typedef typename INode<FContext, FConfig>::node_t node_t;
   typedef typename PAction<FConfig>::paction_t paction_t;
 
-  ecalc::Handranks handranks("../../../bin/data/handranks.dat");
+  ecalc::Handranks handranks("../handranks.dat");
 
   struct ComplexSetup {
     FConfig *config;

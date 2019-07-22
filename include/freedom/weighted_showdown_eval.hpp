@@ -2,6 +2,7 @@
 #define WEIGHTED_SHOWDOWN_EVAL_H
 
 #include <map>
+#include <random>
 #include "showdown_eval.hpp"
 #include "gaussian_distribution.hpp"
 #include "exponential_distribution.hpp"

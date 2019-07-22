@@ -370,46 +370,46 @@ int FContext::next_to_act() const {
   return -1;
 }
 
-void FContext::serialize_fields(Writer<FileStream> &writer) {
-  writer.StartArray();
+//void FContext::serialize_fields(Writer<FileStream> &writer) {
+  //writer.StartArray();
 
-  writer.String("phase");
-  writer.String("pot");
-  writer.String("highest_bet");
-  writer.String("betting_round");
-  writer.String("index_bot");
-  writer.String("index_active");
-  writer.String("index_utg");
-  writer.String("index_button");
-  writer.String("last_action");
-  writer.String("player");
+  //writer.String("phase");
+  //writer.String("pot");
+  //writer.String("highest_bet");
+  //writer.String("betting_round");
+  //writer.String("index_bot");
+  //writer.String("index_active");
+  //writer.String("index_utg");
+  //writer.String("index_button");
+  //writer.String("last_action");
+  //writer.String("player");
 
-  writer.EndArray();
-}
+  //writer.EndArray();
+//}
 
-void FContext::serialize(Writer<FileStream> &writer) const {
-  writer.StartArray();
+//void FContext::serialize(Writer<FileStream> &writer) const {
+  //writer.StartArray();
 
-  writer.String(PhaseType::ToStr[phase]);
-  writer.Double(pot.getAsDouble());
-  writer.Double(highest_bet.getAsDouble());
-  writer.Int(betting_round);
-  writer.Int(index_bot);
-  writer.Int(index_active);
-  writer.Int(index_utg);
-  writer.Int(index_button);
+  //writer.String(PhaseType::ToStr[phase]);
+  //writer.Double(pot.getAsDouble());
+  //writer.Double(highest_bet.getAsDouble());
+  //writer.Int(betting_round);
+  //writer.Int(index_bot);
+  //writer.Int(index_active);
+  //writer.Int(index_utg);
+  //writer.Int(index_button);
 
-  writer.StartArray();
-  writer.String(last_action.str().c_str());
-  writer.Double(last_action.amount.getAsDouble());
-  writer.EndArray();
+  //writer.StartArray();
+  //writer.String(last_action.str().c_str());
+  //writer.Double(last_action.amount.getAsDouble());
+  //writer.EndArray();
 
-  writer.StartArray();
-  for (auto &s : player) {
-    s.serialize(writer);
-  }
-  writer.EndArray();
+  //writer.StartArray();
+  //for (auto &s : player) {
+    //s.serialize(writer);
+  //}
+  //writer.EndArray();
 
-  writer.EndArray();
-}
+  //writer.EndArray();
+//}
 }

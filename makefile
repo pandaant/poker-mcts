@@ -1,12 +1,12 @@
 # compiler
 CXX = clang++ -g
 
-INCLUDES=-isystem ../../dep/decimal_for_cpp/include \
-		 -isystem ../../dep/rapidjson/include \
+INCLUDES=-isystem ./dep/decimal_for_cpp/include \
 		 -I ./include/freedom \
-		 -I ../libmcts/include \
-		 -I ../libecalc/include \
-		 -I ../libpoker/include \
+		 -I ./dep/libmcts/include \
+		 -I ./dep/libecalc/include \
+		 -I ./dep/libpoker/include \
+#		 -isystem ./usr/include/ \
 
 # add paths of libraries the
 # targets depend on.
@@ -40,7 +40,11 @@ $(LIB_OUT): $(OBJ_FILES)
 obj/$(target)/%.o: src/%.cpp
 	$(CXX) $(INCLUDES) $(CXXFLAGS) $(LIBRARIES) -c -o $@ $<
 
-all: $(LIB_OUT)
+prepare:
+	mkdir -p obj/{release,debug}
+	mkdir -p lib/{release,debug}
+
+all: prepare $(LIB_OUT)
 
 clean:
 	rm -f $(OBJ_FILES)

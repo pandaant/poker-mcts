@@ -1,5 +1,5 @@
 #include <iostream>
-#include <UnitTest++.h>
+#include <UnitTest++/UnitTest++.h>
 #include <tuple>
 #include <histogramm.hpp>
 #include <phase_histogramm.hpp>

@@ -95,24 +95,24 @@ StatusType::Enum FPlayer::load_status(const Value &data) const {
   throw std::runtime_error("Statustype unknown");
 }
 
-void FPlayer::serialize_fields(Writer<FileStream> &writer) {
-  writer.StartArray();
-  writer.String("status");
-  writer.String("bankroll");
-  writer.String("invested");
-  writer.String("sequence");
-  writer.EndArray();
-}
+//void FPlayer::serialize_fields(Writer<FileStream> &writer) {
+  //writer.StartArray();
+  //writer.String("status");
+  //writer.String("bankroll");
+  //writer.String("invested");
+  //writer.String("sequence");
+  //writer.EndArray();
+//}
 
-void FPlayer::serialize(Writer<FileStream> &writer) const {
-  writer.String(StatusType::ToStrShort[status]);
-  writer.Double(bankroll.getAsDouble());
+//void FPlayer::serialize(Writer<FileStream> &writer) const {
+  //writer.String(StatusType::ToStrShort[status]);
+  //writer.Double(bankroll.getAsDouble());
 
-  writer.StartArray();
-  for (auto &i : invested)
-    writer.Double(i.getAsDouble());
-  writer.EndArray();
+  //writer.StartArray();
+  //for (auto &i : invested)
+    //writer.Double(i.getAsDouble());
+  //writer.EndArray();
 
-  writer.String(action_sequence.str().c_str());
-}
+  //writer.String(action_sequence.str().c_str());
+//}
 };

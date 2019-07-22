@@ -1,6 +1,6 @@
 #include <map>
 #include <iostream>
-#include <UnitTest++.h>
+#include <UnitTest++/UnitTest++.h>
 #include <weighted_bucket_handlist.hpp>
 
 SUITE(WeightedBucketHandlistTest) {

@@ -7,16 +7,16 @@
 #include <poker/status_type.hpp>
 #include <ecalc/handlist.hpp>
 #include "faction_sequence.hpp"
-#include <rapidjson/document.h>
-#include <rapidjson/writer.h>
-#include <rapidjson/filestream.h>
+//#include <rapidjson/document.h>
+//#include <rapidjson/writer.h>
+//#include <rapidjson/filestream.h>
 
 namespace freedom {
 
 using ecalc::Handlist;
-using rapidjson::Value;
-using rapidjson::Writer;
-using rapidjson::FileStream;
+//using rapidjson::Value;
+//using rapidjson::Writer;
+//using rapidjson::FileStream;
 using std::string;
 using std::vector;
 
@@ -67,8 +67,8 @@ public:
   void set_allin();
 
   StatusType::Enum load_status(const Value &data) const;
-  void serialize(Writer<FileStream> &writer) const;
-  static void serialize_fields(Writer<FileStream> &writer);
+  //void serialize(Writer<FileStream> &writer) const;
+  //static void serialize_fields(Writer<FileStream> &writer);
 };
 }
 

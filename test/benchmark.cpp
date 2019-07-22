@@ -1,6 +1,6 @@
 #include <chrono>
 #include <string>
-#include <UnitTest++.h>
+#include <UnitTest++/UnitTest++.h>
 #include <mcts/mcts.hpp>
 #include <mcts/sampling_selector.hpp>
 #include <mcts/avg_backpropagation_strategy.hpp>
@@ -35,7 +35,7 @@ SUITE(ECalcBenchmarks) {
 
   struct Response {};
 
-  Handranks handranks("../../../bin/data/handranks.dat");
+  Handranks handranks("../handranks.dat");
 
   void print_benchmark_result(string name, system_clock::duration duration,
                               unsigned iterations, unsigned nb_nodes,

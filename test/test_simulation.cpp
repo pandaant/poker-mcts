@@ -3,7 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <tr1/random>
-#include <UnitTest++.h>
+#include <UnitTest++/UnitTest++.h>
 #include <ecalc/ecalc.hpp>
 #include <showdown_eval.hpp>
 #include <weighted_showdown_eval.hpp>
@@ -27,7 +27,7 @@ SUITE(SimulationTests) {
   using ecalc::RandomHandlist;
   using ecalc::SingleHandlist;
 
-  ecalc::Handranks handranks("../../../bin/data/handranks.dat");
+  ecalc::Handranks handranks("../handranks.dat");
 
   struct TestStartup {
     ecalc::ECalc *calc;

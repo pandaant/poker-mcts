@@ -1,4 +1,4 @@
-#include <UnitTest++.h>
+#include <UnitTest++/UnitTest++.h>
 #include <chrono>
 #include <string.h>
 #include <range_predictor.hpp>
@@ -18,7 +18,7 @@ SUITE(RangePredictorTests) {
   using namespace freedom;
   using namespace poker;
 
-  ecalc::Handranks handranks("../../../bin/data/handranks.dat");
+  ecalc::Handranks handranks("../handranks.dat");
 
   using ecalc::Handranks;
   using ecalc::ECalc;
