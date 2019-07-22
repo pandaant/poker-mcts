@@ -10,6 +10,3 @@
 [submodule "dep/decimal_for_cpp"]
 	path = dep/decimal_for_cpp
 	url = https://github.com/vpiotr/decimal_for_cpp
-[submodule "dep/rapidjson"]
-	path = dep/rapidjson
-	url = https://github.com/Tencent/rapidjson
