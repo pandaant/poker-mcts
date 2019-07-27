@@ -44,13 +44,21 @@ prepare:
 	mkdir -p obj/{release,debug}
 	mkdir -p lib/{release,debug}
 
-all: prepare $(LIB_OUT)
+dep:
+	cd dep/libpoker && make all
+	cd dep/libecalc && make all
+	cd dep/libmcts && make all
+
+all: prepare dep $(LIB_OUT)
 
 clean:
 	rm -f $(OBJ_FILES)
 	rm -f $(DEP_FILES)
 	rm -f $(LIB_OUT)
 	rm -f -r $(DOC_OUT)
+	cd dep/libpoker && make clean 
+	cd dep/libecalc && make clean
+	cd dep/libmcts && make clean
 
 doc:
 	mkdir -p $(DOC_OUT)
