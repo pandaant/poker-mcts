@@ -1,6 +1,7 @@
 # NLTH Poker Agent using Monte Carlo Simulation
 
 ## Requirements
+
 * Clang (For C++11 support)
 * UnitTest++ for tests (expects headers and lib to be in /usr/{lib,include})
 
@@ -15,6 +16,11 @@ $ git clone --recursive https://github.com/pandaant/poker-mcts
 $ cd poker-mcts
 $ make all
 ```
+* build the documentation:
+```shell
+$ make doc
+```
+A compiled version of the doxygen documentation can be found [here](http://mark-zumbruch.de/documentation/poker-mcts/)
 * run the tests:
 ```shell
 $ cd test
