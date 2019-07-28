@@ -7,8 +7,8 @@
 
 #include <iostream>
 #include <string.h>
-#include <UnitTest++.h>
-#include <TestReporterStdout.h>
+#include <UnitTest++/UnitTest++.h>
+#include <UnitTest++/TestReporterStdout.h>
 
 using namespace std;
 using namespace UnitTest;

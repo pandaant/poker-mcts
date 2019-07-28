@@ -1,4 +1,4 @@
-#include <UnitTest++.h>
+#include <UnitTest++/UnitTest++.h>
 #include <gaussian_distribution.hpp>
 #include <exponential_distribution.hpp>
 

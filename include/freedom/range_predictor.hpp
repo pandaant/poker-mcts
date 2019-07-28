@@ -2,6 +2,7 @@
 #define RANGE_PREDICTOR_H
 
 #include <vector>
+#include <random>
 #include <ecalc/ecalc.hpp>
 #include <ecalc/handlist.hpp>
 #include <poker/action.hpp>

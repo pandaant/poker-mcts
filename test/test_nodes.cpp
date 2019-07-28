@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string.h>
-#include <UnitTest++.h>
+#include <UnitTest++/UnitTest++.h>
 #include <fcontext.hpp>
 #include <fcontext_config.hpp>
 #include <fconfig.hpp>
@@ -27,7 +27,7 @@ SUITE(FreedomNodeTests) {
   typedef typename ISelectionStrategy<FContext, FConfig>::sstrategy_t
   sstrategy_t;
 
-  ecalc::Handranks handranks("../../../bin/data/handranks.dat");
+  ecalc::Handranks handranks("../handranks.dat");
 
   struct ComplexSetup {
     FConfig *config;

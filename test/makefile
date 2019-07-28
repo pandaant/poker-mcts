@@ -6,21 +6,20 @@ CXX = clang++ -g
 # and disable c++98 compilance
 CXXFLAGS  = -std=c++11 -MMD -MP
 
-INCLUDES=-isystem ../../../dep/decimal_for_cpp/include \
-		 -isystem ../../../dep/rapidjson/include \
-		 -isystem ../../../dep/UnitTest++/src \
+INCLUDES=-isystem ../dep/decimal_for_cpp/include \
+		 -isystem ./usr/include/ \
 		 -I ../include/freedom \
-		 -I ../../libmcts/include \
-		 -I ../../libecalc/include \
-		 -I ../../libpoker/include \
+		 -I ../dep/libmcts/include \
+		 -I ../dep/libecalc/include \
+		 -I ../dep/libpoker/include \
 
 # add paths of libraries the
 # targets depend on.
 LIBRARIES = -L ../lib/$(target) -lfreedom \
-			-L ../../libpoker/lib/$(target) -lpoker \
-			-L ../../libecalc/lib/$(target) -lecalc \
-			-L ../../libmcts/lib/$(target) -lmcts \
-			-L ../../../dep/UnitTest++ -lUnitTest++ \
+			-L ../dep/libpoker/lib/$(target) -lpoker \
+			-L ../dep/libecalc/lib/$(target) -lecalc \
+			-L ../dep/libmcts/lib/$(target) -lmcts \
+			-L /usr/lib/UnitTest++ -lUnitTest++ \
 			-lpthread
 
 # gather all source files and define
@@ -47,6 +46,10 @@ obj/$(target)/%.o: %.cpp
 $(OUT_BIN): $(OBJ_FILES)
 	$(CXX) $(INCLUDES) $(OBJ_FILES) $(LIBRARIES) -o $(OUT_BIN)
 
+prepare:
+	mkdir -p obj/{release,debug}
+	mkdir -p bin/{release,debug}
+
 run:
 	./$(OUT_BIN)
 
@@ -57,7 +60,7 @@ clean:
 	rm -f $(DEP_FILES)
 	rm -f $(OUT_BIN)
 
-all: $(OUT_BIN) 
+all: prepare $(OUT_BIN) 
 
 .PHONY: clean all run $(OUT_BIN)
 

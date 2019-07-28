@@ -1,3 +1,4 @@
+#include <random>
 #include "weighted_bucket_handlist.hpp"
 
 namespace freedom {
