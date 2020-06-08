@@ -25,7 +25,7 @@ strategy that chooses which action to take. If the state for the selected action
 the last state is expanded and it’s children are added to the tree before continuing the selection
 until a terminal history is reached. This history is then evaluated according to a simulation
 strategy that calculates the expected value. In the final step of the iteration the calculated value
-is propagated back up the tree by an backpropagation strategy. Figure 3.13 shows a graphical representation of one iteration. After a certain amount of time or number of predefined
+is propagated back up the tree by an backpropagation strategy. After a certain amount of time or number of predefined
 iterations a final move strategy selects the actual actions to play from the root node.
 
 ## Requirements
